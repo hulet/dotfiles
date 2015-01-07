@@ -1,9 +1,7 @@
 [user]
-	name = Fresh Consulting
-	email = team@freshconsulting.com
-[core]
-    #autocrlf = input
-    #safecrlf = true
+    # TODO: replace name and email by installation type
+    name = Steve Hulet
+    email = steve@freshconsulting.com
 [alias]
     co = checkout
     ci = commit
@@ -12,19 +10,19 @@
     st = status
     br = branch
     hist = log -n 15 --all --pretty=format:\"%C(auto)%h %ad | %s%d [%an]\" --graph --date=short
+    changed = log -n 15 --all --graph --pretty=format:'%s%d'
     type = cat-file -t
     dump = cat-file -p
-	lg = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr %an)%Creset' --abbrev-commit --date=relative
+    lg = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr %an)%Creset' --abbrev-commit --date=relative
     #wipe = "!git reset --hard;git clean -fd"
-
 [color]
-	ui = auto
+    ui = auto
 [credential]
-	helper = osxkeychain
+    helper = osxkeychain
 [core]
-	excludesfile = ~/.gitignore
-
+    excludesfile = ~/.gitignore
+    autocrlf = input
 [diff]
     tool = vimdiff
 [push]
-	default = simple
+    default = simple

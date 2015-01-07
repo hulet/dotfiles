@@ -55,6 +55,7 @@ symlinkifne bashrc
 symlinkifne gitconfig
 symlinkifne grep-exclude
 symlinkifne screenrc
+symlinkifne vim
 symlinkifne vimrc
 symlinkifne zshrc
 

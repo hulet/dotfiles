@@ -1,8 +1,5 @@
 # ~/.zshrc
 #
-# $Revision$
-# $Date$
-# $Author$
 #
 
 # Vi keybindings
@@ -123,6 +120,8 @@ alias cdt='cd /tmp/'
 alias cdvt='cd /var/tmp/'
 alias cdao='cd /sites/sites/aiaonline.org/'
 alias cda3='cd ~/svn/aia365/trunk/aia365.com/'
+alias cdtp='cd ~/svn/talentportal/web/branches/geekwork'
+alias cdgw='cd ~/git/geekwire'
 
 # safety first!
 alias rm='nocorrect rm -i'
@@ -132,7 +131,12 @@ alias mkdir='nocorrect mkdir'
 
 alias du0='du -hcs'
 alias eject='eject -v'
-alias grep='grep --color=auto --exclude-dir=".svn"'
+if [[ -e $HOME/.grep-exclude ]]; then
+    alias grep='grep --color=auto --exclude-dir="vendor/ckeditor" --exclude-dir="editors/ckeditor" --exclude-dir="editors/tinymce" --exclude-dir="node_modules" --exclude-dir=".svn" --exclude-dir=".git" --exclude-dir="cache" --exclude-dir="sessions" --exclude-from ~/.grep-exclude'
+else
+    alias grep='grep --color=auto --exclude-dir="vendor/ckeditor" --exclude-dir="editors/ckeditor" --exclude-dir="editors/tinymce" --exclude-dir="node_modules" --exclude-dir=".svn" --exclude-dir=".git" --exclude-dir="cache" --exclude-dir="sessions"'
+fi
+alias bbgrep='grep --exclude-dir="files" --exclude-dir="var" --exclude-dir="images"'
 alias svnmissing='svn status | grep "^\?" | sed -e "s/\?      //"'
 alias svnaddmissing='svn status | grep "^\?" | sed -e "s/\?      //" | xargs svn add'
 alias m='make'
@@ -140,8 +144,10 @@ alias py='python'
 alias vi='vim'
 alias s='svn'
 alias g='git'
+alias dk='docker'
 alias gitversion='git rev-parse --verify HEAD'
 alias sag='sudo apachectl graceful'
+alias hosts='sudo vi /etc/hosts'
 
 alias dh='ssh hulet@ideaharbor.org'
 alias db='ssh b192161@hanjin.dreamhost.com'
@@ -152,35 +158,53 @@ alias musb='sudo mount -t auto -o uid=1000,noatime /dev/sda1 /media/usbdisk'
 alias mmusb='sudo mount -o rw,remount /media/usbdisk'  # remount as read-write
 alias uusb='sudo umount /media/usbdisk'
 alias ump3='sudo umount /media/SANSA\ M350'
-alias passgen='head /dev/urandom | uuencode -m - | sed -ne 2p |  sed -e "s/[0oOiIlL1\+\\\/]//g" | cut -c-12'
-alias passgen2='head /dev/urandom | uuencode -m - | sed -ne 2p |  sed -e "s/[0oOiIlL1\+\\\/]//g"'
+alias passgen='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g" | cut -c-12'
+alias passgen2='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g"'
 alias findsymlinks='find . -type l -exec ls -l {} \;'
 
 # rails
-alias rdm='rake db:migrate'
 alias rdm0='rake db:migrate VERSION=0'
+alias rdm='rake db:migrate'
 alias rdmp='rake db:migrate RAILS_ENV=production'
 alias ss='./script/server'
 alias ttr='touch tmp/restart.txt'  # for Passenger
+
+# wordpress
+#alias wpdb="mysql -u $(cat wp-config.php|grep -w DB_USER|cut -d\' -f 4) -p$(cat wp-config.php|grep -w DB_PASSWORD|cut -d\' -f 4) -h $(cat wp-config.php|grep -w DB_HOST|cut -d\' -f 4) -D $(cat wp-config.php|grep -w DB_NAME|cut -d\' -f 4)"
+
 
 # platform specific
  case `uname` in
      Darwin)
      export JAVA_HOME='/Library/Java/Home'
      alias du1='du -hc -d 1'
-     alias te='open -a TextEdit'
-     alias tel='tail -f /var/log/apache2/error_log'
+     alias du1s='du -c -d 1 | sort -nr'
      alias tal='tail -f /var/log/apache2/access_log'
-     export PATH="/usr/local/bin:$PATH"  # for homebrew
-     [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
-     PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+     alias te='open -a TextEdit'
+     alias tel='tail -f /var/log/apache2/error_log | grep -v "File does not exist:"'
+     alias vhosts='sudo vi /etc/apache2/extra/httpd-vhosts.conf'
+     alias tailsql='tail -f /usr/local/var/mysql/sheeta.log'
+     alias dockerinit='$(boot2docker shellinit)'
+     alias unquarantine='xattr -d com.apple.quarantine'
+     PATH="/usr/local/sbin:/usr/local/bin:$PATH"  # for homebrew
+     ## next line not needed after moving ~/.zprofile to ~/.zshenv to support screen
+     #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
+     ##PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+     # https://github.com/josegonzalez/homebrew-php
+     #export PATH="$(brew --prefix php53)/bin:$PATH"
+     export HOMEBREW_GITHUB_API_TOKEN='63915e73f5beca7ddafb305843fca4ebc77ccaf5'
 
      # Android SDK
      PATH=${PATH}:~/bin/android-sdk-macosx/tools:~/bin/android-sdk-macosx/platform-tools
+
+     #export PYTHONHOME='/usr/local/Python/2.7/site-packages/'
      ;;
+
      Linux)
-     alias open='xdg-open'
      alias du1='du -hc --max-depth 1'
+     alias du1s='du -c --max-depth 1 | sort -nr'
+     alias open='xdg-open'
      ;;
  esac
 

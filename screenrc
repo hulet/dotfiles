@@ -1,5 +1,6 @@
 # ~/.screenrc
 #
+#
 
 # don't display copyright page
 startup_message off

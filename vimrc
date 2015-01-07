@@ -1,8 +1,5 @@
 " ~/.vimrc
 "
-" $Revision$
-" $Date$
-" $Author$
 "
 
 " Use Vim settings, rather then Vi settings (much better!).
@@ -100,7 +97,7 @@ set report=0                            " always tell me when something happens,
 
 set cinkeys-=0#                     " don't force perl comments to the beginning of the line
 au FileType c,cpp set cinkeys+=0#   " except when they're pre-processor directives in c/c++
-":inoremap # #                   " this prolly does the same thing?
+":inoremap # X#                   " this prolly does the same thing?
 set nrformats=              "C-A and C-X should only work on decimal numbers
 
 "Turn on syntax highlighting
@@ -111,6 +108,9 @@ set viminfo='20,<500,s100,h     " see :help 'viminfo' (with the quotes); default
 
 filetype plugin on          " allow plugin files (:h filetype-plugin)
 filetype indent on          " allow indent files (:h filetype-indent)
+
+" from https://github.com/johnhamelink/blade.vim/blob/master/ftdetect/blade.vim
+"autocmd BufNewFile,BufReadPost *.blade.php set filetype=blade
 
 " mason stuff
 "au syntax mason so /usr/share/vim/vim63/syntax/mason.vim
@@ -140,6 +140,11 @@ map ,E :let @i = expand("%:p:h"):new <C-R>i/
 "imap ,, <ESC>
 "
 
+" https://coderwall.com/p/faceag
+com! FormatJSON %!python -m json.tool
+" https://github.com/elzr/vim-json
+let g:vim_json_syntax_conceal = 0
+
 
 " http://stackoverflow.com/questions/3105307/how-do-you-automatically-remove-the-preview-window-after-autocompletion-in-vim
 " If you prefer the Omni-Completion tip window to close when a selection is
@@ -149,5 +154,8 @@ autocmd CursorMovedI * if pumvisible() == 0 && bufname("%") != "[Command Line]"|
 autocmd InsertLeave * if pumvisible() == 0 && bufname("%") != "[Command Line]"|pclose|endif
 " http://stackoverflow.com/questions/2269005/how-can-i-change-the-keybinding-used-to-autocomplete-in-vim
 inoremap <Nul> <C-x><C-o>
+
+" https://github.com/tpope/vim-pathogen
+call pathogen#infect()
 
 
