@@ -14,11 +14,16 @@ TIMESTAMP=`date +%Y-%m-%d-%H-%M-%S`
 bot $TIMESTAMP
 mkdir ~/.dotfiles_backup.$TIMESTAMP
 
-if [[ $SHELL == */zsh ]]; then
-	bot "looks like you are already using zsh. woot!"
+
+if type zsh > /dev/null 2>&1; then
+    if [[ $SHELL == */zsh ]]; then
+        bot "looks like you are already using zsh. woot!"
+    else
+        running "changing your login shell to zsh"
+        chsh -s $(which zsh);ok
+    fi
 else
-	running "changing your login shell to zsh"
-	chsh -s $(which zsh);ok
+    echo -en 'zsh is not installed; cannot chsh\t'; error
 fi
 
 function symlinkifne {
