@@ -1,0 +1,30 @@
+[user]
+	name = Fresh Consulting
+	email = team@freshconsulting.com
+[core]
+    #autocrlf = input
+    #safecrlf = true
+[alias]
+    co = checkout
+    ci = commit
+    dt = difftool
+    dts = difftool --staged
+    st = status
+    br = branch
+    hist = log -n 15 --all --pretty=format:\"%C(auto)%h %ad | %s%d [%an]\" --graph --date=short
+    type = cat-file -t
+    dump = cat-file -p
+	lg = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr %an)%Creset' --abbrev-commit --date=relative
+    #wipe = "!git reset --hard;git clean -fd"
+
+[color]
+	ui = auto
+[credential]
+	helper = osxkeychain
+[core]
+	excludesfile = ~/.gitignore
+
+[diff]
+    tool = vimdiff
+[push]
+	default = simple

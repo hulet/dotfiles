@@ -21,39 +21,45 @@ else
 	chsh -s $(which zsh);ok
 fi
 
-pushd ~ > /dev/null 2>&1
-
 function symlinkifne {
     running "$1"
+    FILENAME=$1
+    DOTFILENAME=.$FILENAME
 
-    if [[ -L $1 ]]; then
+    if [[ ! -e $FILENAME ]]; then
+        echo -en '\ttarget file does not exist, skipped\t';warn
+        return
+    fi
+
+    if [[ -L ~/$DOTFILENAME ]]; then
         # it's already a simlink (could have come from this project)
         echo -en '\tsimlink exists, skipped\t';ok
         return
     fi
-    if [[ -e $1 ]]; then
+    if [[ -e ~/$DOTFILENAME ]]; then
         # file exists
-        if [[ ! -e ~/.dotfiles_backup.$TIMESTAMP/$1 ]]; then
+        if [[ ! -e ~/.dotfiles_backup.$TIMESTAMP/$DOTFILENAME ]]; then
             # backup file does not exist yet
-            mv $1 ~/.dotfiles_backup.$TIMESTAMP/
+            mv ~/$DOTFILENAME ~/.dotfiles_backup.$TIMESTAMP/
             echo -en 'backed up saved...';
         fi
     fi
     # create the link
-    ln -s ~/.dotfiles/$1 $1
+    ln -s `pwd`/$FILENAME ~/$DOTFILENAME 
     echo -en 'linked\t';ok
 }
 
 bot "creating symlinks for project dotfiles..."
 
-symlinkifne .screenrc
-symlinkifne .vimrc
-symlinkifne .zshrc
+symlinkifne bashrc
+symlinkifne gitconfig
+symlinkifne grep-exclude
+symlinkifne screenrc
+symlinkifne vimrc
+symlinkifne zshrc
 
 # cleanup
 rmdir ~/.dotfiles_backup.$TIMESTAMP > /dev/null 2>&1
-
-popd > /dev/null 2>&1
 
 #./osx.sh
 
