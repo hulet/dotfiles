@@ -78,10 +78,14 @@ function require_gem() {
     ok
 }
 
-npmlist=`npm list -g`
+NPMLIST=''
 function require_npm() {
+    # build list only once
+    if [[ '' == $NPMLIST ]]; then
+        NPMLIST=`npm list -g`
+    fi
     running "npm $1"
-    echo $npmlist | grep $1@ > /dev/null
+    echo $NPMLIST | grep $1@ > /dev/null
     if [[ $? != 0 ]]; then
         action "npm install -g $1"
         npm install -g $1
