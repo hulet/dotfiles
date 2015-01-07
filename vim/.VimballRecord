@@ -1,0 +1,2 @@
+checksyntax.vba: call delete('/Users/hulet/.vim/doc/checksyntax.txt')|call delete('/Users/hulet/.vim/plugin/checksyntax.vim')|call delete('/Users/hulet/.vim/autoload/checksyntax.vim')
+LargeFile.vba: call delete('/Users/hulet/.vim/plugin/LargeFile.vim')|call delete('/Users/hulet/.vim/doc/LargeFile.txt')
