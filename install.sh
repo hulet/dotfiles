@@ -19,7 +19,7 @@ if type zsh > /dev/null 2>&1; then
         bot "looks like you are already using zsh. woot!"
     else
         running "changing your login shell to zsh"
-        chsh -s $(which zsh);ok
+        chsh -s $(cat /etc/shells|grep zsh);ok
     fi
 else
     echo -en 'zsh is not installed; cannot chsh\t'; error
