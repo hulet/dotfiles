@@ -276,6 +276,12 @@ defaults write NSGlobalDomain NSQuitAlwaysKeepsWindows -bool false;ok
 running "Move the Dock to the left side of the screen"
 defaults write com.apple.dock orientation -string "left";ok
 
+running "Enable dock magnification"
+defaults write com.apple.dock magnification -int 1;ok
+
+running "Set dock magnification size"
+defaults write com.apple.dock largesize -float 27.23611;ok
+
 # https://github.com/kitchenplan/chef-osxdefaults/blob/master/recipes/enable_standard_function_keys.rb
 running "Use all F1, F2, etc. keys as standard function keys"
 defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true;ok
