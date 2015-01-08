@@ -285,4 +285,52 @@ running "Setting up Spectacle"
 osascript -e 'tell application "System Events" to make new login item at end of login items with properties { path: "/Applications/Spectacle.app" }' > /dev/null 2>&1
 ok
 
+# add Google Chrome extensions
+#http://stackoverflow.com/questions/16800696/how-install-crx-chrome-extension-via-command-line
+# TODO
+
+
+# http://apple.stackexchange.com/questions/13598/updating-modifier-key-mappings-through-defaults-command-tool
+# http://hints.macworld.com/article.php?story=20060825072451882
+#It's important for the defaults command to use the correct "keyboard ID" in the key, it seems to be: com.apple.keyboard.modifiermapping.$VendorID-$ProductID-0
+#
+#For example the internal keyboard for my MacBook Air uses: com.apple.keyboard.modifiermapping.1452-579-0, while the external keyboard on my iMac uses com.apple.keyboard.modifiermapping.1118-219-0
+#
+#How to get the correct "keyboard ID"? On the command line you can use:
+#
+#ioreg -p IOUSB -c IOUSBDevice | grep -e class -e idVendor -e idProduct
+#to get a list of your USB devices with the relevant parameters:
+#
+#[...]
+#+-o Natural® Ergonomic Keyboard 4000@fa140000  <class IOUSBDevice, id 0x100000452, registered, matched, active, busy 0 (115 ms), retain 12>
+#"idProduct" = 219
+#"idVendor" = 1118
+#My guess is that the third parameter (the "-0" part) is a "counter", in case you have more than one keyboard of the same type.
+#
+#So, to switch off the CapsLock key on my external keyboard I can now use:
+#
+#defaults -currentHost write -g com.apple.keyboard.modifiermapping.1118-219-0 -array-add '<dict><key>HIDKeyboardModifierMappingDst</key><integer>-1</integer><key>HIDKeyboardModifierMappingSrc</key><integer>0</integer></dict>'
+#And, for completeness' sake, here's a list of possible key codes to use (from Mac OS X Hints):
+#
+#None — –1
+#Caps Lock — 0
+#Shift (Left) — 1
+#Control (Left) — 2
+#Option (Left) — 3
+#Command (Left) — 4
+#Keypad 0 — 5
+#Help — 6
+#Shift (Right) — 9
+#Control (Right) — 10
+#Option (Right) — 11
+#Command (Right) — 12
+#
+running "set caps lock to control"
+VENDOR=`ioreg -p IOUSB -c IOUSBDevice | grep -i "apple internal" -A 18 | grep idVendor | cut -d'=' -f2 | tr -d ' '`
+PRODUCT=`ioreg -p IOUSB -c IOUSBDevice | grep -i "apple internal" -A 18 | grep idProduct | cut -d'=' -f2 | tr -d ' '`
+defaults -currentHost write -g com.apple.keyboard.modifiermapping.$VENDOR-$PRODUCT-0 -array-add '<dict><key>HIDKeyboardModifierMappingDst</key><integer>2</integer><key>HIDKeyboardModifierMappingSrc</key><integer>0</integer></dict>'
+ok
+
+
+
 
