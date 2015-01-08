@@ -11,7 +11,6 @@ source ./lib.sh
 
 # make a backup directory for existing dotfiles
 TIMESTAMP=`date +%Y-%m-%d-%H-%M-%S`
-bot $TIMESTAMP
 mkdir ~/.dotfiles_backup.$TIMESTAMP
 
 
@@ -67,7 +66,13 @@ symlinkifne zshrc
 # cleanup
 rmdir ~/.dotfiles_backup.$TIMESTAMP > /dev/null 2>&1
 
-#./osx.sh
+case $OSTYPE in
+    darwin*)
+        ./osx.sh
+        ;;
+    linux*)
+        ;;
+esac
 
 bot "Woot! All done."
 
