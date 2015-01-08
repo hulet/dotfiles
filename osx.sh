@@ -222,7 +222,7 @@ bot "Dock & Dashboard"
 ###############################################################################
 
 running "Set the icon size of Dock items to x pixels"
-defaults write com.apple.dock tilesize -int 20;ok
+defaults write com.apple.dock tilesize -int 16;ok
 
 running "Disable Dashboard"
 defaults write com.apple.dashboard mcx-disabled -bool true;ok
@@ -280,7 +280,7 @@ running "Enable dock magnification"
 defaults write com.apple.dock magnification -int 1;ok
 
 running "Set dock magnification size"
-defaults write com.apple.dock largesize -float 27.23611;ok
+defaults write com.apple.dock largesize -float 25.77777862548828;ok
 
 # https://github.com/kitchenplan/chef-osxdefaults/blob/master/recipes/enable_standard_function_keys.rb
 running "Use all F1, F2, etc. keys as standard function keys"
