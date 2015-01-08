@@ -39,6 +39,10 @@ if [[ $? != 0 ]]; then
 fi
 ok
 
+running "setting up taps"
+brew tap homebrew/php > /dev/null 2>&1
+ok
+
 ###############################################################################
 #Install command-line tools using Homebrew                                    #
 ###############################################################################
@@ -60,9 +64,12 @@ require_brew dos2unix
 require_brew elinks
 require_brew git
 require_brew gnuplot
+require_brew grep --with-default-names
 require_brew hexedit
 require_brew htop
 require_brew iftop
+require_brew mysql
+require_brew phpmyadmin
 require_brew rename
 require_brew siege
 require_brew unrar
@@ -100,6 +107,13 @@ bot "Alright, cleaning up homebrew cache..."
 # Remove outdated versions from the cellar
 brew cleanup > /dev/null 2>&1
 bot "All clean"
+
+
+bot "brew post-install tasks"
+ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
+sudo cp ./phpmyadmin.conf /private/etc/apache2/other/
+sudo apachectl restart
+ok
 
 
 ###############################################################################
@@ -249,6 +263,9 @@ bot "Address Book, Dashboard, iCal, TextEdit, and Disk Utility"
 running "Use plain text mode for new TextEdit documents"
 defaults write com.apple.TextEdit RichText -int 0;ok
 
+###############################################################################
+bot "Custom settings"
+###############################################################################
 
 # https://github.com/kitchenplan/chef-osxdefaults/blob/master/recipes/disable_resume_system-wide.rb
 # https://github.com/mathiasbynens/dotfiles/blob/master/.osx
@@ -289,7 +306,7 @@ ok
 #http://stackoverflow.com/questions/16800696/how-install-crx-chrome-extension-via-command-line
 # TODO
 
-
+# thanks to Orangenhain at Stack Overflow
 # http://apple.stackexchange.com/questions/13598/updating-modifier-key-mappings-through-defaults-command-tool
 # http://hints.macworld.com/article.php?story=20060825072451882
 #It's important for the defaults command to use the correct "keyboard ID" in the key, it seems to be: com.apple.keyboard.modifiermapping.$VendorID-$ProductID-0
