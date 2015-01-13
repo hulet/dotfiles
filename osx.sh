@@ -69,10 +69,16 @@ require_brew hexedit
 require_brew htop
 require_brew iftop
 require_brew mysql
+require_brew php54
+require_brew php54-ioncubeloader
+require_brew php54-mcrypt
+require_brew php54-xdebug
 require_brew phpmyadmin
+require_brew phpunit
 require_brew rename
 require_brew siege
 require_brew unrar
+require_brew vim
 require_brew wget
 
 
