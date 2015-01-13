@@ -22,6 +22,8 @@
 [core]
     excludesfile = ~/.gitignore
     autocrlf = input
+    # http://stackoverflow.com/a/18781512/51928
+    pager = less -S
 [diff]
     tool = vimdiff
 [push]
