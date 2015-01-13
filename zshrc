@@ -148,6 +148,7 @@ alias dk='docker'
 alias gitversion='git rev-parse --verify HEAD'
 alias sag='sudo apachectl graceful'
 alias hosts='sudo vi /etc/hosts'
+alias ftraceroute='traceroute -q 1 -w 1'
 
 alias dh='ssh hulet@ideaharbor.org'
 alias db='ssh b192161@hanjin.dreamhost.com'
