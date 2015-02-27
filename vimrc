@@ -156,6 +156,9 @@ autocmd InsertLeave * if pumvisible() == 0 && bufname("%") != "[Command Line]"|p
 inoremap <Nul> <C-x><C-o>
 
 " https://github.com/tpope/vim-pathogen
-call pathogen#infect()
+" http://stackoverflow.com/questions/18576651/check-whether-pathogen-is-installed-in-vimrc
+if filereadable(expand("~/.vim/autoload/pathogen.vim"))
+    execute pathogen#infect()
+endif
 
 
