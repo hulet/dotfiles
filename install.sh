@@ -71,6 +71,13 @@ case $OSTYPE in
         ./osx.sh
         ;;
     linux*)
+        if [[ ! -z $(which yum) ]]; then
+            bot "yum found"
+        elif [[ ! -z $(which apt-get) ]]; then
+            ./linux-apt.sh
+        else
+            echo -en 'unknown package manager\t'; error
+        fi
         ;;
 esac
 
