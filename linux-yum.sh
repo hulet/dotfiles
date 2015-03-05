@@ -19,3 +19,4 @@ bot "OK, let's roll..."
 bot "installing packages"
 sudo yum install -y \
     zsh \
+    screen \
