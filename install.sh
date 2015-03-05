@@ -72,7 +72,7 @@ case $OSTYPE in
         ;;
     linux*)
         if [[ ! -z $(which yum) ]]; then
-            bot "yum found"
+            ./linux-yum.sh
         elif [[ ! -z $(which apt-get) ]]; then
             ./linux-apt.sh
         else
