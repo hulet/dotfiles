@@ -23,7 +23,7 @@ running "checking homebrew install"
 brew_bin=$(which brew) 2>&1 > /dev/null
 if [[ $? != 0 ]]; then
     action "installing homebrew"
-    ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     if [[ $? != 0 ]]; then
         error "unable to install homebrew, script $0 abort!"
         exit -1
@@ -64,7 +64,7 @@ require_brew dos2unix
 require_brew elinks
 require_brew git
 require_brew gnuplot
-require_brew grep --with-default-names
+#require_brew grep --with-default-names
 require_brew hexedit
 require_brew htop
 require_brew iftop
@@ -91,9 +91,9 @@ brew tap caskroom/versions > /dev/null 2>&1
 require_cask audacity
 require_cask chromecast
 require_cask disk-inventory-x
+require_cask firefox
 require_cask gimp
-#require_cask google-chrome
-#require_cask firefox
+require_cask google-chrome
 require_cask handbrake
 require_cask libreoffice
 require_cask lighttable
