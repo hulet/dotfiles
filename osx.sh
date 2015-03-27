@@ -64,11 +64,12 @@ require_brew dos2unix
 require_brew elinks
 require_brew git
 require_brew gnuplot
-#require_brew grep --with-default-names
+require_brew grep --with-default-names
 require_brew hexedit
 require_brew htop
 require_brew iftop
 require_brew mysql
+require_brew npm
 require_brew php54
 require_brew php54-ioncubeloader
 require_brew php54-mcrypt
@@ -78,7 +79,7 @@ require_brew phpunit
 require_brew rename
 require_brew siege
 require_brew unrar
-require_brew vim
+require_brew vim --override-system-vi
 require_brew wget
 
 
@@ -92,6 +93,7 @@ require_cask audacity
 require_cask chromecast
 require_cask disk-inventory-x
 require_cask firefox
+require_cask filezilla
 require_cask gimp
 require_cask google-chrome
 require_cask handbrake
@@ -171,10 +173,21 @@ defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false;ok
 bot "Trackpad, mouse, keyboard, Bluetooth accessories, and input"
 ###############################################################################
 
-running "Trackpad: enable tap to click for this user and for the login screen"
+running "Enable 'Tap to click'"
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
-defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1;ok
+ok
+
+running "Enable 'Seconday click' (click or tap with two fingers)"
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
+defaults write com.apple.AppleMultitouchTrackpad TrackpadRightClick -bool true
+defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
+ok
+
+running "Disable 'Swipe between pages'"
+defaults write NSGlobalDomain AppleEnableSwipeNavigateWithScrolls -int 0;ok
 
 running "Disable “natural” (Lion-style) scrolling"
 defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false;ok
@@ -263,6 +276,74 @@ defaults write com.apple.dock wvous-bl-corner -int 2
 defaults write com.apple.dock wvous-bl-modifier -int 0;ok
 
 ###############################################################################
+# Spotlight                                                                   #
+###############################################################################
+
+running "Change indexing order and disable some search results"
+# Change indexing order and disable some search results
+# Yosemite-specific search results (remove them if your are using OS X 10.9 or older):
+#   MENU_DEFINITION
+#   MENU_CONVERSION
+#   MENU_EXPRESSION
+#   MENU_SPOTLIGHT_SUGGESTIONS (send search queries to Apple)
+#   MENU_WEBSEARCH             (send search queries to Apple)
+#   MENU_OTHER
+defaults write com.apple.spotlight orderedItems -array \
+    '{"enabled" = 1;"name" = "APPLICATIONS";}' \
+    '{"enabled" = 1;"name" = "SYSTEM_PREFS";}' \
+    '{"enabled" = 1;"name" = "DIRECTORIES";}' \
+    '{"enabled" = 1;"name" = "PDF";}' \
+    '{"enabled" = 1;"name" = "FONTS";}' \
+    '{"enabled" = 1;"name" = "DOCUMENTS";}' \
+    '{"enabled" = 0;"name" = "MESSAGES";}' \
+    '{"enabled" = 0;"name" = "CONTACT";}' \
+    '{"enabled" = 0;"name" = "EVENT_TODO";}' \
+    '{"enabled" = 0;"name" = "IMAGES";}' \
+    '{"enabled" = 0;"name" = "BOOKMARKS";}' \
+    '{"enabled" = 0;"name" = "MUSIC";}' \
+    '{"enabled" = 0;"name" = "MOVIES";}' \
+    '{"enabled" = 0;"name" = "PRESENTATIONS";}' \
+    '{"enabled" = 0;"name" = "SPREADSHEETS";}' \
+    '{"enabled" = 0;"name" = "SOURCE";}' \
+    '{"enabled" = 0;"name" = "MENU_DEFINITION";}' \
+    '{"enabled" = 0;"name" = "MENU_OTHER";}' \
+    '{"enabled" = 1;"name" = "MENU_CONVERSION";}' \
+    '{"enabled" = 1;"name" = "MENU_EXPRESSION";}' \
+    '{"enabled" = 0;"name" = "MENU_WEBSEARCH";}' \
+    '{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
+# Load new settings before rebuilding the index
+killall mds > /dev/null 2>&1
+# Make sure indexing is enabled for the main volume
+sudo mdutil -i on / > /dev/null
+# Rebuild the index from scratch
+sudo mdutil -E / > /dev/null
+ok
+
+
+###############################################################################
+bot "Power Management"
+###############################################################################
+
+running "Don't dim the screen"
+sudo pmset -a halfdim 0;ok
+
+running "Disable Power Nap while on battery power"
+sudo pmset -b darkwakes 0;ok
+
+running "Prevent computer from sleeping automatically when the display is off"
+sudo pmset -c sleep 0;ok
+
+###############################################################################
+bot "Time Machine"
+###############################################################################
+
+running "Prevent Time Machine from prompting to use new hard drives as backup volume"
+defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true;ok
+
+running "Disable local Time Machine snapshots"
+sudo tmutil disablelocal;ok
+
+###############################################################################
 bot "Address Book, Dashboard, iCal, TextEdit, and Disk Utility"
 ###############################################################################
 
@@ -304,6 +385,10 @@ defaults write NSGlobalDomain com.apple.trackpad.scaling -float 1;ok
 # http://secrets.blacktree.com/?showapp=.GlobalPreferences
 running "Don't play feedback when volume is changed"
 defaults write NSGlobalDomain com.apple.sound.beep.feedback -bool false;ok
+
+running "Don't ask to enable auto dictation when using function key"
+defaults write com.apple.HIToolbox AppleDictationAutoEnable -bool false;ok
+
 
 # https://github.com/ptb/Mac-OS-X-Lion-Setup/blob/master/setup.sh
 ### Automatically reduce brightness before display goes to sleep

@@ -200,6 +200,7 @@ alias ttr='touch tmp/restart.txt'  # for Passenger
      PATH=${PATH}:~/bin/android-sdk-macosx/tools:~/bin/android-sdk-macosx/platform-tools
 
      #export PYTHONHOME='/usr/local/Python/2.7/site-packages/'
+     alias lk="open -a /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
      ;;
 
      Linux)
