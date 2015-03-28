@@ -1,0 +1,16 @@
+.DS_Store
+/wp-config.php
+/wp-content/cache/*
+/wp-content/w3tc/dbcache/*
+/wp-content/w3tc/pgcache/*
+/wp-content/w3tc/min/*
+/wp-content/w3tc/
+/wp-content/backup-db/*
+/wp-content/w3-total-cache-config.php
+/wp-content/wptouch-data/
+/wp-content/w3-total-cache-config.php
+wp-content/w3-total-cache-config-preview.php
+apc_clear.php
+google-news-sitemap.xml
+*.swp
+*.py[cod]

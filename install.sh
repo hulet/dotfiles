@@ -57,6 +57,7 @@ bot "creating symlinks for project dotfiles..."
 
 symlinkifne bashrc
 symlinkifne gitconfig
+symlinkifne gitignore
 symlinkifne grep-exclude
 symlinkifne screenrc
 symlinkifne vim
