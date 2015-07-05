@@ -17,6 +17,6 @@ bot "OK, let's roll..."
 
 
 bot "installing packages"
-apt-get install -y \
+sudo apt-get install -y \
     exuberant-ctags \
     zsh \
