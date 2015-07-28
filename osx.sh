@@ -15,6 +15,10 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 bot "OK, let's roll..."
 
+
+# if perl modules are needed
+# sudo PERL_MM_USE_DEFAULT=1 perl -MCPAN -e 'install Git' 
+
 #####
 # install homebrew
 #####
@@ -64,7 +68,7 @@ require_brew dos2unix
 require_brew elinks
 require_brew git
 require_brew gnuplot
-require_brew grep --with-default-names
+#require_brew grep --with-default-names
 require_brew hexedit
 require_brew htop
 require_brew iftop
@@ -87,7 +91,7 @@ require_brew wget
 # Native Apps (via brew cask)                                                 #
 ###############################################################################
 bot "installing GUI tools via homebrew casks..."
-brew tap caskroom/versions > /dev/null 2>&1
+#brew tap caskroom/versions > /dev/null 2>&1
 
 require_cask audacity
 require_cask chromecast
@@ -102,7 +106,7 @@ require_cask lighttable
 require_cask macgdbp
 require_cask opera
 require_cask poedit
-require_cask remote-desktop-connection
+#require_cask remote-desktop-connection
 require_cask skype
 require_cask spectacle
 require_cask transmission
