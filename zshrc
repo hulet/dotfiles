@@ -116,12 +116,9 @@ alias uu='cd ../..'
 alias ..='cd ..'
 alias cddl='cd ~/Downloads/'
 alias cdd='cd ~/data/'
+alias cdg='cd ~/git/'
 alias cdt='cd /tmp/'
 alias cdvt='cd /var/tmp/'
-alias cdao='cd /sites/sites/aiaonline.org/'
-alias cda3='cd ~/svn/aia365/trunk/aia365.com/'
-alias cdtp='cd ~/svn/talentportal/web/branches/geekwork'
-alias cdgw='cd ~/git/geekwire'
 
 # safety first!
 alias rm='nocorrect rm -i'
@@ -151,7 +148,6 @@ alias hosts='sudo vi /etc/hosts'
 alias ftraceroute='traceroute -q 1 -w 1'
 
 alias dh='ssh hulet@ideaharbor.org'
-alias db='ssh b192161@hanjin.dreamhost.com'
 
 alias mcd='sudo mount -t auto /dev/cdrom /media/cdrom'
 alias ucd='sudo umount /media/cdrom'
@@ -159,7 +155,8 @@ alias musb='sudo mount -t auto -o uid=1000,noatime /dev/sda1 /media/usbdisk'
 alias mmusb='sudo mount -o rw,remount /media/usbdisk'  # remount as read-write
 alias uusb='sudo umount /media/usbdisk'
 alias ump3='sudo umount /media/SANSA\ M350'
-alias passgen='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g" | cut -c-12'
+#alias passgen='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g" | cut -c-12'
+alias passgen='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g" | grep -o ".\{11\}[2-9]" | head -1'
 alias passgen2='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g"'
 alias findsymlinks='find . -type l -exec ls -l {} \;'
 
@@ -173,6 +170,8 @@ alias ttr='touch tmp/restart.txt'  # for Passenger
 # wordpress
 #alias wpdb="mysql -u $(cat wp-config.php|grep -w DB_USER|cut -d\' -f 4) -p$(cat wp-config.php|grep -w DB_PASSWORD|cut -d\' -f 4) -h $(cat wp-config.php|grep -w DB_HOST|cut -d\' -f 4) -D $(cat wp-config.php|grep -w DB_NAME|cut -d\' -f 4)"
 
+alias myip='curl -w "\n" http://api.ipify.org'
+alias caly='cal `date +%Y`'
 
 # platform specific
  case `uname` in
@@ -187,6 +186,7 @@ alias ttr='touch tmp/restart.txt'  # for Passenger
      alias tailsql='tail -f /usr/local/var/mysql/sheeta.log'
      alias dockerinit='$(boot2docker shellinit)'
      alias unquarantine='xattr -d com.apple.quarantine'
+     alias dnscacheflush='sudo discoveryutil udnsflushcaches'
      PATH="/usr/local/sbin:/usr/local/bin:$PATH"  # for homebrew
      ## next line not needed after moving ~/.zprofile to ~/.zshenv to support screen
      #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
