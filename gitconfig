@@ -1,7 +1,3 @@
-[user]
-    # TODO: replace name and email by installation type
-    name = Steve Hulet
-    email = steve@freshconsulting.com
 [alias]
     co = checkout
     ci = commit
