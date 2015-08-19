@@ -1,4 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =2
-let g:netrw_dirhist_1='/private/tmp/ftpr/3'
-let g:netrw_dirhist_2='/Users/hulet/git/localscene/public/themes/admin/default/extensions/localscene/events/views/manage'
