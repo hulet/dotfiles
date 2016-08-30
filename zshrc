@@ -27,6 +27,7 @@ HISTSIZE=5000
 HISTFILE=~/.zsh_history
 SAVEHIST=2000
 setopt appendhistory
+setopt HIST_IGNORE_DUPS
 
 # PROMPT explination:
 # $=' needed for colors
@@ -139,8 +140,10 @@ alias svnaddmissing='svn status | grep "^\?" | sed -e "s/\?      //" | xargs svn
 alias m='make'
 alias py='python'
 alias vi='vim'
+alias fvi='vim -u NONE'
 alias s='svn'
 alias g='git'
+alias v='vagrant'
 alias dk='docker'
 alias gitversion='git rev-parse --verify HEAD'
 alias sag='sudo apachectl graceful'
@@ -157,7 +160,8 @@ alias uusb='sudo umount /media/usbdisk'
 alias ump3='sudo umount /media/SANSA\ M350'
 #alias passgen='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g" | cut -c-12'
 alias passgen='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g" | grep -o ".\{11\}[2-9]" | head -1'
-alias passgen2='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g"'
+alias passgen2='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g" | grep -o ".\{32\}" | head -1'
+alias passgen3='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g"'
 alias findsymlinks='find . -type l -exec ls -l {} \;'
 
 # rails
@@ -172,6 +176,7 @@ alias ttr='touch tmp/restart.txt'  # for Passenger
 
 alias myip='curl -w "\n" http://api.ipify.org'
 alias caly='cal `date +%Y`'
+alias recursivesortbydate='find . -type f -exec stat -lt "%Y-%m-%d" {} \+ | cut -d" " -f6- | sort -n'
 
 # platform specific
  case `uname` in
