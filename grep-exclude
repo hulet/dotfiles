@@ -48,3 +48,8 @@ date_php4_tz_identifiers.inc
 date_php4_tz_abbreviations_list.inc
 edit_area_full_with_plugins.js
 combined.js
+woocommerce/assets/css/woocommerce.css
+woocommerce/assets/css/woocommerce.scss
+admin.css
+ext-all.js
+ext-all-debug.js
