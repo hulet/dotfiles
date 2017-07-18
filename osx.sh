@@ -3,6 +3,12 @@
 ## with help from https://github.com/atomantic/dotfiles/blob/master/osx.sh
 ## and https://github.com/kitchenplan/chef-osxdefaults/tree/master/recipes
 
+
+## TODO:
+# disable location services: System Preferences -> Security & Privacy -> Privacy -> Enable Location Services
+# disable Handoff: System Preferences -> General -> Allow Handoff ...
+# disable: System Preferences -> Spotlight -> Allow Spotlight Suggestions ...
+
 # include my library helpers for colorized echo and require_brew, etc
 source ./lib.sh
 
@@ -59,7 +65,6 @@ ok
 bot "installing homebrew command-line tools"
 
 
-require_brew boot2docker
 # Install GNU core utilities (those that come with OS X are outdated)
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
 require_brew coreutils
@@ -67,18 +72,13 @@ require_brew docker
 require_brew dos2unix
 require_brew elinks
 require_brew git
-require_brew gnuplot
+#require_brew gnuplot
 #require_brew grep --with-default-names
 require_brew hexedit
-require_brew htop
+require_brew htop-osx
 require_brew iftop
 require_brew mysql
 require_brew npm
-require_brew php54
-require_brew php54-ioncubeloader
-require_brew php54-mcrypt
-require_brew php54-xdebug
-require_brew phpmyadmin
 require_brew phpunit
 require_brew rename
 require_brew siege
@@ -87,32 +87,34 @@ require_brew vim --override-system-vi
 require_brew wget
 
 
+# npm install --global gulp
+
 ###############################################################################
 # Native Apps (via brew cask)                                                 #
 ###############################################################################
 bot "installing GUI tools via homebrew casks..."
 #brew tap caskroom/versions > /dev/null 2>&1
 
-require_cask audacity
-require_cask chromecast
+#require_cask audacity
+#require_cask chromecast
 require_cask disk-inventory-x
 require_cask firefox
 require_cask filezilla
 require_cask gimp
 require_cask google-chrome
 require_cask handbrake
-require_cask libreoffice
-require_cask lighttable
+#require_cask libreoffice
+#require_cask lighttable
 require_cask macgdbp
-require_cask opera
-require_cask poedit
+#require_cask opera
+#require_cask poedit
 #require_cask remote-desktop-connection
 require_cask skype
 require_cask spectacle
 require_cask transmission
-#require_cask virtualbox
+require_cask vagrant
+require_cask virtualbox
 require_cask vlc
-require_cask vox
 
 
 bot "Alright, cleaning up homebrew cache..."
