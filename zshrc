@@ -179,43 +179,52 @@ alias caly='cal `date +%Y`'
 alias recursivesortbydate='find . -type f -exec stat -lt "%Y-%m-%d" {} \+ | cut -d" " -f6- | sort -n'
 
 # platform specific
- case `uname` in
-     Darwin)
-     export JAVA_HOME='/Library/Java/Home'
-     alias du1='du -hc -d 1'
-     alias du1s='du -c -d 1 | sort -nr'
-     #alias tal='tail -f /var/log/apache2/access_log'
-     alias tal='tail -f /usr/local/var/log/apache2/access_log'
-     alias te='open -a TextEdit'
-     #alias tel='tail -f /var/log/apache2/error_log | grep -v "File does not exist:"'
-     alias tel='tail -f /usr/local/var/log/apache2/error_log | grep -v "File does not exist:"'
-     alias vhosts='sudo vi /etc/apache2/extra/httpd-vhosts.conf'
-     alias tailsql='tail -f /usr/local/var/mysql/sheeta.log'
-     alias dockerinit='$(boot2docker shellinit)'
-     alias unquarantine='xattr -d com.apple.quarantine'
-     alias dnscacheflush='sudo discoveryutil udnsflushcaches'
-     PATH="/usr/local/sbin:/usr/local/bin:$PATH"  # for homebrew
-     ## next line not needed after moving ~/.zprofile to ~/.zshenv to support screen
-     #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
-     ##PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+case `uname` in
+    Darwin)
+    export JAVA_HOME='/Library/Java/Home'
+    alias du1='du -hc -d 1'
+    alias du1s='du -c -d 1 | sort -nr'
+    #alias tal='tail -f /var/log/apache2/access_log'
+    #alias tal='tail -f /usr/local/var/log/apache2/access_log'
+    alias tal='tail -f /usr/local/var/log/httpd/access_log'
+    #alias tel='tail -f /var/log/apache2/error_log | grep -v "File does not exist:"'
+    #alias tel='tail -f /usr/local/var/log/apache2/error_log | grep -v "File does not exist:"'
+    alias tel='tail -f /usr/local/var/log/httpd/error_log | grep -v "File does not exist:"'
+    alias te='open -a TextEdit'
+    alias vhosts='sudo vi /etc/apache2/extra/httpd-vhosts.conf'
+    alias tailsql='tail -f /usr/local/var/mysql/sheeta.log'
+    alias dockerinit='$(boot2docker shellinit)'
+    alias unquarantine='xattr -d com.apple.quarantine'
+    alias dnscacheflush='sudo discoveryutil udnsflushcaches'
+    PATH="/usr/local/sbin:/usr/local/bin:$PATH"  # for homebrew
+    ## next line not needed after moving ~/.zprofile to ~/.zshenv to support screen
+    #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
+    ##PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
-     # https://github.com/josegonzalez/homebrew-php
-     #export PATH="$(brew --prefix php53)/bin:$PATH"
-     export HOMEBREW_GITHUB_API_TOKEN='63915e73f5beca7ddafb305843fca4ebc77ccaf5'
+    # https://github.com/josegonzalez/homebrew-php
+    #export PATH="$(brew --prefix php53)/bin:$PATH"
+    export HOMEBREW_GITHUB_API_TOKEN='63915e73f5beca7ddafb305843fca4ebc77ccaf5'
 
-     # Android SDK
-     PATH=${PATH}:~/bin/android-sdk-macosx/tools:~/bin/android-sdk-macosx/platform-tools
+    # Android SDK
+    PATH=${PATH}:~/bin/android-sdk-macosx/tools:~/bin/android-sdk-macosx/platform-tools
 
-     #export PYTHONHOME='/usr/local/Python/2.7/site-packages/'
-     alias lk="open -a /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
-     ;;
+    # Fresh custom bins
+    PATH=${PATH}:/usr/local/fresh-public-scripts/bin
 
-     Linux)
-     alias du1='du -hc --max-depth 1'
-     alias du1s='du -c --max-depth 1 | sort -nr'
-     alias open='xdg-open'
-     ;;
- esac
+    PATH=/usr/local/opt/php-code-sniffer@2.9/bin:${PATH}
+
+    #export PYTHONHOME='/usr/local/Python/2.7/site-packages/'
+    alias py='python2'
+    alias python='python2'
+    alias lk="open -a /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
+    ;;
+
+    Linux)
+    alias du1='du -hc --max-depth 1'
+    alias du1s='du -c --max-depth 1 | sort -nr'
+    alias open='xdg-open'
+    ;;
+esac
 
 # local config overrides all
 if [[ -f $HOME/.zshrc.local ]]; then
