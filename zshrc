@@ -145,6 +145,7 @@ alias s='svn'
 alias g='git'
 alias v='vagrant'
 alias dk='docker'
+alias dc='docker-compose'
 alias gitversion='git rev-parse --verify HEAD'
 alias sag='sudo apachectl graceful'
 alias hosts='sudo vi /etc/hosts'
@@ -216,7 +217,7 @@ case `uname` in
     #export PYTHONHOME='/usr/local/Python/2.7/site-packages/'
     alias py='python2'
     alias python='python2'
-    alias lk="open -a /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
+    alias lk="open -a /System/Library/CoreServices/ScreenSaverEngine.app"
     ;;
 
     Linux)
