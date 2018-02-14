@@ -68,7 +68,7 @@ bot "installing homebrew command-line tools"
 # Install GNU core utilities (those that come with OS X are outdated)
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
 require_brew coreutils
-require_brew docker
+#require_brew docker
 require_brew dos2unix
 require_brew elinks
 require_brew git
@@ -77,9 +77,9 @@ require_brew git
 require_brew hexedit
 require_brew htop-osx
 require_brew iftop
-require_brew mysql
-require_brew npm
-require_brew phpunit
+#require_brew mysql
+#require_brew npm
+#require_brew phpunit
 require_brew rename
 require_brew siege
 require_brew unrar
@@ -102,7 +102,7 @@ require_cask firefox
 require_cask filezilla
 require_cask gimp
 require_cask google-chrome
-require_cask handbrake
+#require_cask handbrake
 #require_cask libreoffice
 #require_cask lighttable
 require_cask macgdbp
@@ -394,6 +394,13 @@ defaults write NSGlobalDomain com.apple.sound.beep.feedback -bool false;ok
 
 running "Don't ask to enable auto dictation when using function key"
 defaults write com.apple.HIToolbox AppleDictationAutoEnable -bool false;ok
+
+running "Don't ask to 'Try the new Safari' or set as default"
+defaults write com.apple.Safari DefaultBrowserDateOfLastPrompt -date '2080-01-01T00:00:00Z';ok
+defaults write com.apple.Safari DefaultBrowserPromptingState -int 2;ok
+defaults write com.apple.coreservices.uiagent CSUIHasSafariBeenLaunched -bool YES;ok
+defaults write com.apple.coreservices.uiagent CSUIRecommendSafariNextNotificationDate -date 2050-01-01T00:00:00Z;ok
+defaults write com.apple.coreservices.uiagent CSUILastOSVersionWhereSafariRecommendationWasMade -float 10.99;ok
 
 
 # https://github.com/ptb/Mac-OS-X-Lion-Setup/blob/master/setup.sh
