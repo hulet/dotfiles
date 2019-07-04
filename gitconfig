@@ -20,7 +20,13 @@
     autocrlf = input
     # http://stackoverflow.com/a/18781512/51928
     pager = less -S
+    filemode = false
 [diff]
     tool = vimdiff
 [push]
     default = simple
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
