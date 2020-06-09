@@ -73,7 +73,7 @@ require_brew dos2unix
 require_brew elinks
 require_brew git
 #require_brew gnuplot
-#require_brew grep --with-default-names
+require_brew grep
 require_brew hexedit
 require_brew htop-osx
 require_brew iftop
@@ -95,9 +95,12 @@ require_brew wget
 bot "installing GUI tools via homebrew casks..."
 #brew tap caskroom/versions > /dev/null 2>&1
 
+require_cask 1password
 #require_cask audacity
+require_cask bettertouchtool
 #require_cask chromecast
 require_cask disk-inventory-x
+require_cask dropbox
 require_cask firefox
 #require_cask filezilla
 require_cask gimp
@@ -115,6 +118,7 @@ require_cask spectacle
 require_cask vagrant
 require_cask virtualbox
 require_cask vlc
+require_cask zoomus
 
 
 bot "Alright, cleaning up homebrew cache..."
@@ -402,6 +406,9 @@ defaults write com.apple.coreservices.uiagent CSUIHasSafariBeenLaunched -bool YE
 defaults write com.apple.coreservices.uiagent CSUIRecommendSafariNextNotificationDate -date 2050-01-01T00:00:00Z;ok
 defaults write com.apple.coreservices.uiagent CSUILastOSVersionWhereSafariRecommendationWasMade -float 10.99;ok
 
+
+running "Show volume in menu bar"
+defaults write com.apple.systemuiserver menuExtras -array "/System/Library/CoreServices/Menu Extras/Volume.menu"
 
 # https://github.com/ptb/Mac-OS-X-Lion-Setup/blob/master/setup.sh
 ### Automatically reduce brightness before display goes to sleep
