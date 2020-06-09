@@ -83,7 +83,7 @@ require_brew iftop
 require_brew rename
 require_brew siege
 require_brew unrar
-require_brew vim --override-system-vi
+require_brew vim
 require_brew wget
 
 
@@ -99,19 +99,19 @@ bot "installing GUI tools via homebrew casks..."
 #require_cask chromecast
 require_cask disk-inventory-x
 require_cask firefox
-require_cask filezilla
+#require_cask filezilla
 require_cask gimp
 require_cask google-chrome
 #require_cask handbrake
 #require_cask libreoffice
 #require_cask lighttable
-require_cask macgdbp
+#require_cask macgdbp
 #require_cask opera
 #require_cask poedit
 #require_cask remote-desktop-connection
-require_cask skype
+#require_cask skype
 require_cask spectacle
-require_cask transmission
+#require_cask transmission
 require_cask vagrant
 require_cask virtualbox
 require_cask vlc
