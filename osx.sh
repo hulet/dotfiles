@@ -77,9 +77,10 @@ require_brew grep
 require_brew hexedit
 require_brew htop-osx
 require_brew iftop
-#require_brew mysql
+require_brew mysql
 #require_brew npm
 #require_brew phpunit
+require_brew phpmyadmin
 require_brew rename
 require_brew siege
 require_brew unrar
@@ -128,7 +129,7 @@ bot "All clean"
 
 
 bot "brew post-install tasks"
-ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
+brew services start mysql
 sudo cp ./phpmyadmin.conf /private/etc/apache2/other/
 sudo apachectl restart
 ok
@@ -409,6 +410,8 @@ defaults write com.apple.coreservices.uiagent CSUILastOSVersionWhereSafariRecomm
 
 running "Show volume in menu bar"
 defaults write com.apple.systemuiserver menuExtras -array "/System/Library/CoreServices/Menu Extras/Volume.menu"
+running "Show date in menu bar"
+defaults write com.apple.menuextra.clock DateFormat -string "EEE MMM d  h:mm a"
 
 # https://github.com/ptb/Mac-OS-X-Lion-Setup/blob/master/setup.sh
 ### Automatically reduce brightness before display goes to sleep
