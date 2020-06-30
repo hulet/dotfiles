@@ -33,7 +33,7 @@ running "checking homebrew install"
 brew_bin=$(which brew) 2>&1 > /dev/null
 if [[ $? != 0 ]]; then
     action "installing homebrew"
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     if [[ $? != 0 ]]; then
         error "unable to install homebrew, script $0 abort!"
         exit -1
@@ -41,23 +41,24 @@ if [[ $? != 0 ]]; then
 fi
 ok
 
-running "checking brew-cask install"
-output=$(brew tap | grep cask)
-if [[ $? != 0 ]]; then
-    action "installing brew-cask"
-    require_brew caskroom/cask/brew-cask
-fi
-ok
+#running "checking brew-cask install"
+#output=$(brew tap | grep cask)
+#if [[ $? != 0 ]]; then
+    #action "installing brew-cask"
+    #require_brew caskroom/cask/brew-cask
+#fi
+#ok
 
-running "setting up taps"
-brew tap homebrew/php > /dev/null 2>&1
-ok
+#running "setting up taps"
+#brew tap homebrew/php > /dev/null 2>&1
+#ok
 
 ###############################################################################
 #Install command-line tools using Homebrew                                    #
 ###############################################################################
 # Make sure we’re using the latest Homebrew
 running "updating homebrew"
+brew analytics off
 brew update
 ok
 
@@ -67,6 +68,7 @@ bot "installing homebrew command-line tools"
 
 # Install GNU core utilities (those that come with OS X are outdated)
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
+require_brew ansible
 require_brew coreutils
 #require_brew docker
 require_brew dos2unix
