@@ -33,7 +33,7 @@ running "checking homebrew install"
 brew_bin=$(which brew) 2>&1 > /dev/null
 if [[ $? != 0 ]]; then
     action "installing homebrew"
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     if [[ $? != 0 ]]; then
         error "unable to install homebrew, script $0 abort!"
         exit -1
@@ -41,23 +41,24 @@ if [[ $? != 0 ]]; then
 fi
 ok
 
-running "checking brew-cask install"
-output=$(brew tap | grep cask)
-if [[ $? != 0 ]]; then
-    action "installing brew-cask"
-    require_brew caskroom/cask/brew-cask
-fi
-ok
+#running "checking brew-cask install"
+#output=$(brew tap | grep cask)
+#if [[ $? != 0 ]]; then
+    #action "installing brew-cask"
+    #require_brew caskroom/cask/brew-cask
+#fi
+#ok
 
-running "setting up taps"
-brew tap homebrew/php > /dev/null 2>&1
-ok
+#running "setting up taps"
+#brew tap homebrew/php > /dev/null 2>&1
+#ok
 
 ###############################################################################
 #Install command-line tools using Homebrew                                    #
 ###############################################################################
 # Make sure we’re using the latest Homebrew
 running "updating homebrew"
+brew analytics off
 brew update
 ok
 
@@ -67,6 +68,7 @@ bot "installing homebrew command-line tools"
 
 # Install GNU core utilities (those that come with OS X are outdated)
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
+require_brew ansible
 require_brew coreutils
 #require_brew docker
 require_brew dos2unix
@@ -74,18 +76,19 @@ require_brew elinks
 require_brew git
 require_brew git-lfs
 #require_brew gnuplot
-#require_brew grep --with-default-names
+require_brew grep
 require_brew hexedit
 require_brew htop-osx
 require_brew iftop
 require_brew nmap
-#require_brew mysql
+require_brew mysql
 #require_brew npm
 #require_brew phpunit
+require_brew phpmyadmin
 require_brew rename
 require_brew siege
 require_brew unrar
-require_brew vim --override-system-vi
+require_brew vim
 require_brew wget
 
 
@@ -97,26 +100,30 @@ require_brew wget
 bot "installing GUI tools via homebrew casks..."
 #brew tap caskroom/versions > /dev/null 2>&1
 
+require_cask 1password
 #require_cask audacity
+require_cask bettertouchtool
 #require_cask chromecast
 require_cask disk-inventory-x
+require_cask dropbox
 require_cask firefox
-require_cask filezilla
+#require_cask filezilla
 require_cask gimp
 require_cask google-chrome
 #require_cask handbrake
 #require_cask libreoffice
 #require_cask lighttable
-require_cask macgdbp
+#require_cask macgdbp
 #require_cask opera
 #require_cask poedit
 #require_cask remote-desktop-connection
-require_cask skype
+#require_cask skype
 require_cask spectacle
-require_cask transmission
+#require_cask transmission
 require_cask vagrant
 require_cask virtualbox
 require_cask vlc
+require_cask zoomus
 
 
 bot "Alright, cleaning up homebrew cache..."
@@ -126,7 +133,7 @@ bot "All clean"
 
 
 bot "brew post-install tasks"
-ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
+brew services start mysql
 sudo cp ./phpmyadmin.conf /private/etc/apache2/other/
 sudo apachectl restart
 ok
@@ -407,6 +414,11 @@ defaults write com.apple.coreservices.uiagent CSUIHasSafariBeenLaunched -bool YE
 defaults write com.apple.coreservices.uiagent CSUIRecommendSafariNextNotificationDate -date 2050-01-01T00:00:00Z;ok
 defaults write com.apple.coreservices.uiagent CSUILastOSVersionWhereSafariRecommendationWasMade -float 10.99;ok
 
+
+running "Show volume in menu bar"
+defaults write com.apple.systemuiserver menuExtras -array "/System/Library/CoreServices/Menu Extras/Volume.menu"
+running "Show date in menu bar"
+defaults write com.apple.menuextra.clock DateFormat -string "EEE MMM d  h:mm a"
 
 # https://github.com/ptb/Mac-OS-X-Lion-Setup/blob/master/setup.sh
 ### Automatically reduce brightness before display goes to sleep

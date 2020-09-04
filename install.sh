@@ -83,4 +83,5 @@ case $OSTYPE in
 esac
 
 bot "Woot! All done."
+bot "You may need to reboot for some settings to take effect."
 

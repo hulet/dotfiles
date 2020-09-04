@@ -214,6 +214,9 @@ case `uname` in
 
     PATH=/usr/local/opt/php-code-sniffer@2.9/bin:${PATH}
 
+    PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"
+    PATH="/Users/hulet/Library/Python/2.7/bin:$PATH"
+
     #export PYTHONHOME='/usr/local/Python/2.7/site-packages/'
     alias py='python2'
     alias python='python2'
