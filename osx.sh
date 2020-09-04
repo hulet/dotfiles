@@ -72,11 +72,13 @@ require_brew coreutils
 require_brew dos2unix
 require_brew elinks
 require_brew git
+require_brew git-lfs
 #require_brew gnuplot
 #require_brew grep --with-default-names
 require_brew hexedit
 require_brew htop-osx
 require_brew iftop
+require_brew nmap
 #require_brew mysql
 #require_brew npm
 #require_brew phpunit
@@ -216,6 +218,9 @@ defaults write NSGlobalDomain KeyRepeat -int 2;ok
 
 running "Disable auto-correct"
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false;ok
+
+running "Disable auto period"
+defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false;ok
 
 ###############################################################################
 bot "Configuring the Screen"
