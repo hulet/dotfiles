@@ -179,6 +179,13 @@ alias myip='curl -w "\n" http://api.ipify.org'
 alias caly='cal `date +%Y`'
 alias recursivesortbydate='find . -type f -exec stat -lt "%Y-%m-%d" {} \+ | cut -d" " -f6- | sort -n'
 
+wk() {
+    echo `date` $@ >> ~/worklog.txt
+}
+
+source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+
 # platform specific
 case `uname` in
     Darwin)
@@ -198,13 +205,15 @@ case `uname` in
     alias unquarantine='xattr -d com.apple.quarantine'
     alias dnscacheflush='sudo discoveryutil udnsflushcaches'
     PATH="/usr/local/sbin:/usr/local/bin:$PATH"  # for homebrew
+    PATH="/usr/local/opt/grep/libexec/gnubin:$PATH" # for homebrew grep
+    PATH="/Users/hulet/Library/Python/3.7/bin:$PATH" # for aws cli
     ## next line not needed after moving ~/.zprofile to ~/.zshenv to support screen
     #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
     ##PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
     # https://github.com/josegonzalez/homebrew-php
     #export PATH="$(brew --prefix php53)/bin:$PATH"
-    export HOMEBREW_GITHUB_API_TOKEN='63915e73f5beca7ddafb305843fca4ebc77ccaf5'
+    export HOMEBREW_GITHUB_API_TOKEN='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'
 
     # Android SDK
     PATH=${PATH}:~/bin/android-sdk-macosx/tools:~/bin/android-sdk-macosx/platform-tools
