@@ -92,6 +92,14 @@ require_brew vim
 require_brew wget
 
 
+#### For Java:
+# brew install openjdk@11
+# sudo ln -sfn /usr/local/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-11.jdk
+#
+# add to startup file: 
+# export JAVA_HOME=`/usr/libexec/java_home`
+
+
 # npm install --global gulp
 
 ###############################################################################

@@ -107,3 +107,5 @@ fi
 
 
 #PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+function gam() { "/Users/hulet/bin/gam/gam" "$@" ; }

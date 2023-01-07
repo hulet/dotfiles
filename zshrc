@@ -143,6 +143,8 @@ alias vi='vim'
 alias fvi='vim -u NONE'
 alias s='svn'
 alias g='git'
+alias gcm='git clone --mirror '
+alias gpm='git push origin --mirror'
 alias v='vagrant'
 alias dk='docker'
 alias dc='docker-compose'
@@ -161,8 +163,9 @@ alias uusb='sudo umount /media/usbdisk'
 alias ump3='sudo umount /media/SANSA\ M350'
 #alias passgen='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g" | cut -c-12'
 alias passgen='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g" | grep -o ".\{11\}[2-9]" | head -1'
-alias passgen2='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g" | grep -o ".\{32\}" | head -1'
-alias passgen3='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g"'
+alias passgen2='head /dev/urandom | uuencode -m - | paste -s -d ";" - | sed -e "s/;//g" | cut -d " " -f3 | sed -e "s/[0oOiIlL1\+\\\/]//g" | grep -o ".\{10\}[0-9][2-7]" | head -1 | sed -e "s/[0-9]/_/"'
+alias passgen3='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g" | grep -o ".\{32\}" | head -1'
+alias passgen4='head /dev/urandom | uuencode -m - | sed -ne 2p | sed -e "s/[0oOiIlL1\+\\\/]//g"'
 alias findsymlinks='find . -type l -exec ls -l {} \;'
 
 # rails
@@ -206,7 +209,7 @@ case `uname` in
     alias dnscacheflush='sudo discoveryutil udnsflushcaches'
     PATH="/usr/local/sbin:/usr/local/bin:$PATH"  # for homebrew
     PATH="/usr/local/opt/grep/libexec/gnubin:$PATH" # for homebrew grep
-    PATH="/Users/hulet/Library/Python/3.7/bin:$PATH" # for aws cli
+    ##switching-to-python3##PATH="/Users/hulet/Library/Python/3.7/bin:$PATH" # for aws cli
     ## next line not needed after moving ~/.zprofile to ~/.zshenv to support screen
     #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
     ##PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
@@ -224,11 +227,11 @@ case `uname` in
     PATH=/usr/local/opt/php-code-sniffer@2.9/bin:${PATH}
 
     PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"
-    PATH="/Users/hulet/Library/Python/2.7/bin:$PATH"
+    ##switching-to-python3##PATH="/Users/hulet/Library/Python/2.7/bin:$PATH"
 
     #export PYTHONHOME='/usr/local/Python/2.7/site-packages/'
-    alias py='python2'
-    alias python='python2'
+    ##switching-to-python3##alias py='python2'
+    ##switching-to-python3##alias python='python2'
     alias lk="open -a /System/Library/CoreServices/ScreenSaverEngine.app"
     ;;
 
@@ -244,4 +247,4 @@ if [[ -f $HOME/.zshrc.local ]]; then
     source $HOME/.zshrc.local
 fi
 
-
+function gam() { "/Users/hulet/bin/gam/gam" "$@" ; }
