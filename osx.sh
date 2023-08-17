@@ -72,7 +72,7 @@ require_brew ansible
 require_brew coreutils
 #require_brew docker
 require_brew dos2unix
-require_brew elinks
+require_brew felinks
 require_brew git
 require_brew git-lfs
 #require_brew gnuplot
@@ -87,7 +87,6 @@ require_brew mysql
 require_brew phpmyadmin
 require_brew rename
 require_brew siege
-require_brew unrar
 require_brew vim
 require_brew wget
 
@@ -108,30 +107,30 @@ require_brew wget
 bot "installing GUI tools via homebrew casks..."
 #brew tap caskroom/versions > /dev/null 2>&1
 
-require_cask 1password
-#require_cask audacity
-require_cask bettertouchtool
-#require_cask chromecast
-require_cask disk-inventory-x
-require_cask dropbox
-require_cask firefox
-#require_cask filezilla
-require_cask gimp
-require_cask google-chrome
-#require_cask handbrake
-#require_cask libreoffice
-#require_cask lighttable
-#require_cask macgdbp
-#require_cask opera
-#require_cask poedit
-#require_cask remote-desktop-connection
-#require_cask skype
-require_cask spectacle
-#require_cask transmission
-require_cask vagrant
-require_cask virtualbox
-require_cask vlc
-require_cask zoomus
+require_brew 1password
+#require_brew audacity
+require_brew bettertouchtool
+#require_brew chromecast
+require_brew disk-inventory-x
+require_brew dropbox
+require_brew firefox
+#require_brew filezilla
+require_brew google-chrome
+#require_brew handbrake
+require_brew krita
+#require_brew libreoffice
+#require_brew lighttable
+#require_brew macgdbp
+#require_brew opera
+#require_brew poedit
+#require_brew remote-desktop-connection
+#require_brew skype
+require_brew rectangle
+#require_brew transmission
+require_brew vagrant
+require_brew virtualbox
+require_brew vlc
+require_brew zoom
 
 
 bot "Alright, cleaning up homebrew cache..."
@@ -212,7 +211,7 @@ ok
 running "Disable 'Swipe between pages'"
 defaults write NSGlobalDomain AppleEnableSwipeNavigateWithScrolls -int 0;ok
 
-running "Disable “natural” (Lion-style) scrolling"
+running "Disable 'natural' (Lion-style) scrolling"
 defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false;ok
 
 running "Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs)"
