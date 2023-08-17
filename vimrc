@@ -156,6 +156,17 @@ autocmd InsertLeave * if pumvisible() == 0 && bufname("%") != "[Command Line]"|p
 " http://stackoverflow.com/questions/2269005/how-can-i-change-the-keybinding-used-to-autocomplete-in-vim
 inoremap <Nul> <C-x><C-o>
 
+
+" custom ALE rules
+" see https://github.com/dense-analysis/ale
+" Set this. Airline will handle the rest.
+let g:airline#extensions#ale#enabled = 1
+let g:ale_python_pyflakes_executable = 'pyflakes3'
+let g:ale_linters = {
+            \   'python': ['pyflakes'],
+            \}
+
+
 " https://github.com/tpope/vim-pathogen
 " http://stackoverflow.com/questions/18576651/check-whether-pathogen-is-installed-in-vimrc
 if filereadable(expand("~/.vim/autoload/pathogen.vim"))
