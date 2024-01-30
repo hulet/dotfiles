@@ -139,13 +139,13 @@ alias svnmissing='svn status | grep "^\?" | sed -e "s/\?      //"'
 alias svnaddmissing='svn status | grep "^\?" | sed -e "s/\?      //" | xargs svn add'
 alias m='make'
 alias py='python'
+alias python='python3'
 alias vi='vim'
 alias fvi='vim -u NONE'
 alias s='svn'
 alias g='git'
 alias gcm='git clone --mirror '
 alias gpm='git push origin --mirror'
-alias v='vagrant'
 alias dk='docker'
 alias dc='docker-compose'
 alias gitversion='git rev-parse --verify HEAD'
@@ -198,11 +198,7 @@ case `uname` in
     export JAVA_HOME='/Library/Java/Home'
     alias du1='du -hc -d 1'
     alias du1s='du -c -d 1 | sort -nr'
-    #alias tal='tail -f /var/log/apache2/access_log'
-    #alias tal='tail -f /usr/local/var/log/apache2/access_log'
     alias tal='tail -f /usr/local/var/log/httpd/access_log'
-    #alias tel='tail -f /var/log/apache2/error_log | grep -v "File does not exist:"'
-    #alias tel='tail -f /usr/local/var/log/apache2/error_log | grep -v "File does not exist:"'
     alias tel='tail -f /usr/local/var/log/httpd/error_log | grep -v "File does not exist:"'
     alias te='open -a TextEdit'
     alias vhosts='sudo vi /etc/apache2/extra/httpd-vhosts.conf'
@@ -212,7 +208,6 @@ case `uname` in
     alias dnscacheflush='sudo discoveryutil udnsflushcaches'
     PATH="/usr/local/sbin:/usr/local/bin:$PATH"  # for homebrew
     PATH="/usr/local/opt/grep/libexec/gnubin:$PATH" # for homebrew grep
-    ##switching-to-python3##PATH="/Users/hulet/Library/Python/3.7/bin:$PATH" # for aws cli
     ## next line not needed after moving ~/.zprofile to ~/.zshenv to support screen
     #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
     ##PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
@@ -228,14 +223,12 @@ case `uname` in
     PATH=${PATH}:/usr/local/fresh-public-scripts/bin
 
     PATH=/usr/local/opt/php-code-sniffer@2.9/bin:${PATH}
+    PATH=/Users/hulet/.gem/ruby/2.6.0/bin:${PATH}
 
-    PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"
-    ##switching-to-python3##PATH="/Users/hulet/Library/Python/2.7/bin:$PATH"
+    PATH=/usr/local/opt/grep/libexec/gnubin:${PATH}
 
-    #export PYTHONHOME='/usr/local/Python/2.7/site-packages/'
-    ##switching-to-python3##alias py='python2'
-    ##switching-to-python3##alias python='python2'
     alias lk="open -a /System/Library/CoreServices/ScreenSaverEngine.app"
+    alias gam="/Users/hulet/bin/gamadv-xtd3/gam"
     ;;
 
     Linux)
@@ -250,4 +243,10 @@ if [[ -f $HOME/.zshrc.local ]]; then
     source $HOME/.zshrc.local
 fi
 
-function gam() { "/Users/hulet/bin/gam/gam" "$@" ; }
+
+# Created by `pipx` on 2023-04-03 18:32:05
+export PATH="$PATH:/Users/hulet/Library/Python/3.11/bin"
+
+# Created by `pipx` on 2023-04-03 18:32:06
+export PATH="$PATH:/Users/hulet/.local/bin"
+
