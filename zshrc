@@ -206,8 +206,9 @@ case `uname` in
     alias dockerinit='$(boot2docker shellinit)'
     alias unquarantine='xattr -d com.apple.quarantine'
     alias dnscacheflush='sudo discoveryutil udnsflushcaches'
+    PATH="/opt/homebrew/bin:$PATH"  # for homebrew
     PATH="/usr/local/sbin:/usr/local/bin:$PATH"  # for homebrew
-    PATH="/usr/local/opt/grep/libexec/gnubin:$PATH" # for homebrew grep
+    PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH" # for homebrew grep
     ## next line not needed after moving ~/.zprofile to ~/.zshenv to support screen
     #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
     ##PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
