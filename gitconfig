@@ -23,6 +23,10 @@
     filemode = false
 [diff]
     tool = vimdiff
+[init]
+	defaultBranch = master
+[pull]
+    rebase = false
 [push]
     default = simple
 [filter "lfs"]
