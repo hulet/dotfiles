@@ -7,8 +7,13 @@
 ## TODO:
 # disable location services: System Preferences -> Security & Privacy -> Privacy -> Enable Location Services
 # disable Handoff: System Preferences -> General -> Allow Handoff ...
-# disable: System Preferences -> Spotlight -> Allow Spotlight Suggestions ...
+# customize Terminal settings (font size 18, disable Audible bell)
+#
+#
+# Set mouse shortcuts
+# System Settings -> Desktop & Dock -> Shortcuts... -> Mission Control Mouse Shortcut -> Mouse Button 5
 
+# 
 # include my library helpers for colorized echo and require_brew, etc
 source ./lib.sh
 
@@ -41,17 +46,6 @@ if [[ $? != 0 ]]; then
 fi
 ok
 
-#running "checking brew-cask install"
-#output=$(brew tap | grep cask)
-#if [[ $? != 0 ]]; then
-    #action "installing brew-cask"
-    #require_brew caskroom/cask/brew-cask
-#fi
-#ok
-
-#running "setting up taps"
-#brew tap homebrew/php > /dev/null 2>&1
-#ok
 
 ###############################################################################
 #Install command-line tools using Homebrew                                    #
@@ -130,7 +124,7 @@ require_brew rar
 require_brew rectangle
 require_brew transmission
 require_brew vagrant
-require_brew virtualbox
+#require_brew virtualbox
 require_brew visual-studio-code
 require_brew vlc
 require_brew wireshark
@@ -240,6 +234,10 @@ defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false;o
 running "Disable auto period"
 defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false;ok
 
+running "Set mouse speed"
+defaults write NSGlobalDomain com.apple.mouse.scaling 3;ok
+
+
 ###############################################################################
 bot "Configuring the Screen"
 ###############################################################################
@@ -318,28 +316,28 @@ running "Change indexing order and disable some search results"
 #   MENU_WEBSEARCH             (send search queries to Apple)
 #   MENU_OTHER
 defaults write com.apple.spotlight orderedItems -array \
-    '{"enabled" = 1;"name" = "APPLICATIONS";}' \
-    '{"enabled" = 1;"name" = "SYSTEM_PREFS";}' \
-    '{"enabled" = 1;"name" = "DIRECTORIES";}' \
-    '{"enabled" = 1;"name" = "PDF";}' \
-    '{"enabled" = 1;"name" = "FONTS";}' \
-    '{"enabled" = 1;"name" = "DOCUMENTS";}' \
-    '{"enabled" = 0;"name" = "MESSAGES";}' \
-    '{"enabled" = 0;"name" = "CONTACT";}' \
-    '{"enabled" = 0;"name" = "EVENT_TODO";}' \
-    '{"enabled" = 0;"name" = "IMAGES";}' \
-    '{"enabled" = 0;"name" = "BOOKMARKS";}' \
-    '{"enabled" = 0;"name" = "MUSIC";}' \
-    '{"enabled" = 0;"name" = "MOVIES";}' \
-    '{"enabled" = 0;"name" = "PRESENTATIONS";}' \
-    '{"enabled" = 0;"name" = "SPREADSHEETS";}' \
-    '{"enabled" = 0;"name" = "SOURCE";}' \
-    '{"enabled" = 0;"name" = "MENU_DEFINITION";}' \
-    '{"enabled" = 0;"name" = "MENU_OTHER";}' \
-    '{"enabled" = 1;"name" = "MENU_CONVERSION";}' \
-    '{"enabled" = 1;"name" = "MENU_EXPRESSION";}' \
-    '{"enabled" = 0;"name" = "MENU_WEBSEARCH";}' \
-    '{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
+    '{ enabled = 1; name = APPLICATIONS; },' \
+    '{ enabled = 1; name = "MENU_EXPRESSION"; },' \
+    '{ enabled = 0; name = CONTACT; },' \
+    '{ enabled = 1; name = "MENU_CONVERSION"; },' \
+    '{ enabled = 1; name = "MENU_DEFINITION"; },' \
+    '{ enabled = 1; name = DOCUMENTS; },' \
+    '{ enabled = 0; name = "EVENT_TODO"; },' \
+    '{ enabled = 1; name = DIRECTORIES; },' \
+    '{ enabled = 1; name = FONTS; },' \
+    '{ enabled = 0; name = IMAGES; },' \
+    '{ enabled = 0; name = MESSAGES; },' \
+    '{ enabled = 1; name = MOVIES; },' \
+    '{ enabled = 1; name = MUSIC; },' \
+    '{ enabled = 1; name = "MENU_OTHER"; },' \
+    '{ enabled = 1; name = PDF; },' \
+    '{ enabled = 0; name = PRESENTATIONS; },' \
+    '{ enabled = 0; name = "MENU_SPOTLIGHT_SUGGESTIONS"; },' \
+    '{ enabled = 0; name = SPREADSHEETS; },' \
+    '{ enabled = 1; name = "SYSTEM_PREFS"; },' \
+    '{ enabled = 1; name = TIPS; },' \
+    '{ enabled = 0; name = BOOKMARKS; }'
+
 # Load new settings before rebuilding the index
 killall mds > /dev/null 2>&1
 # Make sure indexing is enabled for the main volume
@@ -406,6 +404,9 @@ defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true;ok
 running "Add battery percentage in menubar"
 defaults write com.apple.menuextra.battery ShowPercent -string "YES";ok
 
+running "lower Alert volume"
+defaults write NSGlobalDomain com.apple.sound.beep.volume -float 0.50;ok
+
 # https://discussions.apple.com/thread/3157331?start=0&tstart=0
 # http://secrets.blacktree.com/?showapp=.GlobalPreferences
 running "Increasing tracking speed"
@@ -419,15 +420,19 @@ running "Don't ask to enable auto dictation when using function key"
 defaults write com.apple.HIToolbox AppleDictationAutoEnable -bool false;ok
 
 running "Don't ask to 'Try the new Safari' or set as default"
-defaults write com.apple.Safari DefaultBrowserDateOfLastPrompt -date '2080-01-01T00:00:00Z';ok
-defaults write com.apple.Safari DefaultBrowserPromptingState -int 2;ok
+#defaults write com.apple.Safari DefaultBrowserDateOfLastPrompt -date '2080-01-01T00:00:00Z';ok
+#defaults write com.apple.Safari DefaultBrowserPromptingState -int 2;ok
 defaults write com.apple.coreservices.uiagent CSUIHasSafariBeenLaunched -bool YES;ok
 defaults write com.apple.coreservices.uiagent CSUIRecommendSafariNextNotificationDate -date 2050-01-01T00:00:00Z;ok
 defaults write com.apple.coreservices.uiagent CSUILastOSVersionWhereSafariRecommendationWasMade -float 10.99;ok
 
+running "Don't autoplay App Store videos"
+defaults write com.apple.AppStore AutoPlayVideoSetting -bool false;ok
+defaults write com.apple.AppStore UserSetAutoPlayVideoSetting -bool true;ok
 
-running "Show volume in menu bar"
-defaults write com.apple.systemuiserver menuExtras -array "/System/Library/CoreServices/Menu Extras/Volume.menu"
+#running "Show volume in menu bar"
+# TODO: not working; System Settings -> Control Center -> Sound -> Always Show in Menu Bar
+#defaults write com.apple.systemuiserver menuExtras -array "/System/Library/CoreServices/Menu Extras/Volume.menu"
 running "Show date in menu bar"
 defaults write com.apple.menuextra.clock DateFormat -string "EEE MMM d  h:mm a"
 
@@ -436,56 +441,18 @@ defaults write com.apple.menuextra.clock DateFormat -string "EEE MMM d  h:mm a"
 #/usr/bin/sudo /usr/bin/pmset -b halfdim 0
 
 # https://github.com/ptb/Mac-OS-X-Lion-Setup/blob/master/setup.sh
-running "Setting up Spectacle"
-osascript -e 'tell application "System Events" to make new login item at end of login items with properties { path: "/Applications/Spectacle.app" }' > /dev/null 2>&1
+running "Setting up Rectangle"
+osascript -e 'tell application "System Events" to make new login item at end of login items with properties { path: "/Applications/Rectangle.app" }' > /dev/null 2>&1
 ok
 
 # add Google Chrome extensions
 #http://stackoverflow.com/questions/16800696/how-install-crx-chrome-extension-via-command-line
 # TODO
 
-# thanks to Orangenhain at Stack Overflow
-# http://apple.stackexchange.com/questions/13598/updating-modifier-key-mappings-through-defaults-command-tool
-# http://hints.macworld.com/article.php?story=20060825072451882
-#It's important for the defaults command to use the correct "keyboard ID" in the key, it seems to be: com.apple.keyboard.modifiermapping.$VendorID-$ProductID-0
-#
-#For example the internal keyboard for my MacBook Air uses: com.apple.keyboard.modifiermapping.1452-579-0, while the external keyboard on my iMac uses com.apple.keyboard.modifiermapping.1118-219-0
-#
-#How to get the correct "keyboard ID"? On the command line you can use:
-#
-#ioreg -p IOUSB -c IOUSBDevice | grep -e class -e idVendor -e idProduct
-#to get a list of your USB devices with the relevant parameters:
-#
-#[...]
-#+-o Natural® Ergonomic Keyboard 4000@fa140000  <class IOUSBDevice, id 0x100000452, registered, matched, active, busy 0 (115 ms), retain 12>
-#"idProduct" = 219
-#"idVendor" = 1118
-#My guess is that the third parameter (the "-0" part) is a "counter", in case you have more than one keyboard of the same type.
-#
-#So, to switch off the CapsLock key on my external keyboard I can now use:
-#
-#defaults -currentHost write -g com.apple.keyboard.modifiermapping.1118-219-0 -array-add '<dict><key>HIDKeyboardModifierMappingDst</key><integer>-1</integer><key>HIDKeyboardModifierMappingSrc</key><integer>0</integer></dict>'
-#And, for completeness' sake, here's a list of possible key codes to use (from Mac OS X Hints):
-#
-#None — –1
-#Caps Lock — 0
-#Shift (Left) — 1
-#Control (Left) — 2
-#Option (Left) — 3
-#Command (Left) — 4
-#Keypad 0 — 5
-#Help — 6
-#Shift (Right) — 9
-#Control (Right) — 10
-#Option (Right) — 11
-#Command (Right) — 12
-#
+# thanks to https://stackoverflow.com/a/46460200
+# and https://developer.apple.com/library/archive/technotes/tn2450/_index.html#//apple_ref/doc/uid/DTS40017618-CH1-KEY_TABLE_USAGES
 running "set caps lock to control"
-VENDOR=`ioreg -p IOUSB -c IOUSBDevice | grep -i "apple internal" -A 18 | grep idVendor | cut -d'=' -f2 | tr -d ' '`
-PRODUCT=`ioreg -p IOUSB -c IOUSBDevice | grep -i "apple internal" -A 18 | grep idProduct | cut -d'=' -f2 | tr -d ' '`
-defaults -currentHost write -g com.apple.keyboard.modifiermapping.$VENDOR-$PRODUCT-0 -array-add '<dict><key>HIDKeyboardModifierMappingDst</key><integer>2</integer><key>HIDKeyboardModifierMappingSrc</key><integer>0</integer></dict>'
+hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}'
 ok
-
-
 
 
