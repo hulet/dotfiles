@@ -33,7 +33,7 @@ running "checking homebrew install"
 brew_bin=$(which brew) 2>&1 > /dev/null
 if [[ $? != 0 ]]; then
     action "installing homebrew"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     if [[ $? != 0 ]]; then
         error "unable to install homebrew, script $0 abort!"
         exit -1
@@ -70,25 +70,24 @@ bot "installing homebrew command-line tools"
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
 require_brew ansible
 require_brew coreutils
-#require_brew docker
+require_brew docker
 require_brew dos2unix
-require_brew felinks
 require_brew git
 require_brew git-lfs
-#require_brew gnuplot
 require_brew grep
 require_brew hexedit
-require_brew htop-osx
+require_brew htop
 require_brew iftop
 require_brew nmap
-require_brew mysql
+#require_brew mysql
 #require_brew npm
 #require_brew phpunit
-require_brew phpmyadmin
+#require_brew phpmyadmin
 require_brew rename
 require_brew siege
 require_brew vim
 require_brew wget
+require_brew yt-dlp
 
 
 #### For Java:
@@ -109,7 +108,7 @@ bot "installing GUI tools via homebrew casks..."
 
 require_brew 1password
 #require_brew audacity
-require_brew bettertouchtool
+#require_brew bettertouchtool
 #require_brew chromecast
 require_brew disk-inventory-x
 require_brew dropbox
@@ -121,15 +120,20 @@ require_brew krita
 #require_brew libreoffice
 #require_brew lighttable
 #require_brew macgdbp
+require_brew netspot
 #require_brew opera
 #require_brew poedit
+require_brew prusaslicer
+require_brew qfinder-pro
 #require_brew remote-desktop-connection
-#require_brew skype
+require_brew rar
 require_brew rectangle
-#require_brew transmission
+require_brew transmission
 require_brew vagrant
 require_brew virtualbox
+require_brew visual-studio-code
 require_brew vlc
+require_brew wireshark
 require_brew zoom
 
 
@@ -141,7 +145,7 @@ bot "All clean"
 
 bot "brew post-install tasks"
 brew services start mysql
-sudo cp ./phpmyadmin.conf /private/etc/apache2/other/
+#sudo cp ./phpmyadmin.conf /private/etc/apache2/other/
 sudo apachectl restart
 ok
 
