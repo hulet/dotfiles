@@ -228,8 +228,10 @@ defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false;ok
 running "Set a respectably fast keyboard repeat rate"
 defaults write NSGlobalDomain KeyRepeat -int 2;ok
 
-running "Disable auto-correct"
+running "Disable auto-correct and related"
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false;ok
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false;ok
+defaults write NSGlobalDomain NSAutomaticInlinePredictionEnabled -bool false;ok
 
 running "Disable auto period"
 defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false;ok
