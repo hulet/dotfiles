@@ -103,6 +103,7 @@ bot "installing GUI tools via homebrew casks..."
 require_brew 1password
 #require_brew audacity
 #require_brew bettertouchtool
+require_brew brave-browser
 #require_brew chromecast
 require_brew disk-inventory-x
 require_brew dropbox
@@ -110,7 +111,7 @@ require_brew firefox
 #require_brew filezilla
 require_brew google-chrome
 #require_brew handbrake
-require_brew krita
+#require_brew krita
 #require_brew libreoffice
 #require_brew lighttable
 #require_brew macgdbp
@@ -118,18 +119,18 @@ require_brew netspot
 #require_brew opera
 #require_brew poedit
 require_brew prusaslicer
-require_brew qfinder-pro
+#require_brew qfinder-pro
 #require_brew remote-desktop-connection
 require_brew rar
 require_brew rectangle
-require_brew transmission
 require_brew vagrant
 #require_brew virtualbox
 require_brew visual-studio-code
 require_brew vlc
 require_brew wireshark
-require_brew zoom
+#require_brew zoom
 
+require_cask transmission
 
 bot "Alright, cleaning up homebrew cache..."
 # Remove outdated versions from the cellar
@@ -138,9 +139,9 @@ bot "All clean"
 
 
 bot "brew post-install tasks"
-brew services start mysql
+#brew services start mysql
 #sudo cp ./phpmyadmin.conf /private/etc/apache2/other/
-sudo apachectl restart
+#sudo apachectl restart
 ok
 
 
