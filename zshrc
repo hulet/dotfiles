@@ -207,6 +207,7 @@ case `uname` in
     alias unquarantine='xattr -d com.apple.quarantine'
     alias dnscacheflush='sudo discoveryutil udnsflushcaches'
     PATH="/opt/homebrew/bin:$PATH"  # for homebrew
+    PATH="/opt/homebrew/sbin:$PATH"  # for homebrew
     PATH="/usr/local/sbin:/usr/local/bin:$PATH"  # for homebrew
     PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH" # for homebrew grep
     ## next line not needed after moving ~/.zprofile to ~/.zshenv to support screen
