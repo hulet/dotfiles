@@ -127,10 +127,10 @@ require_brew vagrant
 #require_brew virtualbox
 require_brew visual-studio-code
 require_brew vlc
-require_brew wireshark
 #require_brew zoom
 
 require_cask transmission
+require_cask wireshark
 
 bot "Alright, cleaning up homebrew cache..."
 # Remove outdated versions from the cellar
