@@ -66,6 +66,7 @@ require_brew ansible
 require_brew coreutils
 require_brew docker
 require_brew dos2unix
+require_brew exiftool
 require_brew git
 require_brew git-lfs
 require_brew grep
