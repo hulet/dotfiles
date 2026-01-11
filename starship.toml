@@ -1,3 +1,9 @@
+# Prerequisites
+# A Nerd Font installed and enabled in your terminal.
+#
+# test with:
+# echo -e "\ue795  \ue73c  \uf1d6  \uf126  \uf489"
+
 format = """
 $all\
 $fill\
