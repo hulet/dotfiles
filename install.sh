@@ -60,8 +60,10 @@ symlinkifne gitconfig
 symlinkifne gitignore
 symlinkifne grep-exclude
 symlinkifne screenrc
+symlinkifne starship.toml
 symlinkifne vim
 symlinkifne vimrc
+symlinkifne zimrc
 symlinkifne zshrc
 
 # cleanup

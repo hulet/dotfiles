@@ -12,6 +12,7 @@ bindkey '^ ' autosuggest-accept
 # --- ENVIRONMENT VARIABLES ---
 export EDITOR="vim" # programs will use this by default if you need to edit something
 export VISUAL="vim" # some programs use this instead of EDITOR
+export STARSHIP_CONFIG=~/.starship.toml
 
 export PATH="$PATH:$HOME/bin:$HOME/svn/scripts"
 
@@ -143,12 +144,16 @@ case `uname` in
     alias du1='du -hc --max-depth 1'
     alias du1s='du -c --max-depth 1 | sort -nr'
     alias open='xdg-open'
+    if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    fi
     ;;
 
 esac
 
 
 # --- Zim Framework ---
+# assumes zimfw is installed via Homebrew on systems where Homebrew is used
 ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim
 # Install missing modules and update ${ZIM_HOME}/init.zsh if missing or outdated.
 if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZIM_CONFIG_FILE:-${ZDOTDIR:-${HOME}}/.zimrc} ]]; then
