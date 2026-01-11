@@ -1,0 +1,46 @@
+format = """
+$all\
+$fill\
+$directory\
+$time\
+$line_break\
+$character"""
+#$localip\
+#$git_branch\
+#$git_status\
+
+[cmd_duration]
+format = '[$duration]($style) '
+min_time = 0
+min_time_to_notify = 300000
+show_notifications = true
+
+[directory]
+style = "red"
+truncate_to_repo = false 
+truncation_length = 8
+truncation_symbol = '…/'
+#before_repo_root_style = "bold blue"
+#repo_root_style = "bold yellow"
+
+[fill]
+symbol = " "
+
+[hostname]
+format = '[$ssh_symbol$hostname]($style) '
+ssh_only = false
+style = "bright-blue"
+
+[python]
+symbol = " "
+
+[time]
+disabled = false
+format = '[\[$time\]]($style) '
+style = "blue"
+
+[username]
+format = '[$user@]($style)'
+show_always = true
+style_root = "bold green"
+style_user = "bright-green"
