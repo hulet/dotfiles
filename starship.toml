@@ -16,8 +16,8 @@ $character"""
 #$git_status\
 
 [cmd_duration]
-format = '[$duration]($style) '
-min_time = 0
+#format = '[$duration]($style) '
+#min_time = 0
 min_time_to_notify = 300000
 show_notifications = true
 
