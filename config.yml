@@ -1,0 +1,15 @@
+# ~/.wp-cli/config.yml
+require:
+      - /Users/hulet/git/wp-vulnerability-scanner/wp-vulnerability-scanner.php
+        #- /Users/hulet/git/wpcli-db-sanitize/sanitize-db.php
+        #- /Users/hulet/git/wpcli-sync/sync.php
+# set defaults
+core config:
+    dbuser: root
+    dbpass: fresh
+    dbname: pipelines
+core install:
+    url: example.com 
+    title: Pipelines Test Site
+    admin_user: admin 
+    admin_email: admin@example.com
