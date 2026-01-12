@@ -20,15 +20,24 @@
     pager = less -S
     filemode = false
 [diff]
+    algorithm = histogram
     tool = vimdiff
 [init]
 	defaultBranch = main
+[merge]
+    # Shows the common ancestor in conflict markers (crucial for context)
+    conflictstyle = zdiff3
 [pull]
-    rebase = false
+	rebase = true
 [push]
+    autoSetupRemote = true
     default = simple
+[rebase]
+	autoStash = true
 [filter "lfs"]
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
+[include]
+    path = ~/.gitconfig.local
