@@ -5,6 +5,9 @@
 # disable zsh command so we can use r programming language
 disable r
 
+# vi bindings, per https://github.com/zimfw/input
+bindkey -v
+
 # accept suggestions with Control + Space
 bindkey '^ ' autosuggest-accept
 
