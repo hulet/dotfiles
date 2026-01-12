@@ -13,8 +13,6 @@
     #wipe = "!git reset --hard;git clean -fd"
 [color]
     ui = auto
-[credential]
-    helper = osxkeychain
 [core]
     excludesfile = ~/.gitignore
     autocrlf = input
