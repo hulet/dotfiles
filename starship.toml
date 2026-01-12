@@ -5,13 +5,9 @@
 # echo -e "\ue795  \ue73c  \uf1d6  \uf126  \uf489"
 
 format = """
-$all\
-$line_break\
-$fill\
-$directory\
-$time\
-$line_break\
-$character"""
+╭─${all}${line_break}\
+│${fill}${directory}${custom.git_host}${time}${line_break}\
+╰─${character}"""
 #$localip\
 #$git_branch\
 #$git_status\
@@ -23,12 +19,12 @@ min_time_to_notify = 300000
 show_notifications = true
 
 [directory]
+repo_root_style = "bright-red"
 style = "red"
 truncate_to_repo = false 
 truncation_length = 8
 truncation_symbol = '…/'
 #before_repo_root_style = "bold blue"
-#repo_root_style = "bold yellow"
 
 [fill]
 symbol = " "
@@ -37,8 +33,9 @@ symbol = " "
 symbol = " "
 
 [hostname]
-format = '[$ssh_symbol$hostname]($style) '
+format = '[$hostname$ssh_symbol]($style) '
 ssh_only = false
+ssh_symbol = " 🌐"
 style = "bright-blue"
 
 [nodejs]
@@ -60,3 +57,26 @@ format = '[$user@]($style)'
 show_always = true
 style_root = "bold green"
 style_user = "bright-green"
+
+
+[custom.git_host]
+# This command checks the remote URL and outputs the corresponding icon
+command = """
+url=$(git config --get remote.origin.url 2> /dev/null)
+if [[ "$url" =~ "github" ]]; then
+    echo ""
+elif [[ "$url" =~ "gitlab" ]]; then
+    echo "󰮠"
+elif [[ "$url" =~ "bitbucket" ]]; then
+    echo ""
+elif [[ -n "$url" ]]; then
+    echo ""
+fi
+"""
+# Only run this command if we are inside a git directory
+when = "git rev-parse --is-inside-work-tree 2> /dev/null"
+# Run inside a shell that supports standard conditionals
+shell = ["bash", "--noprofile", "--norc"] 
+style = "bold #f14e32" # You can change this color
+format = "[$output]($style) "
+description = "Shows whether the remote is GitHub, GitLab, or Bitbucket"
