@@ -58,7 +58,7 @@ alias fvi='vim -u NONE'
 alias myip='curl -w "\n" http://api.ipify.org'
 alias caly='cal `date +%Y`'
 
-# Git / SVN / Docker
+# Git / SVN / Docker / Terraform
 alias s='svn'
 alias g='git'
 alias gcm='git clone --mirror '
@@ -68,6 +68,7 @@ alias dc='docker-compose'
 alias gitversion='git rev-parse --verify HEAD'
 alias svnmissing='svn status | grep "^\?" | sed -e "s/\?      //"'
 alias svnaddmissing='svn status | grep "^\?" | sed -e "s/\?      //" | xargs svn add'
+alias tf='terraform'
 
 # System / Apache
 alias sag='sudo apachectl graceful'
@@ -124,11 +125,16 @@ case `uname` in
     alias gam="/Users/hulet/bin/gamadv-xtd3/gam"
 
     eval "$(/opt/homebrew/bin/brew shellenv)"
-    PATH="$HOMEBREW_PREFIX/opt/grep/libexec/gnubin:$PATH"
+    export PATH="$HOMEBREW_PREFIX/opt/grep/libexec/gnubin:$PATH"
 
     # Fresh custom bins
-    PATH=${PATH}:/usr/local/fresh-public-scripts/bin
+    export PATH=${PATH}:/usr/local/fresh-public-scripts/bin
 
+    # for pdf-to-scan (how was this installed again?)
+    export PATH="$PATH:/Users/hulet/Library/Python/3.9/bin"
+
+    # For MAMP
+    export PATH="$PATH:/Applications/MAMP/bin/php/php8.2.0/bin:/Applications/MAMP/Library/bin/"
     ;;
 
     Linux)

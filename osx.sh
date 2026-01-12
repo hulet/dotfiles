@@ -124,14 +124,14 @@ require_brew prusaslicer
 #require_brew remote-desktop-connection
 require_brew rar
 require_brew rectangle
+require_cask transmission
 require_brew vagrant
 #require_brew virtualbox
 require_brew visual-studio-code
 require_brew vlc
+require_cask wireshark
 #require_brew zoom
 
-require_cask transmission
-require_cask wireshark
 
 bot "Alright, cleaning up homebrew cache..."
 # Remove outdated versions from the cellar

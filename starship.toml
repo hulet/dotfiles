@@ -6,6 +6,7 @@
 
 format = """
 $all\
+$line_break\
 $fill\
 $directory\
 $time\
@@ -32,10 +33,19 @@ truncation_symbol = '…/'
 [fill]
 symbol = " "
 
+[gcloud]
+symbol = " "
+
 [hostname]
 format = '[$ssh_symbol$hostname]($style) '
 ssh_only = false
 style = "bright-blue"
+
+[nodejs]
+symbol = " "
+
+[php]
+symbol = " "
 
 [python]
 symbol = " "
