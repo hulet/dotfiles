@@ -19,12 +19,6 @@ export STARSHIP_CONFIG=~/.starship.toml
 
 export PATH="$PATH:$HOME/bin:$HOME/svn/scripts"
 
-# Created by `pipx` on 2023-04-03 18:32:05
-export PATH="$PATH:/Users/hulet/Library/Python/3.11/bin"
-
-# Created by `pipx` on 2023-04-03 18:32:06
-export PATH="$PATH:/Users/hulet/.local/bin"
-
 
 # --- CUSTOM ALIASES ---
 # directory hops
@@ -138,6 +132,12 @@ case `uname` in
 
     # For MAMP
     export PATH="$PATH:/Applications/MAMP/bin/php/php8.2.0/bin:/Applications/MAMP/Library/bin/"
+
+    # Created by `pipx` on 2023-04-03 18:32:05
+    export PATH="$PATH:/Users/hulet/Library/Python/3.11/bin"
+
+    # Created by `pipx` on 2023-04-03 18:32:06
+    export PATH="$PATH:/Users/hulet/.local/bin"
     ;;
 
     Linux)
