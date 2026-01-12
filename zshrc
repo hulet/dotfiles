@@ -126,15 +126,6 @@ case `uname` in
     eval "$(/opt/homebrew/bin/brew shellenv)"
     PATH="$HOMEBREW_PREFIX/opt/grep/libexec/gnubin:$PATH"
 
-    ## next line not needed after moving ~/.zprofile to ~/.zshenv to support screen
-    #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
-    ##PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-
-    export HOMEBREW_GITHUB_API_TOKEN='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'
-
-    # Android SDK
-    PATH=${PATH}:~/bin/android-sdk-macosx/tools:~/bin/android-sdk-macosx/platform-tools
-
     # Fresh custom bins
     PATH=${PATH}:/usr/local/fresh-public-scripts/bin
 
