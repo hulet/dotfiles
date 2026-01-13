@@ -19,9 +19,10 @@
     # http://stackoverflow.com/a/18781512/51928
     pager = less -S
     filemode = false
+    editor = nvim
 [diff]
     algorithm = histogram
-    tool = vimdiff
+    tool = nvimdiff
 [init]
 	defaultBranch = main
 [merge]
