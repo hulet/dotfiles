@@ -4,6 +4,11 @@
 git clone https://bitbucket.org/hulet/dotfiles && cd dotfiles && ./install.sh
 ```
 
+# Notes
+
+Bazzite comes with `brew` and `git` already installed.
+
+
 # Thanks
 
 Inspired by [atomantic's dotfiles](https://github.com/atomantic/dotfiles)
