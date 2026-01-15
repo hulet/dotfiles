@@ -9,6 +9,7 @@ puts "--> Brewfile begins"
 # shell core
 brew "fzf"
 brew "neovim"
+brew "node"
 brew "tree-sitter-cli"
 brew "zimfw"
 
