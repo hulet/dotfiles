@@ -9,8 +9,8 @@ puts "--> Brewfile begins"
 # shell core
 brew "fzf"
 brew "neovim"
-brew "zimfw"
 brew "tree-sitter-cli"
+brew "zimfw"
 
 # bluefin-cli https://docs.projectbluefin.io/command-line/
 brew "bat"
@@ -20,15 +20,16 @@ brew "ripgrep"
 brew "starship"
 
 # Classic Tools
-brew "rename"
-brew "htop"
-brew "hexedit"
-brew "fdupes"
-brew "lazygit"
+brew "btop"
 brew "dos2unix"
 brew "exiftool"
+brew "fastfetch"
+brew "fdupes"
+brew "hexedit"
+brew "htop"
 brew "iftop"
-brew "btop"
+brew "lazygit"
+brew "rename"
 
 if OS.mac?
 
@@ -53,6 +54,7 @@ if OS.mac?
   cask "netspot"
   cask "orion"
   cask "prusaslicer"
+  cask "raspberry-pi-imager"
   cask "rectangle"
   cask "tailscale-app"
   cask "visual-studio-code"
@@ -65,7 +67,14 @@ if OS.mac?
     #
     puts "--> Brewfile detected macOS - work"
 
+    tap "cloudflare/cloudflare"
+
+    brew "cloudflare/cloudflare/cf-terraforming"
+
+    cask "adobe-acrobat-reader"
     cask "dropbox"
+    cask "gcloud-cli"
+    cask "google-drive"
     cask "zoom"
 
   else
