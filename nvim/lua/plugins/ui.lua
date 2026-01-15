@@ -1,5 +1,14 @@
 return {
   {
+    "folke/snacks.nvim",
+    opts = {
+      scroll = {
+        -- don't animate page-up and page-down
+        enabled = false,
+      },
+    },
+  },
+  {
     "folke/tokyonight.nvim",
     opts = {
       on_highlights = function(hl, c)
@@ -13,10 +22,26 @@ return {
     },
   },
   {
-    "folke/snacks.nvim",
+    "MeanderingProgrammer/render-markdown.nvim",
     opts = {
-      scroll = {
-        enabled = false,
+      -- Don't hide ``` lines in my markdown files
+      enabled = false,
+    },
+  },
+  {
+    -- from https://github.com/LazyVim/LazyVim/discussions/6353
+    "saghen/blink.cmp",
+    optional = true,
+    opts = {
+      completion = {
+        list = {
+          selection = {
+            -- in insert mode enter should always insert \n
+            -- if preselect is enabled, enter will instead often select the first blink.cmp suggestion
+            -- e.g. without this `# Notes<CR>` in a .md file will replace `# Notes` with an unordered list
+            preselect = false,
+          },
+        },
       },
     },
   },
