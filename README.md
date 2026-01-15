@@ -1,6 +1,6 @@
 # Install
 
-```
+```shell
 git clone https://bitbucket.org/hulet/dotfiles && cd dotfiles && ./install.sh
 ```
 
