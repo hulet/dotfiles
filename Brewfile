@@ -45,6 +45,7 @@ if OS.mac?
   brew "yt-dlp"
 
   cask "1password"
+  cask "audacity"
   cask "balenaetcher"
   cask "brave-browser"
   cask "firefox"
@@ -76,6 +77,7 @@ if OS.mac?
     cask "dropbox"
     cask "gcloud-cli"
     cask "google-drive"
+    cask "windows-app"
     cask "zoom"
 
   else
