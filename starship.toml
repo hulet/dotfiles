@@ -12,12 +12,6 @@ format = """
 #$git_branch\
 #$git_status\
 
-[cmd_duration]
-#format = '[$duration]($style) '
-#min_time = 0
-min_time_to_notify = 300000
-show_notifications = true
-
 [directory]
 repo_root_style = "bright-red"
 style = "red"
