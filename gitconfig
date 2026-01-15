@@ -23,6 +23,10 @@
 [diff]
     algorithm = histogram
     tool = nvimdiff
+    # Detect moved lines
+    colorMoved = default
+    # Ignore some whitespace when looking for moves
+    colorMovedWS = ignore-space-change
 [init]
 	defaultBranch = main
 [merge]
