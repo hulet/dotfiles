@@ -19,7 +19,7 @@ brew "fd"
 brew "ripgrep"
 brew "starship"
 
-# classic tools
+# Classic Tools
 brew "rename"
 brew "htop"
 brew "hexedit"
@@ -28,18 +28,18 @@ brew "lazygit"
 brew "dos2unix"
 brew "exiftool"
 brew "iftop"
-brew "wget"
 brew "btop"
 
 if OS.mac?
 
   #######################################
-  # all macOS
+  # All macOS
   #
   puts "--> Brewfile detected macOS"
   brew "ansible"
   brew "coreutils"
   brew "telnet"
+  brew "wget" # linux brew wget depends on util-linux, which we may not want (and which conflicts with "rename")
   brew "yt-dlp"
 
   cask "1password"
@@ -61,7 +61,7 @@ if OS.mac?
   if `hostname`.include?("AA")
 
     #######################################
-    # work laptop
+    # Work Laptop
     #
     puts "--> Brewfile detected macOS - work"
 
@@ -71,7 +71,7 @@ if OS.mac?
   else
 
     #######################################
-    # personal laptop
+    # Personal Laptop
     #
     puts "--> Brewfile detected macOS - home"
 
@@ -84,7 +84,7 @@ if OS.mac?
 elsif OS.linux?
 
   #######################################
-  # all linux
+  # All Linux
   #
   puts "--> Brewfile detected linux"
   # Helper: Detect if we are in a headless environment
@@ -94,16 +94,38 @@ elsif OS.linux?
   if is_headless
 
     #######################################
-    # headless linux
+    # Headless Linux
     #
     puts "--> Brewfile detected linux - server"
 
+    # pass
   else
 
     #######################################
-    # desktop linux
+    # Desktop Linux
     #
     puts "--> Brewfile detected linux - desktop"
+    flatpak "com.brave.Browser"
+    flatpak "com.prusa3d.PrusaSlicer"
+    flatpak "org.gimp.GIMP"
+    flatpak "org.videolan.VLC"
+
+    # Detect the specific Linux Distribution
+    # Bazzite identifies as "bazzite" in /etc/os-release
+    is_bazzite = File.read("/etc/os-release").include?("ID=bazzite") rescue false
+
+    if is_bazzite
+      puts "--> Brewfile detected linux - bazzite"
+      brew "zsh"
+    end
+
+    # Manually Installed:
+    # Cider (Apple Music player, "installed" via Gear Lever)
+    # Ghostty (follow instructions on website; waiting for flatback release)
+    #
+    # GNOME Extensions:
+    # Media Controls (by sakithb)
+    # PaperWM
   end
 
 end
