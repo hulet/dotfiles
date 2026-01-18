@@ -166,6 +166,11 @@ fi
 # Initialize modules.
 source ${ZIM_HOME}/init.zsh
 
+# Bind '/' in Vi Normal Mode to FZF History
+bindkey -M vicmd '/' fzf-history-widget
+
+# don't mix up commands between terminal tabs
+setopt NO_SHARE_HISTORY
 
 # --- LOCAL OVERRIDES ---
 # local config overrides all
