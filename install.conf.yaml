@@ -9,6 +9,12 @@
 - create:
     ~/.config:
 
+- clean:
+    ~/:
+      force: true
+    ~/.config:
+      force: true
+
 - link:
     # symlink destination: git source
     ~/.bashrc: bashrc
