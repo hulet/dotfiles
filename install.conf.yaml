@@ -32,3 +32,8 @@
 - shell:
     # install nvim plugins
     - nvim --headless -c quitall
+    # description: "set up Ghostty launcher"
+    - command: |
+        [[ "$(uname)" == "Darwin" ]] \
+        && mkdir -p ~/Applications/ \
+        && osacompile -o ~/Applications/"Terminal (Ghostty).app" -e 'do shell script "open -a Ghostty"'
