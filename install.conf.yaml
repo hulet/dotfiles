@@ -1,0 +1,28 @@
+- defaults:
+    link:
+      backup: true
+      force: true
+      relink: true
+    create:
+      mode: 0755
+
+- create:
+    ~/.config:
+
+- link:
+    # symlink destination: git source
+    ~/.bashrc: bashrc
+    ~/.config/nvim: nvim
+    ~/.starship.toml: starship.toml
+    ~/.gitconfig: gitconfig
+    ~/.gitignore: gitignore
+    ~/.grep-exclude: grep-exclude
+    ~/.screenrc: screenrc
+    ~/.vim: vim
+    ~/.vimrc: vimrc
+    ~/.zimrc: zimrc
+    ~/.zshrc: zshrc
+
+- shell:
+    # install nvim plugins
+    - nvim --headless -c quitall
