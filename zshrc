@@ -15,7 +15,6 @@ bindkey '^ ' autosuggest-accept
 # --- ENVIRONMENT VARIABLES ---
 export EDITOR="vim" # programs will use this by default if you need to edit something
 export VISUAL="vim" # some programs use this instead of EDITOR
-export STARSHIP_CONFIG=~/.starship.toml
 
 export PATH="$PATH:$HOME/bin:$HOME/svn/scripts"
 
