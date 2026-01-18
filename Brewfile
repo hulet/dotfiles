@@ -99,6 +99,7 @@ elsif OS.linux?
   # All Linux
   #
   puts "--> Brewfile detected linux"
+
   # Helper: Detect if we are in a headless environment
   # Returns true if NO desktop environment is detected
   is_headless = ENV['XDG_CURRENT_DESKTOP'].to_s.empty? && ENV['DISPLAY'].to_s.empty?
@@ -117,6 +118,7 @@ elsif OS.linux?
     # Desktop Linux
     #
     puts "--> Brewfile detected linux - desktop"
+
     flatpak "com.brave.Browser"
     flatpak "com.prusa3d.PrusaSlicer"
     flatpak "org.gimp.GIMP"
@@ -128,6 +130,7 @@ elsif OS.linux?
 
     if is_bazzite
       puts "--> Brewfile detected linux - bazzite"
+
       brew "zsh"
     end
 
