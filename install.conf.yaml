@@ -31,9 +31,12 @@
 
 - shell:
     # install nvim plugins
-    - nvim --headless -c quitall
-    # description: "set up Ghostty launcher"
+    # TODO: ensure nvim is actually installed first
+    #- nvim --headless -c quitall
+    # description: "set up Ghostty launcher on macOS"
     - command: |
-        [[ "$(uname)" == "Darwin" ]] \
-        && mkdir -p ~/Applications/ \
-        && osacompile -o ~/Applications/"Terminal (Ghostty).app" -e 'do shell script "open -a Ghostty"'
+        if [[ "$(uname)" == "Darwin" ]]; then
+          osacompile -o ~/Applications/"Terminal (new).app" -e 'do shell script "open -a Ghostty"';
+        else
+          echo "Skipping macOS app creation";
+        fi
