@@ -97,13 +97,6 @@ wk() {
     echo `date` $@ >> ~/worklog.txt
 }
 
-if [ -d "/usr/local/Caskroom" ]
-then
-    source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
-    source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
-fi
-
-
 # --- PLATFORM SPECIFIC ---
 case `uname` in
     Darwin)
@@ -171,6 +164,13 @@ bindkey -M vicmd '/' fzf-history-widget
 
 # don't mix up commands between terminal tabs
 setopt NO_SHARE_HISTORY
+
+if [ -d "/usr/local/Caskroom" ]
+then
+    # needs to come after zim initializes the completion module
+    source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+    source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+fi
 
 # --- LOCAL OVERRIDES ---
 # local config overrides all
