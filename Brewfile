@@ -72,6 +72,8 @@ if OS.mac?
     tap "cloudflare/cloudflare"
 
     brew "cloudflare/cloudflare/cf-terraforming"
+    brew "pipx"
+    # TODO: pipx install pdf-to-scan
 
     cask "adobe-acrobat-reader"
     cask "dropbox"

@@ -120,9 +120,6 @@ case `uname` in
     # Fresh custom bins
     export PATH=${PATH}:/usr/local/fresh-public-scripts/bin
 
-    # for pdf-to-scan (how was this installed again?)
-    export PATH="$PATH:/Users/hulet/Library/Python/3.9/bin"
-
     # For MAMP
     export PATH="$PATH:/Applications/MAMP/bin/php/php8.2.0/bin:/Applications/MAMP/Library/bin/"
 
