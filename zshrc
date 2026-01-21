@@ -123,10 +123,7 @@ case `uname` in
     # For MAMP
     export PATH="$PATH:/Applications/MAMP/bin/php/php8.2.0/bin:/Applications/MAMP/Library/bin/"
 
-    # Created by `pipx` on 2023-04-03 18:32:05
-    export PATH="$PATH:/Users/hulet/Library/Python/3.11/bin"
-
-    # Created by `pipx` on 2023-04-03 18:32:06
+    # Created by `pipx` on 2023-04-03 18:32:06; pipx executables are installed here
     export PATH="$PATH:/Users/hulet/.local/bin"
     ;;
 
