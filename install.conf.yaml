@@ -37,7 +37,8 @@
 
 - shell:
     # install nvim plugins
-    - nvim --headless -c quitall
+    # TODO: command will fail if nvim is not in $PATH
+    #- nvim --headless -c quitall
     # description: "set up Ghostty launcher on macOS"
     - command: |
         if [ "$(uname)" = "Darwin" ]; then
