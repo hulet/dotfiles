@@ -91,6 +91,7 @@ if OS.mac?
     cask "mullvad-vpn"
     cask "steam"
     cask "transmission"
+
   end
 
 elsif OS.linux?
@@ -99,6 +100,8 @@ elsif OS.linux?
   # All Linux
   #
   puts "--> Brewfile detected linux"
+
+  # if we install vim, install exuberant-ctags as well
 
   # Helper: Detect if we are in a headless environment
   # Returns true if NO desktop environment is detected
@@ -111,7 +114,8 @@ elsif OS.linux?
     #
     puts "--> Brewfile detected linux - server"
 
-    # pass
+    brew "zellij" # `screen` replacement
+
   else
 
     #######################################
@@ -129,18 +133,21 @@ elsif OS.linux?
     is_bazzite = File.read("/etc/os-release").include?("ID=bazzite") rescue false
 
     if is_bazzite
+
       puts "--> Brewfile detected linux - bazzite"
 
       brew "zsh"
+
     end
 
     # Manually Installed:
     # Cider (Apple Music player, "installed" via Gear Lever)
-    # Ghostty (follow instructions on website; waiting for flatback release)
+    # Ghostty (follow instructions on website; waiting for flatpak release)
     #
     # GNOME Extensions:
     # Media Controls (by sakithb)
     # PaperWM
+
   end
 
 end
