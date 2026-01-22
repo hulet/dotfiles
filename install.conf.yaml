@@ -42,7 +42,7 @@
     # description: "set up Ghostty launcher on macOS"
     - command: |
         if [ "$(uname)" = "Darwin" ]; then
-          osacompile -o ~/Applications/"Terminal (new).app" -e 'do shell script "open -a Ghostty"';
+          osacompile -o ~/Applications/"Terminal (Ghostty).app" -e 'do shell script "open -a Ghostty"';
         else
           echo "Skipping macOS app creation";
         fi
