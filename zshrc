@@ -114,7 +114,13 @@ case `uname` in
     alias lk="open -a /System/Library/CoreServices/ScreenSaverEngine.app"
     alias gam="/Users/hulet/bin/gamadv-xtd3/gam"
 
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+    if [ -x "/opt/homebrew/bin/brew" ]; then
+      # Apple Silicon macOS
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -x "/usr/local/bin/brew" ]; then
+      # Intel macOS
+      eval "$(/usr/local/bin/brew shellenv)"
+    fi
     export PATH="$HOMEBREW_PREFIX/opt/grep/libexec/gnubin:$PATH"
 
     # Fresh custom bins
