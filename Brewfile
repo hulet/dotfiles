@@ -40,9 +40,11 @@ if OS.mac?
   puts "--> Brewfile detected macOS"
   brew "ansible"
   brew "coreutils"
+  brew "pipx"
   brew "telnet"
   brew "wget" # linux brew wget depends on util-linux, which we may not want (and which conflicts with "rename")
   brew "yt-dlp"
+  # TODO: pipx install pdf-to-scan
 
   cask "1password"
   cask "audacity"
@@ -72,8 +74,6 @@ if OS.mac?
     tap "cloudflare/cloudflare"
 
     brew "cloudflare/cloudflare/cf-terraforming"
-    brew "pipx"
-    # TODO: pipx install pdf-to-scan
 
     cask "adobe-acrobat-reader"
     cask "dropbox"
