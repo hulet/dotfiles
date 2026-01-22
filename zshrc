@@ -165,7 +165,7 @@ bindkey -M vicmd '/' fzf-history-widget
 # don't mix up commands between terminal tabs
 setopt NO_SHARE_HISTORY
 
-if [ -d "/usr/local/Caskroom" ]
+if [ -d "/usr/local/Caskroom/google-cloud-sdk" ]
 then
     # needs to come after zim initializes the completion module
     source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
