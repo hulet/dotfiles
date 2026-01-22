@@ -80,6 +80,7 @@ if OS.mac?
     cask "gcloud-cli"
     cask "google-drive"
     cask "windows-app"
+    cask "wireshark-app"
     cask "zoom"
 
   else
