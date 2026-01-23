@@ -30,6 +30,7 @@
     ~/.vim: vim
     ~/.vimrc: vimrc
     ~/.zimrc: zimrc
+    ~/.zshenv: zshenv
     ~/.zshrc: zshrc
 
 - brewfile:
