@@ -29,6 +29,11 @@ return {
     },
   },
   {
+    -- no automatic closing characters
+    "nvim-mini/mini.pairs",
+    enabled = false,
+  },
+  {
     -- from https://github.com/LazyVim/LazyVim/discussions/6353
     "saghen/blink.cmp",
     optional = true,
