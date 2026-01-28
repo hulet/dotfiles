@@ -136,7 +136,11 @@ case `uname` in
     Linux)
     alias du1='du -hc --max-depth 1'
     alias du1s='du -c --max-depth 1 | sort -nr'
-    alias open='xdg-open'
+
+    open() {
+      xdg-open "$@" >/dev/null 2>&1 &|
+    }
+
     if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     fi
