@@ -1,4 +1,7 @@
 # vim: set ft=ruby :
+#
+# Some helpful brew commands:
+# brew uses --installed <package>
 
 puts "--> Brewfile begins"
 

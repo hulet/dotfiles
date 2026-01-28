@@ -23,9 +23,12 @@ export PATH="$PATH:$HOME/bin:$HOME/svn/scripts"
 # directory hops
 alias u='cd ..'
 alias uu='cd ../..'
+alias uuu='cd ../../..'
 alias ..='cd ..'
-alias cddl='cd ~/Downloads/'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 alias cdd='cd ~/data/'
+alias cddl='cd ~/Downloads/'
 alias cdg='cd ~/git/'
 alias cdt='cd /tmp/'
 alias cdvt='cd /var/tmp/'
@@ -37,7 +40,6 @@ alias mv='nocorrect mv -i'
 alias mkdir='nocorrect mkdir'
 
 # Utils
-alias ll='ls -lah'
 alias du0='du -hcs'
 alias eject='eject -v'
 if [[ -e $HOME/.grep-exclude ]]; then
@@ -174,6 +176,14 @@ then
     # needs to come after zim initializes the completion module
     source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
     source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+fi
+
+# override ls alias in zim utility module
+if command -v eza &> /dev/null; then
+    alias ls='eza --group-directories-first --icons=auto'
+    alias lsa='ls -a'
+    alias lt='eza --tree --level=2 --long --icons --git'
+    alias lta='lt -a'
 fi
 
 # --- LOCAL OVERRIDES ---
