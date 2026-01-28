@@ -11,6 +11,7 @@
 
 - create:
     ~/.config:
+    ~/.config/ghostty:
 
 - clean:
     ~/:
@@ -21,6 +22,7 @@
 - link:
     # symlink destination: git source
     ~/.bashrc: bashrc
+    ~/.config/ghostty/config: ghostty.config
     ~/.config/nvim: nvim
     ~/.config/starship.toml: starship.toml
     ~/.gitconfig: gitconfig
