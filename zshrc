@@ -186,12 +186,30 @@ if command -v eza &> /dev/null; then
     alias lta='lt -a'
 fi
 
+# from https://github.com/basecamp/omarchy/blob/master/default/bash/aliases
+if command -v zoxide &> /dev/null; then
+  alias cd="zd"
+  zd() {
+    if [ $# -eq 0 ]; then
+      builtin cd ~ && return
+    elif [ -d "$1" ]; then
+      builtin cd "$1"
+    else
+      z "$@" && printf "\U000F17A9 " && pwd || echo "Error: Directory not found"
+    fi
+  }
+fi
+
+if command -v starship &> /dev/null; then
+  eval "$(starship init zsh)"
+fi
+
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init zsh)"
+fi
+
 # --- LOCAL OVERRIDES ---
 # local config overrides all
 if [[ -f $HOME/.zshrc.local ]]; then
     source $HOME/.zshrc.local
 fi
-
-
-# Initialize Starship (Must be at the very end)
-eval "$(starship init zsh)"

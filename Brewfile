@@ -22,6 +22,7 @@ brew "eza"
 brew "fd"
 brew "ripgrep"
 brew "starship"
+brew "zoxide"
 
 # Classic Tools
 brew "btop"
