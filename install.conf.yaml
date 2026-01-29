@@ -23,6 +23,12 @@
     # symlink destination: git source
     ~/.bashrc: bashrc
     ~/.config/ghostty/config: ghostty.config
+    ~/.config/ghostty/linux.config:
+      if: '[ "$(uname)" = "Linux" ]'
+      path: ghostty.linux.config
+    ~/.config/ghostty/macos.config:
+      if: '[ "$(uname)" = "Darwin" ]'
+      path: ghostty.macos.config
     ~/.config/nvim: nvim
     ~/.config/starship.toml: starship.toml
     ~/.gitconfig: gitconfig
