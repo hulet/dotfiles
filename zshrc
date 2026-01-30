@@ -18,6 +18,9 @@ export VISUAL="vim" # some programs use this instead of EDITOR
 
 export PATH="$PATH:$HOME/bin:$HOME/svn/scripts"
 
+# pipx executables are installed here
+export PATH="$HOME/.local/bin:$PATH"
+
 
 # --- CUSTOM ALIASES ---
 # directory hops
@@ -129,9 +132,6 @@ case `uname` in
 
     # For MAMP
     export PATH="$PATH:/Applications/MAMP/bin/php/php8.2.0/bin:/Applications/MAMP/Library/bin/"
-
-    # Created by `pipx` on 2023-04-03 18:32:06; pipx executables are installed here
-    export PATH="$PATH:/Users/hulet/.local/bin"
     ;;
 
     Linux)
@@ -194,7 +194,7 @@ if command -v zoxide &> /dev/null; then
     elif [ -d "$1" ]; then
       builtin cd "$1"
     else
-      z "$@" && printf " \U000F17A9 " && pwd || echo "Error: Directory not found"
+      z "$@" && printf "    \U000F17A9 " && pwd || echo "Error: Directory not found"
     fi
   }
 fi
