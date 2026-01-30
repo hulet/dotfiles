@@ -21,6 +21,8 @@ export PATH="$PATH:$HOME/bin:$HOME/svn/scripts"
 # pipx executables are installed here
 export PATH="$HOME/.local/bin:$PATH"
 
+export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/ripgrep.conf"
+
 # https://github.com/eza-community/eza-themes
 # https://github.com/eza-community/eza/issues/1224
 export EZA_CONFIG_DIR=~/.config/eza
