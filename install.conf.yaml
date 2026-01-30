@@ -11,6 +11,9 @@
 
 - create:
     ~/.config:
+    ~/.config/bat/themes:
+    ~/.config/btop:
+    ~/.config/eza:
     ~/.config/ghostty:
 
 - clean:
@@ -22,6 +25,10 @@
 - link:
     # symlink destination: git source
     ~/.bashrc: bashrc
+    ~/.config/bat/config: bat.config
+    ~/.config/bat/themes/tokyonight_night.tmTheme: bat.tokyonight_night.tmTheme
+    ~/.config/btop/btop.conf: btop.conf
+    ~/.config/eza/theme.yml: eza.tokyonight.yml
     ~/.config/ghostty/config: ghostty.config
     ~/.config/ghostty/linux.config:
       if: '[ "$(uname)" = "Linux" ]'
@@ -48,6 +55,11 @@
     # install nvim plugins
     # TODO: command will fail if nvim is not in $PATH
     #- nvim --headless -c quitall
+
+    # needed for custom themes to be recognized
+    - command: |
+        bat cache --build > /dev/null
+
     # description: "set up Ghostty launcher on macOS"
     - command: |
         if [ "$(uname)" = "Darwin" ]; then

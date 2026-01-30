@@ -11,6 +11,7 @@ return {
   {
     "folke/tokyonight.nvim",
     opts = {
+      style = "night",
       on_highlights = function(hl, c)
         -- DiffChange: The background for the whole modified line (Subtle)
         hl.DiffChange = { bg = "#2e334d" }
