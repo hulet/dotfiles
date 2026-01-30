@@ -114,7 +114,6 @@ case `uname` in
     alias unquarantine='xattr -d com.apple.quarantine'
     alias dnscacheflush='sudo discoveryutil udnsflushcaches'
     alias lk="open -a /System/Library/CoreServices/ScreenSaverEngine.app"
-    alias gam="/Users/hulet/bin/gamadv-xtd3/gam"
 
     if [ -x "/opt/homebrew/bin/brew" ]; then
       # Apple Silicon macOS

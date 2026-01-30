@@ -44,6 +44,7 @@ if OS.mac?
   puts "--> Brewfile detected macOS"
   brew "ansible"
   brew "coreutils"
+  brew "nmap"
   brew "pipx"
   brew "telnet"
   brew "wget" # linux brew wget depends on util-linux, which we may not want (and which conflicts with "rename")
@@ -75,9 +76,12 @@ if OS.mac?
     #
     puts "--> Brewfile detected macOS - work"
 
+    tap "hashicorp/tap"
     tap "cloudflare/cloudflare"
 
+    brew "hashicorp/tap/terraform"
     brew "cloudflare/cloudflare/cf-terraforming"
+    # TODO: pipx install gam7
 
     cask "adobe-acrobat-reader"
     cask "dropbox"
