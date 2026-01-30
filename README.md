@@ -9,9 +9,11 @@ git clone https://bitbucket.org/hulet/dotfiles && cd dotfiles && ./install.sh
 Bazzite comes with `brew`, `git`, and other basic dependencies already installed.
 
 Debian Trixie and Ubuntu 24.04 do not have our basic dependencies already installed.
-Install with (skip `sudo` if root, install `sudo` if needed):
+Install with:
 
 ```shell
+apt update
+apt install -y sudo
 sudo apt update
 sudo apt install -y build-essential curl git python3 zsh
 sudo chsh -s $(which zsh) $USER
