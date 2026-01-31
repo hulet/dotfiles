@@ -158,7 +158,7 @@ case `uname` in
     export PATH="$HOMEBREW_PREFIX/opt/grep/libexec/gnubin:$PATH"
 
     # Fresh custom bins
-    export PATH=${PATH}:/usr/local/fresh-public-scripts/bin
+    export PATH="$PATH:/usr/local/fresh-public-scripts/bin"
 
     # For MAMP
     export PATH="$PATH:/Applications/MAMP/bin/php/php8.2.0/bin:/Applications/MAMP/Library/bin/"
