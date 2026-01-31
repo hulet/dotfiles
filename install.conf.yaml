@@ -1,3 +1,8 @@
+# useful commands:
+# ./install --only create link
+# ./install --only plugins brewfile
+# ./install --only shell
+
 - defaults:
     link:
       backup: true
@@ -60,14 +65,22 @@
     # TODO: command will fail if nvim is not in $PATH
     #- nvim --headless -c quitall
 
-    # needed for custom themes to be recognized
     - command: |
         bat cache --build > /dev/null
+      description: "--> install custom bat themes\n"
 
-    # description: "set up Ghostty launcher on macOS"
+    - command: |
+        if [ "$(uname)" = "Darwin" ]; then
+          ./osx.sh
+        else
+          echo "Skipping macOS os config";
+        fi
+      description: "--> set up macOS OS config\n"
+
     - command: |
         if [ "$(uname)" = "Darwin" ]; then
           osacompile -o ~/Applications/"Terminal (Ghostty).app" -e 'do shell script "open -a Ghostty"';
         else
           echo "Skipping macOS app creation";
         fi
+      description: "--> set up Ghostty launcher on macOS\n"
