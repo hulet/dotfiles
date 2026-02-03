@@ -56,6 +56,9 @@
     ~/.zimrc: zimrc
     ~/.zshenv: zshenv
     ~/.zshrc: zshrc
+    ~/Library/Services/Open\ in\ Ghostty.workflow:
+      if: '[ "$(uname)" = "Darwin" ]'
+      path: 'Open in Ghostty.workflow'
 
 - brewfile:
     - Brewfile
