@@ -75,15 +75,17 @@
     - command: |
         if [ "$(uname)" = "Darwin" ]; then
           ./osx.sh
-        else
-          echo "Skipping macOS os config";
         fi
       description: "--> set up macOS OS config\n"
 
     - command: |
         if [ "$(uname)" = "Darwin" ]; then
           osacompile -o ~/Applications/"Terminal (Ghostty).app" -e 'do shell script "open -a Ghostty"';
-        else
-          echo "Skipping macOS app creation";
         fi
       description: "--> set up Ghostty launcher on macOS\n"
+
+    - command: |
+        if [ "$(uname -s)" = "Linux" ] && command -v gsettings >/dev/null; then
+          gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
+        fi
+      description: "-->  remap caps lock to control (GNOME)\n"
