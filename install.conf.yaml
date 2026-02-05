@@ -64,12 +64,14 @@
     - Brewfile
 
 - shell:
-    # install nvim plugins
-    # TODO: command will fail if nvim is not in $PATH
-    #- nvim --headless -c quitall
+    - description: "--> install lazyvim plugins\n"
+      command: |
+        export PATH="/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
+        nvim --headless -c quitall
 
     - description: "--> install custom bat themes\n"
       command: |
+        export PATH="/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
         bat cache --build > /dev/null
 
     - description: "--> set up macOS OS config\n"
