@@ -15,6 +15,7 @@ brew "neovim"
 brew "node"
 brew "tree-sitter-cli"
 brew "zimfw"
+brew "zsh"
 
 # bluefin-cli https://docs.projectbluefin.io/command-line/
 brew "bat"
@@ -138,18 +139,6 @@ elsif OS.linux?
     flatpak "com.prusa3d.PrusaSlicer"
     flatpak "org.gimp.GIMP"
     flatpak "org.videolan.VLC"
-
-    # Detect the specific Linux Distribution
-    # Bazzite identifies as "bazzite" in /etc/os-release
-    is_bazzite = File.read("/etc/os-release").include?("ID=bazzite") rescue false
-
-    if is_bazzite
-
-      puts "--> Brewfile detected linux - bazzite"
-
-      brew "zsh"
-
-    end
 
     # Manually Installed:
     # Cider (Apple Music player, "installed" via Gear Lever)

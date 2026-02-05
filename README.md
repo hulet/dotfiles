@@ -15,8 +15,7 @@ Install with:
 apt update
 apt install -y sudo
 sudo apt update
-sudo apt install -y build-essential curl git python3 zsh
-sudo chsh -s $(which zsh) $USER
+sudo apt install -y build-essential curl git python3
 git clone https://github.com/hulet/dotfiles.git
 cd dotfiles
 ./install

@@ -68,24 +68,39 @@
     # TODO: command will fail if nvim is not in $PATH
     #- nvim --headless -c quitall
 
-    - command: |
+    - description: "--> install custom bat themes\n"
+      command: |
         bat cache --build > /dev/null
-      description: "--> install custom bat themes\n"
 
-    - command: |
+    - description: "--> set up macOS OS config\n"
+      command: |
         if [ "$(uname)" = "Darwin" ]; then
           ./osx.sh
         fi
-      description: "--> set up macOS OS config\n"
 
-    - command: |
+    - description: "--> set up Ghostty launcher on macOS\n"
+      command: |
         if [ "$(uname)" = "Darwin" ]; then
           osacompile -o ~/Applications/"Terminal (Ghostty).app" -e 'do shell script "open -a Ghostty"';
         fi
-      description: "--> set up Ghostty launcher on macOS\n"
 
-    - command: |
+    - description: "-->  remap caps lock to control (GNOME)\n"
+      command: |
         if [ "$(uname -s)" = "Linux" ] && command -v gsettings >/dev/null; then
           gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
         fi
-      description: "-->  remap caps lock to control (GNOME)\n"
+
+    - description: "--> Symlinking Homebrew Zsh to /usr/bin for Docker compatibility\n"
+      command: |
+        BREW_ZSH="/home/linuxbrew/.linuxbrew/bin/zsh"
+        # Only run if we are on Linux AND the brew binary exists
+        if [ "$(uname -s)" = "Linux" ] && [ -f "$BREW_ZSH" ]; then
+          # Check if we have permission to write to /usr/bin (or use sudo)
+          if [ -w /usr/bin ]; then
+            ln -sf "$BREW_ZSH" /usr/bin/zsh
+          elif command -v sudo >/dev/null; then
+            sudo ln -sf "$BREW_ZSH" /usr/bin/zsh
+          else
+            echo "Skipping zsh symlink: No root permissions"
+          fi
+        fi
