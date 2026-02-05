@@ -12,10 +12,9 @@ Debian Trixie and Ubuntu 24.04 do not have our basic dependencies already instal
 Install with:
 
 ```shell
-apt update
-apt install -y sudo
+apt update && apt install -y sudo
 sudo apt update
-sudo apt install -y build-essential curl git python3
+sudo DEBIAN_FRONTEND=noninteractive apt install -y build-essential curl git python3
 git clone https://github.com/hulet/dotfiles.git
 cd dotfiles
 ./install
