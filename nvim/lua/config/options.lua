@@ -12,5 +12,5 @@ vim.opt.relativenumber = false
 vim.opt.fillchars:append({ diff = " " })
 
 -- Disable the automatic sync with system clipboard
--- otherwise deleting text in neovim stops the system clipboard
+-- otherwise deleting text in neovim stomps the system clipboard
 vim.opt.clipboard = ""
