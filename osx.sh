@@ -326,6 +326,9 @@ defaults write com.apple.menuextra.clock DateFormat -string "EEE MMM d  h:mm a"
 echo " --> Setting up Rectangle"
 osascript -e 'tell application "System Events" to make new login item at end of login items with properties { path: "/Applications/Rectangle.app" }' > /dev/null 2>&1
 
+echo " --> Dark Mode, please"
+osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
+
 # add Google Chrome extensions
 #http://stackoverflow.com/questions/16800696/how-install-crx-chrome-extension-via-command-line
 # TODO
