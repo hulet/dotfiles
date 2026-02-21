@@ -13,8 +13,8 @@ bindkey '^ ' autosuggest-accept
 
 
 # --- ENVIRONMENT VARIABLES ---
-export EDITOR="vim" # programs will use this by default if you need to edit something
-export VISUAL="vim" # some programs use this instead of EDITOR
+export EDITOR="nvim" # programs will use this by default if you need to edit something
+export VISUAL="$EDITOR" # some programs use this instead of EDITOR
 
 export PATH="$PATH:$HOME/bin:$HOME/svn/scripts"
 
@@ -200,6 +200,9 @@ bindkey -M vicmd '/' fzf-history-widget
 # don't mix up commands between terminal tabs
 setopt NO_SHARE_HISTORY
 
+# let `>` overwirte files without warning
+unsetopt noclobber
+
 if [ -d "/usr/local/Caskroom/google-cloud-sdk" ]
 then
     # needs to come after zim initializes the completion module
@@ -216,6 +219,8 @@ if command -v eza &> /dev/null; then
 fi
 
 # from https://github.com/basecamp/omarchy/blob/master/default/bash/aliases
+alias ff="fzf --preview 'bat --style=numbers --color=always {}'"
+alias eff='$EDITOR $(ff)'
 if command -v zoxide &> /dev/null; then
   alias cd="zd"
   zd() {
