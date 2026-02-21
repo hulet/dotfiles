@@ -74,6 +74,11 @@
         export PATH="/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
         bat cache --build > /dev/null
 
+    - description: "--> install tldr page cache\n"
+      command: |
+        export PATH="/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
+        tldr --update
+
     - description: "--> set up macOS OS config\n"
       command: |
         if [ "$(uname)" = "Darwin" ]; then

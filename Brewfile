@@ -23,6 +23,7 @@ brew "eza"
 brew "fd"
 brew "ripgrep"
 brew "starship"
+brew "tealdeer"
 brew "zoxide"
 
 # Classic Tools
