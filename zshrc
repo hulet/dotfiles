@@ -87,7 +87,7 @@ alias python='python3'
 alias vi='nvim'
 alias fvi='vim -u NONE'
 alias myip='curl -w "\n" http://api.ipify.org'
-alias caly='cal `date +%Y`'
+alias caly='cal $(date +%Y)'
 
 # Git / SVN / Docker / Terraform
 alias s='svn'
@@ -133,7 +133,7 @@ wk() {
 }
 
 # --- PLATFORM SPECIFIC ---
-case `uname` in
+case "$(uname -s)" in
     Darwin)
     export JAVA_HOME='/Library/Java/Home'
     alias du1='du -hc -d 1'
@@ -147,6 +147,10 @@ case `uname` in
     alias unquarantine='xattr -d com.apple.quarantine'
     alias dnscacheflush='sudo discoveryutil udnsflushcaches'
     alias lk="open -a /System/Library/CoreServices/ScreenSaverEngine.app"
+
+    # macOS/Linux parity: Use 'pbcopy' as the backend for 'wl-copy'
+    alias wl-copy='pbcopy'
+    alias wl-paste='pbpaste'
 
     if [ -x "/opt/homebrew/bin/brew" ]; then
       # Apple Silicon macOS
@@ -167,6 +171,16 @@ case `uname` in
     Linux)
     alias du1='du -hc --max-depth 1'
     alias du1s='du -c --max-depth 1 | sort -nr'
+
+    # macOS/Linux parity: Use 'wl-copy' as the backend for 'pbcopy'
+    if command -v wl-copy &> /dev/null; then
+      alias pbcopy='wl-copy'
+      alias pbpaste='wl-paste'
+      # fallback: Support X11 (xclip) if Wayland isn't active
+    elif command -v xclip &> /dev/null; then
+      alias pbcopy='xclip -selection clipboard'
+      alias pbpaste='xclip -selection clipboard -o'
+    fi
 
     open() {
       xdg-open "$@" >/dev/null 2>&1 &|
@@ -212,10 +226,16 @@ fi
 
 # override ls alias in zim utility module
 if command -v eza &> /dev/null; then
+    ## from omarchy
     alias ls='eza --group-directories-first --icons=auto'
     alias lsa='ls -a'
     alias lt='eza --tree --level=2 --long --icons --git'
     alias lta='lt -a'
+    ## eza doesn't show `.` and `..` unless you -a twice
+    ## https://github.com/eza-community/eza?tab=readme-ov-file#filtering-options
+    ## fix aliases from zim utility module
+    ## https://github.com/zimfw/utility/blob/master/init.zsh
+    alias l='ll -aa'
 fi
 
 # from https://github.com/basecamp/omarchy/blob/master/default/bash/aliases
