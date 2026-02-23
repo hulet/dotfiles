@@ -1,3 +1,7 @@
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
+
+-- Delete LazyVim's custom visual indent mappings to restore standard Vim behavior
+vim.keymap.del("v", "<")
+vim.keymap.del("v", ">")
