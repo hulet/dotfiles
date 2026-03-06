@@ -38,6 +38,11 @@ brew "iftop"
 brew "lazygit"
 brew "rename"
 
+# From Omarchy
+tap "tobi/try"
+brew "tobi/try/try"
+
+
 if OS.mac?
 
   #######################################

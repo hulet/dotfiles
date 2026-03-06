@@ -262,6 +262,10 @@ if command -v zoxide &> /dev/null; then
     eval "$(zoxide init zsh)"
 fi
 
+if command -v try &> /dev/null; then
+    eval "$(try init ~/tries)"
+fi
+
 # --- LOCAL OVERRIDES ---
 # local config overrides all
 if [[ -f $HOME/.zshrc.local ]]; then
