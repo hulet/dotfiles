@@ -286,7 +286,7 @@ defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true
 echo " --> Add battery percentage in menubar"
 defaults write com.apple.menuextra.battery ShowPercent -string "YES"
 
-echo " --> lower Alert volume"
+echo " --> Lower Alert volume"
 defaults write NSGlobalDomain com.apple.sound.beep.volume -float 0.50
 
 # https://discussions.apple.com/thread/3157331?start=0&tstart=0
@@ -340,6 +340,14 @@ hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x70
 
 echo " --> Proper calendars start the week on Monday"
 defaults write NSGlobalDomain AppleFirstWeekday -dict gregorian 2
+
+echo " --> Set Screenshots directory"
+# 1. Create the folder (just in case it doesn't exist yet)
+mkdir -p ~/Desktop/Screenshots
+# 2. Tell macOS to save screenshots there
+defaults write com.apple.screencapture location ~/Desktop/Screenshots
+# 3. Restart the UI server to apply the change immediately
+killall SystemUIServer
 
 echo " --> Woot! All done."
 echo " --> You may need to reboot for some settings to take effect."
