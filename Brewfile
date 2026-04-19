@@ -39,7 +39,7 @@ brew "lazygit"
 brew "rename"
 
 # From Omarchy
-tap "tobi/try"
+tap "tobi/try", "https://github.com/tobi/try"
 brew "tobi/try/try"
 
 
