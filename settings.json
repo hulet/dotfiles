@@ -1,0 +1,83 @@
+{
+  "skipAutoPermissionPrompt": true,
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(xargs cat:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(echo:*)",
+      "Bash(which:*)",
+      "Bash(type:*)",
+      "Bash(pwd:*)",
+
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git status:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git tag:*)",
+      "Bash(git remote:*)",
+      "Bash(git stash list:*)",
+      "Bash(git blame:*)",
+      "Bash(git grep:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git rev-parse:*)",
+
+      "Bash(file:*)",
+      "Bash(stat:*)",
+      "Bash(diff:*)",
+      "Bash(xxd:*)",
+      "Bash(strings:*)",
+      "Bash(md5:*)",
+      "Bash(shasum:*)",
+
+      "Bash(sort:*)",
+      "Bash(uniq:*)",
+      "Bash(cut:*)",
+      "Bash(tr:*)",
+      "Bash(column:*)",
+      "Bash(jq:*)",
+      "Bash(yq:*)",
+
+      "Bash(uname:*)",
+      "Bash(hostname:*)",
+      "Bash(whoami:*)",
+      "Bash(id:*)",
+      "Bash(date:*)",
+      "Bash(env:*)",
+      "Bash(printenv:*)",
+      "Bash(sw_vers:*)",
+      "Bash(uptime:*)",
+
+      "Bash(df:*)",
+      "Bash(du:*)",
+      "Bash(ps:*)",
+      "Bash(lsof:*)",
+
+      "Bash(npm list:*)",
+      "Bash(npm outdated:*)",
+      "Bash(pip list:*)",
+      "Bash(pip show:*)",
+      "Bash(brew list:*)",
+      "Bash(brew info:*)",
+      "Bash(cargo metadata:*)",
+
+      "Bash(rg:*)",
+      "Bash(ag:*)",
+      "Bash(locate:*)",
+      "Bash(mdfind:*)",
+
+      "Read(/Users/hulet/.claude/*)",
+
+      "Bash(defaults read:*)",
+      "Bash(plutil:*)",
+      "Bash(mdls:*)",
+      "Bash(system_profiler:*)"
+    ]
+  }
+}

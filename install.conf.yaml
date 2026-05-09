@@ -32,6 +32,7 @@
 - link:
     # symlink destination: git source
     ~/.bashrc: bashrc
+    ~/.claude/settings.json: settings.json
     ~/.config/bat/config: bat.config
     ~/.config/bat/themes/tokyonight_night.tmTheme: bat.tokyonight_night.tmTheme
     ~/.config/btop/btop.conf: btop.conf
@@ -64,6 +65,7 @@
     - Brewfile
 
 - shell:
+  # code --install-extension enkia.tokyo-night
     - description: "--> install lazyvim plugins\n"
       command: |
         export PATH="/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
