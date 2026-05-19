@@ -1,7 +1,24 @@
 {
-  "skipAutoPermissionPrompt": true,
   "permissions": {
     "allow": [
+      "Bash(bq ls:*)",
+      "Bash(gcloud bigquery datasets list:*)",
+      "Bash(gcloud projects get-iam-policy:*)",
+      "Bash(gcloud billing projects describe:*)",
+      "Bash(gcloud datastore operations list:*)",
+      "Bash(gcloud functions list:*)",
+      "Bash(gcloud logging read:*)",
+      "Bash(gcloud projects describe:*)",
+      "Bash(gcloud projects list:*)",
+      "Bash(gcloud scheduler jobs list:*)",
+      "Bash(gcloud services list:*)",
+      "Bash(gcloud storage buckets list:*)",
+      "Bash(gsutil cat:*)",
+      "Bash(gsutil du:*)",
+      "Bash(gsutil ls:*)",
+      "Bash(pdftotext:*)",
+      "Bash(gam version:*)",
+      "Bash(gam show:*)",
       "Bash(cat:*)",
       "Bash(xargs cat:*)",
       "Bash(grep:*)",
@@ -14,7 +31,6 @@
       "Bash(which:*)",
       "Bash(type:*)",
       "Bash(pwd:*)",
-
       "Bash(git log:*)",
       "Bash(git diff:*)",
       "Bash(git status:*)",
@@ -27,7 +43,6 @@
       "Bash(git grep:*)",
       "Bash(git ls-files:*)",
       "Bash(git rev-parse:*)",
-
       "Bash(file:*)",
       "Bash(stat:*)",
       "Bash(diff:*)",
@@ -35,7 +50,6 @@
       "Bash(strings:*)",
       "Bash(md5:*)",
       "Bash(shasum:*)",
-
       "Bash(sort:*)",
       "Bash(uniq:*)",
       "Bash(cut:*)",
@@ -43,7 +57,6 @@
       "Bash(column:*)",
       "Bash(jq:*)",
       "Bash(yq:*)",
-
       "Bash(uname:*)",
       "Bash(hostname:*)",
       "Bash(whoami:*)",
@@ -53,12 +66,10 @@
       "Bash(printenv:*)",
       "Bash(sw_vers:*)",
       "Bash(uptime:*)",
-
       "Bash(df:*)",
       "Bash(du:*)",
       "Bash(ps:*)",
       "Bash(lsof:*)",
-
       "Bash(npm list:*)",
       "Bash(npm outdated:*)",
       "Bash(pip list:*)",
@@ -66,18 +77,17 @@
       "Bash(brew list:*)",
       "Bash(brew info:*)",
       "Bash(cargo metadata:*)",
-
       "Bash(rg:*)",
       "Bash(ag:*)",
       "Bash(locate:*)",
       "Bash(mdfind:*)",
-
       "Read(/Users/hulet/.claude/*)",
-
       "Bash(defaults read:*)",
       "Bash(plutil:*)",
       "Bash(mdls:*)",
       "Bash(system_profiler:*)"
     ]
-  }
+  },
+  "skipAutoPermissionPrompt": true,
+  "promptSuggestionEnabled": false
 }
