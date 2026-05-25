@@ -110,5 +110,6 @@
   "skipAutoPermissionPrompt": true,
   "enabledPlugins": {
     "cloudflare@claude-plugins-official": true
-  }
+  },
+  "editorMode": "vim"
 }
