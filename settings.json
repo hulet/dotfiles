@@ -1,4 +1,8 @@
 {
+  "env": {
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  },
   "permissions": {
     "allow": [
       "Bash(bq ls:*)",
@@ -19,6 +23,7 @@
       "Bash(pdftotext:*)",
       "Bash(gam version:*)",
       "Bash(gam show:*)",
+      "Bash(dbt compile:*)",
       "Bash(cat:*)",
       "Bash(xargs cat:*)",
       "Bash(grep:*)",
@@ -93,6 +98,17 @@
       "Bash(jq -i *)"
     ]
   },
+  "extraKnownMarketplaces": {
+    "cloudflare": {
+      "source": {
+        "source": "github",
+        "repo": "cloudflare/skills"
+      }
+    }
+  },
+  "promptSuggestionEnabled": false,
   "skipAutoPermissionPrompt": true,
-  "promptSuggestionEnabled": false
+  "enabledPlugins": {
+    "cloudflare@claude-plugins-official": true
+  }
 }
