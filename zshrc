@@ -16,6 +16,12 @@ bindkey '^ ' autosuggest-accept
 export EDITOR="nvim" # programs will use this by default if you need to edit something
 export VISUAL="$EDITOR" # some programs use this instead of EDITOR
 
+# claude code (and other modern TUIs) check COLORTERM for 24-bit support.
+# SSH doesn't forward it by default, so set it when we're remote so the
+# terminal capability follows the connection. Local terminals set this
+# themselves and don't need this line.
+[ -n "$SSH_CONNECTION" ] && export COLORTERM=truecolor
+
 export PATH="$PATH:$HOME/bin:$HOME/svn/scripts"
 
 # pipx executables are installed here
