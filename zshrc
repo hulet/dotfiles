@@ -199,6 +199,11 @@ case "$(uname -s)" in
 
 esac
 
+# shared system-wide venv: `pip3 install foo` lands here, `python3` finds it.
+# Must come after `brew shellenv`, which prepends Homebrew's bin.
+# Project-local venvs still take precedence once activated.
+export PATH="$HOME/.venv/bin:$PATH"
+
 
 # --- Zim Framework ---
 # assumes zimfw is installed via Homebrew on systems where Homebrew is used

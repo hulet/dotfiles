@@ -81,6 +81,12 @@
         export PATH="/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:$PATH"
         tldr --update
 
+    - description: "--> create shared ~/.venv if missing\n"
+      command: |
+        if [ ! -d "$HOME/.venv" ]; then
+          python3 -m venv "$HOME/.venv"
+        fi
+
     - description: "--> set up macOS OS config\n"
       command: |
         if [ "$(uname)" = "Darwin" ]; then

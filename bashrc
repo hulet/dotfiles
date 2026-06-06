@@ -25,6 +25,10 @@ bind -m vi-insert '"\e[B": "\202\203"'
 export EDITOR="vim" # programs will use this by default if you need to edit something
 export VISUAL="vim" # some programs use this instead of EDITOR
 
+# shared system-wide venv: `pip3 install foo` lands here, `python3` finds it.
+# Project-local venvs still take precedence once activated.
+export PATH="$HOME/.venv/bin:$PATH"
+
 # don't put duplicate lines in the history. See bash(1) for more options
 export HISTCONTROL=ignoredups
 # ... and ignore same sucessive entries.
