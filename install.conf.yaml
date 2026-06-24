@@ -119,3 +119,23 @@
             echo "Skipping zsh symlink: No root permissions"
           fi
         fi
+
+    - description: "--> set up Brother printer as permanent CUPS queue\n"
+      command: |
+        if [ "$(uname -s)" = "Linux" ] && command -v lpadmin >/dev/null; then
+          PRINTER="Brother_MFC_L3770CDW_series"
+          HOST="BRNB42200AFBF51.local"
+          URI="ipp://$HOST:631/ipp/print"
+          # Skip if queue exists AND is permanent (no sudo needed for this check)
+          if command -v ipptool >/dev/null \
+            && ipptool ipp://localhost/printers/$PRINTER get-printer-attributes.test >/dev/null; then
+            echo "Printer $PRINTER already configured"
+          elif timeout 2 avahi-resolve-host-name -4 "$HOST" >/dev/null 2>&1 \
+            || timeout 2 getent hosts "$HOST" >/dev/null 2>&1; then
+            sudo lpadmin -p "$PRINTER" -E -v "$URI" -m everywhere \
+              && lpoptions -d "$PRINTER" >/dev/null \
+              && echo "Printer $PRINTER configured and set as default"
+          else
+            echo "Printer $HOST not reachable, skipping"
+          fi
+        fi
