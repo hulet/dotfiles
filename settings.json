@@ -5,6 +5,7 @@
   },
   "permissions": {
     "allow": [
+      "Bash(7z l:*)",
       "Bash(ag:*)",
       "Bash(bq ls:*)",
       "Bash(bq show:*)",
@@ -85,8 +86,8 @@
       "Bash(ps:*)",
       "Bash(pwd:*)",
       "Bash(rg:*)",
-      "Bash(semgrep --version)",
       "Bash(semgrep scan:*)",
+      "Bash(semgrep --version)",
       "Bash(shasum:*)",
       "Bash(sort:*)",
       "Bash(stat:*)",
@@ -159,6 +160,7 @@
       }
     }
   },
+  "preferredNotifChannel": "notifications_disabled",
   "promptSuggestionEnabled": false,
   "editorMode": "vim",
   "skipAutoPermissionPrompt": true
