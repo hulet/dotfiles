@@ -86,8 +86,8 @@
       "Bash(ps:*)",
       "Bash(pwd:*)",
       "Bash(rg:*)",
-      "Bash(semgrep scan:*)",
       "Bash(semgrep --version)",
+      "Bash(semgrep scan:*)",
       "Bash(shasum:*)",
       "Bash(sort:*)",
       "Bash(stat:*)",
@@ -107,8 +107,11 @@
       "Bash(xxd:*)",
       "Bash(yq:*)"
     ],
-    "ask": [
+    "deny": [
       "Bash(find * -delete*)",
+      "Bash(find ~:*)"
+    ],
+    "ask": [
       "Bash(find * -exec*)",
       "Bash(find * -fls*)",
       "Bash(find * -fprint*)",
@@ -148,9 +151,9 @@
       "Bash(yq -i *)"
     ]
   },
-  "effortLevel": "xhigh",
   "enabledPlugins": {
-    "cloudflare@claude-plugins-official": true
+    "cloudflare@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "cloudflare": {
