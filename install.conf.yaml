@@ -51,6 +51,7 @@
     ~/.gitconfig: gitconfig
     ~/.gitignore: gitignore
     ~/.grep-exclude: grep-exclude
+    ~/.npmrc: npmrc
     ~/.screenrc: screenrc
     ~/.vim: vim
     ~/.vimrc: vimrc
