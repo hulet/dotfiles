@@ -84,10 +84,10 @@ if OS.mac?
     puts "--> Brewfile detected macOS - work"
 
     tap "hashicorp/tap"
-    tap "cloudflare/cloudflare"
+    brew "hashicorp/tap/terraform", trusted: true
 
-    brew "hashicorp/tap/terraform"
-    brew "cloudflare/cloudflare/cf-terraforming"
+    tap "cloudflare/cloudflare"
+    brew "cloudflare/cloudflare/cf-terraforming", trusted: true
     # TODO: pipx install gam7
 
     cask "adobe-acrobat-reader"
