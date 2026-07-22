@@ -99,6 +99,7 @@
       "Bash(type:*)",
       "Bash(uname:*)",
       "Bash(uniq:*)",
+      "Bash(unzip -p:*)",
       "Bash(uptime:*)",
       "Bash(wc:*)",
       "Bash(which:*)",
