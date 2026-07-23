@@ -333,10 +333,6 @@ osascript -e 'tell application "System Events" to tell appearance preferences to
 #http://stackoverflow.com/questions/16800696/how-install-crx-chrome-extension-via-command-line
 # TODO
 
-# thanks to https://stackoverflow.com/a/46460200
-# and https://developer.apple.com/library/archive/technotes/tn2450/_index.html#//apple_ref/doc/uid/DTS40017618-CH1-KEY_TABLE_USAGES
-echo " --> set caps lock to control"
-hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}'
 
 echo " --> Proper calendars start the week on Monday"
 defaults write NSGlobalDomain AppleFirstWeekday -dict gregorian 2

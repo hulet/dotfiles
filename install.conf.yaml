@@ -61,6 +61,9 @@
     ~/Library/Services/Open\ in\ Ghostty.workflow:
       if: '[ "$(uname)" = "Darwin" ]'
       path: 'Open in Ghostty.workflow'
+    ~/Library/LaunchAgents/org.hulet.capslock-to-control.plist:
+      if: '[ "$(uname)" = "Darwin" ]'
+      path: org.hulet.capslock-to-control.plist
 
 - brewfile:
     - Brewfile
@@ -104,6 +107,14 @@
       command: |
         if [ "$(uname -s)" = "Linux" ] && command -v gsettings >/dev/null; then
           gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
+        fi
+
+    - description: "-->  load caps-lock-to-control LaunchAgent (macOS)\n"
+      command: |
+        if [ "$(uname -s)" = "Darwin" ]; then
+          PLIST="$HOME/Library/LaunchAgents/org.hulet.capslock-to-control.plist"
+          launchctl bootout "gui/$UID" "$PLIST" 2>/dev/null || true
+          launchctl bootstrap "gui/$UID" "$PLIST"
         fi
 
     - description: "--> Symlinking Homebrew Zsh to /usr/bin for Docker compatibility\n"
