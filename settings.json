@@ -110,7 +110,11 @@
     ],
     "deny": [
       "Bash(find * -delete*)",
-      "Bash(find ~:*)"
+      "Bash(find /Users/hulet:*)",
+      "Bash(find ~:*)",
+      "Bash(ls /Users/hulet)",
+      "Bash(ls ~)",
+      "Bash(ls ~/)"
     ],
     "ask": [
       "Bash(find * -exec*)",

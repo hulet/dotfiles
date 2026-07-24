@@ -94,6 +94,8 @@ alias vi='nvim'
 alias fvi='vim -u NONE'
 alias myip='curl -w "\n" http://api.ipify.org'
 alias caly='cal $(date +%Y)'
+alias cl='claude'
+alias clr='claude --resume'
 
 # Git / SVN / Docker / Terraform
 alias s='svn'
