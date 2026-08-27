@@ -243,6 +243,9 @@ if command -v eza &> /dev/null; then
     alias ls='eza --group-directories-first --icons=auto'
     alias lsa='ls -a'
     alias lt='eza --tree --level=2 --long --icons --git'
+    alias lt3='eza --tree --level=3 --long --icons --git'
+    alias lt4='eza --tree --level=4 --long --icons --git'
+    alias lt5='eza --tree --level=5 --long --icons --git'
     alias lta='lt -a'
     ## eza doesn't show `.` and `..` unless you -a twice
     ## https://github.com/eza-community/eza?tab=readme-ov-file#filtering-options
