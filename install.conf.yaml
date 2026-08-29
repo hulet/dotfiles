@@ -51,6 +51,9 @@
     ~/.gitconfig: gitconfig
     ~/.gitignore: gitignore
     ~/.grep-exclude: grep-exclude
+    ~/.local/bin/game-with-capslock:
+      if: '[ "$(hostname)" = "bazzite" ]'
+      path: game-with-capslock
     ~/.npmrc: npmrc
     ~/.screenrc: screenrc
     ~/.vim: vim
@@ -103,13 +106,13 @@
           osacompile -o ~/Applications/"Terminal (Ghostty).app" -e 'do shell script "open -a Ghostty"';
         fi
 
-    - description: "-->  remap caps lock to control (GNOME)\n"
+    - description: "--> remap caps lock to control (GNOME)\n"
       command: |
         if [ "$(uname -s)" = "Linux" ] && command -v gsettings >/dev/null; then
           gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
         fi
 
-    - description: "-->  load caps-lock-to-control LaunchAgent (macOS)\n"
+    - description: "--> load caps-lock-to-control LaunchAgent (macOS)\n"
       command: |
         if [ "$(uname -s)" = "Darwin" ]; then
           PLIST="$HOME/Library/LaunchAgents/org.hulet.capslock-to-control.plist"

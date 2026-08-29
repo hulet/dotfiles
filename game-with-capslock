@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+"""Wrapper for games that need real CapsLock. Clears CapsLock state on exit.
+
+Problem: CapsLock is remapped to Control system-wide via gsettings set org.gnome.desktop.input-sources xkb-options
+"['ctrl:nocaps']". Some games need real CapsLock, and exiting the game with CapsLock active left it stuck on.
+
+Solution: /home/bazzite/.local/bin/game-with-capslock — a Python wrapper set as the Steam launch option
+(/home/bazzite/.local/bin/game-with-capslock %command%).
+
+What it does in order:
+
+1. Creates a virtual keyboard via /dev/uinput with a full set of key capabilities (keys 1–127) so that libinput classifies it as
+a real keyboard and the Wayland compositor pays attention to its events. This happens before the game launches, giving libinput
+0.5s to register the device.
+2. Removes the ctrl:nocaps remap (gsettings set ... '[]'), so CapsLock acts as CapsLock in the game.
+3. Launches the game as a child process and waits, forwarding SIGTERM/SIGINT to the game so Steam can still kill it cleanly.
+4. On exit, checks the kernel CapsLock LED (/sys/class/leds/input*::capslock/brightness). If it's on, injects a CapsLock
+press+release through the pre-registered virtual keyboard, toggling it off.
+5. Restores ctrl:nocaps via gsettings.
+
+The two non-obvious things that were required to make the Wayland input injection actually work: the virtual keyboard needed
+enough key capabilities to be treated as a real keyboard by libinput, and it needed to be created well before the events were
+sent (not just moments before).
+
+"""
+import fcntl
+import glob
+import os
+import signal
+import struct
+import subprocess
+import sys
+import time
+
+EV_SYN = 0
+EV_KEY = 1
+KEY_CAPSLOCK = 58
+UI_SET_EVBIT   = 0x40045564
+UI_SET_KEYBIT  = 0x40045565
+UI_DEV_CREATE  = 0x5501
+UI_DEV_DESTROY = 0x5502
+
+
+def caps_is_on():
+    for p in glob.glob('/sys/class/leds/input*::capslock/brightness'):
+        try:
+            if open(p).read().strip() == '1':
+                return True
+        except OSError:
+            pass
+    return False
+
+
+def open_uinput_keyboard():
+    fd = os.open('/dev/uinput', os.O_WRONLY | os.O_NONBLOCK)
+    fcntl.ioctl(fd, UI_SET_EVBIT, EV_SYN)
+    fcntl.ioctl(fd, UI_SET_EVBIT, EV_KEY)
+    # Register enough keys for libinput to classify this as a keyboard
+    for k in range(1, 128):
+        try:
+            fcntl.ioctl(fd, UI_SET_KEYBIT, k)
+        except OSError:
+            pass
+    name = b'capslock-clearer' + b'\0' * 64
+    uud = struct.pack('80sHHHHI' + 'i' * 256, name, 3, 0, 1, 0, 0, *([0] * 256))
+    os.write(fd, uud)
+    fcntl.ioctl(fd, UI_DEV_CREATE)
+    return fd
+
+
+def send_capslock_off(fd):
+    if not caps_is_on():
+        return
+    def ev(t, c, v):
+        os.write(fd, struct.pack('llHHi', int(time.time()), 0, t, c, v))
+    ev(EV_KEY, KEY_CAPSLOCK, 1)
+    ev(EV_SYN, 0, 0)
+    ev(EV_KEY, KEY_CAPSLOCK, 0)
+    ev(EV_SYN, 0, 0)
+    time.sleep(0.1)
+
+
+def gsettings(verb, *args):
+    subprocess.run(['gsettings', verb, 'org.gnome.desktop.input-sources', 'xkb-options', *args],
+                   check=False)
+
+
+prev_options = subprocess.check_output(
+    ['gsettings', 'get', 'org.gnome.desktop.input-sources', 'xkb-options']
+).decode().strip()
+
+uinput_fd = None
+try:
+    # Create virtual keyboard BEFORE the game so libinput has time to register it
+    uinput_fd = open_uinput_keyboard()
+    time.sleep(0.5)
+
+    gsettings('set', '[]')
+
+    proc = subprocess.Popen(sys.argv[1:])
+
+    signal.signal(signal.SIGTERM, lambda _s, _f: proc.send_signal(signal.SIGTERM))
+    signal.signal(signal.SIGINT,  lambda _s, _f: proc.send_signal(signal.SIGINT))
+
+    proc.wait()
+
+finally:
+    if uinput_fd is not None:
+        send_capslock_off(uinput_fd)
+    gsettings('set', prev_options)
+    if uinput_fd is not None:
+        try:
+            fcntl.ioctl(uinput_fd, UI_DEV_DESTROY)
+        except OSError:
+            pass
+        os.close(uinput_fd)
