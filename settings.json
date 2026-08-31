@@ -225,6 +225,30 @@
       }
     }
   },
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true,
+    "network": {
+      "allowedDomains": [
+        "api.cloudflare.com",
+        "api.github.com",
+        "bitbucket.org",
+        "files.pythonhosted.org",
+        "oauth2.googleapis.com",
+        "pypi.org",
+        "raw.githubusercontent.com",
+        "registry.npmjs.org",
+        "storage.googleapis.com"
+      ],
+      "allowAllUnixSockets": true
+    },
+    "filesystem": {
+      "allowWrite": [
+        "~/.config/gcloud"
+      ]
+    },
+    "enableWeakerNetworkIsolation": true
+  },
   "editorMode": "vim",
   "preferredNotifChannel": "notifications_disabled",
   "promptSuggestionEnabled": false,
