@@ -1,7 +1,8 @@
 {
   "env": {
     "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_NO_FLICKER": "0"
   },
   "permissions": {
     "allow": [
@@ -209,7 +210,8 @@
       "mcp__claude_ai_Slack__slack_send_message",
       "mcp__claude_ai_Slack__slack_update_canvas",
       "mcp__Salesforce_DX__deploy_metadata"
-    ]
+    ],
+    "defaultMode": "auto"
   },
   "enabledPlugins": {
     "cloudflare@claude-plugins-official": true,
@@ -223,8 +225,8 @@
       }
     }
   },
+  "editorMode": "vim",
   "preferredNotifChannel": "notifications_disabled",
   "promptSuggestionEnabled": false,
-  "editorMode": "vim",
   "skipAutoPermissionPrompt": true
 }
