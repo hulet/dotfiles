@@ -1,0 +1,79 @@
+{
+  "env": {
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_NO_FLICKER": "0"
+  },
+  "permissions": {
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git remote add*)",
+      "Bash(git remote prune*)",
+      "Bash(git remote remove*)",
+      "Bash(git remote rename*)",
+      "Bash(git remote rm*)",
+      "Bash(git remote set-branches*)",
+      "Bash(git remote set-head*)",
+      "Bash(git remote set-url*)",
+      "Bash(git remote update*)",
+      "mcp__claude_ai_Asana__delete_task",
+      "mcp__claude_ai_Asana__save_project_changes_confirm",
+      "mcp__claude_ai_Asana__save_task_changes_confirm",
+      "mcp__claude_ai_Asana__update_project",
+      "mcp__claude_ai_Asana__update_tasks",
+      "mcp__claude_ai_Atlassian_Rovo__editJiraIssue",
+      "mcp__claude_ai_Atlassian_Rovo__transitionJiraIssue",
+      "mcp__claude_ai_Atlassian_Rovo__updateConfluencePage",
+      "mcp__claude_ai_Gmail__apply_sensitive_message_label",
+      "mcp__claude_ai_Gmail__apply_sensitive_thread_label",
+      "mcp__claude_ai_Gmail__label_message",
+      "mcp__claude_ai_Gmail__label_thread",
+      "mcp__claude_ai_Gmail__mark_message_spam",
+      "mcp__claude_ai_Gmail__mark_thread_spam",
+      "mcp__claude_ai_Gmail__trash_message",
+      "mcp__claude_ai_Gmail__trash_thread",
+      "mcp__claude_ai_Gmail__unlabel_message",
+      "mcp__claude_ai_Gmail__unlabel_thread",
+      "mcp__claude_ai_Gmail__unmark_message_spam",
+      "mcp__claude_ai_Gmail__unmark_thread_spam",
+      "mcp__claude_ai_Gmail__untrash_message",
+      "mcp__claude_ai_Gmail__untrash_thread",
+      "mcp__claude_ai_Gmail__update_message_labels",
+      "mcp__claude_ai_Google_Calendar__delete_event",
+      "mcp__claude_ai_Google_Calendar__respond_to_event",
+      "mcp__claude_ai_Google_Calendar__update_event",
+      "mcp__claude_ai_Google_Drive__share_file",
+      "mcp__claude_ai_Google_Drive__trash_file",
+      "mcp__claude_ai_Google_Drive__update_file",
+      "mcp__claude_ai_Notion__notion-convert-page-to-skill",
+      "mcp__claude_ai_Notion__notion-move-pages",
+      "mcp__claude_ai_Notion__notion-update-data-source",
+      "mcp__claude_ai_Notion__notion-update-folder",
+      "mcp__claude_ai_Notion__notion-update-page",
+      "mcp__claude_ai_Notion__notion-update-view",
+      "mcp__claude_ai_Salesforce_Hosted_MCP_sobject-mutations__updateRelatedRecord",
+      "mcp__claude_ai_Salesforce_Hosted_MCP_sobject-mutations__updateSobjectRecord",
+      "mcp__claude_ai_Slack__slack_add_reaction",
+      "mcp__claude_ai_Slack__slack_schedule_message",
+      "mcp__claude_ai_Slack__slack_send_message",
+      "mcp__claude_ai_Slack__slack_update_canvas",
+      "mcp__Salesforce_DX__deploy_metadata"
+    ]
+  },
+  "enabledPlugins": {
+    "cloudflare@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "cloudflare": {
+      "source": {
+        "source": "github",
+        "repo": "cloudflare/skills"
+      }
+    }
+  },
+  "editorMode": "vim",
+  "preferredNotifChannel": "notifications_disabled",
+  "promptSuggestionEnabled": false,
+  "skipAutoPermissionPrompt": true
+}

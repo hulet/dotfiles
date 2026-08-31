@@ -140,6 +140,26 @@ wk() {
     echo `date` $@ >> ~/worklog.txt
 }
 
+# sbx run claude, but only pass --no-share-skills (opt out of the shared
+# skills-store mount) on first creation -- it errors/is ignored once the
+# sandbox already exists, so we only add it when there's nothing to attach to.
+sbxc() {
+    local name="claude-$(basename "$PWD" | tr -cs 'A-Za-z0-9.+-' '-')"
+    name="${name%-}"
+    if sbx ls -q 2>/dev/null | grep -qx -- "$name"; then
+        sbx run claude --name "$name" -- --dangerously-skip-permissions --settings ~/git/dotfiles/sbx-claude-settings.json "$@"
+    else
+        # workspace mounts, like --no-share-skills, are fixed at creation time,
+        # so always give new sandboxes read-only access to dotfiles (e.g. for
+        # --settings ~/git/dotfiles/settings.json) -- unless dotfiles is
+        # already the primary (read-write) workspace, since sbx rejects
+        # mounting the same path both rw and ro
+        local dotfiles_mount=()
+        [[ "${PWD:A}" != "${HOME:A}/git/dotfiles" ]] && dotfiles_mount=("$HOME/git/dotfiles:ro")
+        sbx run claude . "${dotfiles_mount[@]}" --name "$name" --no-share-skills -- --dangerously-skip-permissions --settings ~/git/dotfiles/sbx-claude-settings.json "$@"
+    fi
+}
+
 # --- PLATFORM SPECIFIC ---
 case "$(uname -s)" in
     Darwin)
