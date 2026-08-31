@@ -14,3 +14,10 @@ vim.opt.fillchars:append({ diff = " " })
 -- Disable the automatic sync with system clipboard
 -- otherwise deleting text in neovim stomps the system clipboard
 vim.opt.clipboard = ""
+
+-- When launched in diff mode (`nvim -d`, e.g. `git difftool` / nvimdiff), don't
+-- start any LSP servers. Avoids the terraformls "editing a single file" warning
+-- and the slow startup when opening terraform files in a git diff.
+if vim.tbl_contains(vim.v.argv, "-d") then
+  vim.lsp.start = function() end
+end
