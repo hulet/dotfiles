@@ -141,22 +141,18 @@ wk() {
 }
 
 # sbx run claude, but only pass --no-share-skills (opt out of the shared
-# skills-store mount) on first creation -- it errors/is ignored once the
-# sandbox already exists, so we only add it when there's nothing to attach to.
+# skills-store mount) and --kit on first creation -- they're fixed at
+# creation time and error/are ignored once the sandbox already exists, so
+# we only add them when there's nothing to attach to. The cloud-clis kit
+# drops our settings file at /home/agent/sbx-claude-settings.json (via its
+# files/home/), so no dotfiles mount is needed to reach it.
 sbxc() {
     local name="claude-$(basename "$PWD" | tr -cs 'A-Za-z0-9.+-' '-')"
     name="${name%-}"
     if sbx ls -q 2>/dev/null | grep -qx -- "$name"; then
-        sbx run claude --name "$name" -- --dangerously-skip-permissions --settings ~/git/dotfiles/sbx-claude-settings.json "$@"
+        sbx run claude --name "$name" -- --dangerously-skip-permissions --settings /home/agent/sbx-claude-settings.json "$@"
     else
-        # workspace mounts, like --no-share-skills, are fixed at creation time,
-        # so always give new sandboxes read-only access to dotfiles (e.g. for
-        # --settings ~/git/dotfiles/settings.json) -- unless dotfiles is
-        # already the primary (read-write) workspace, since sbx rejects
-        # mounting the same path both rw and ro
-        local dotfiles_mount=()
-        [[ "${PWD:A}" != "${HOME:A}/git/dotfiles" ]] && dotfiles_mount=("$HOME/git/dotfiles:ro")
-        sbx run claude . "${dotfiles_mount[@]}" --name "$name" --no-share-skills -- --dangerously-skip-permissions --settings ~/git/dotfiles/sbx-claude-settings.json "$@"
+        sbx run claude . --name "$name" --no-share-skills --kit "$HOME/git/dotfiles/kits/cloud-clis" -- --dangerously-skip-permissions --settings /home/agent/sbx-claude-settings.json "$@"
     fi
 }
 

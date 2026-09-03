@@ -1,0 +1,24 @@
+schemaVersion: "2"
+kind: mixin
+name: cloud-clis
+setup:
+  install:
+    - command: |
+        set -e
+        command -v curl >/dev/null 2>&1 || (apt-get update -qq && apt-get install -y --no-install-recommends curl)
+        export HOME=/home/agent
+        curl -sSL https://sdk.cloud.google.com | bash -s -- --disable-prompts
+        ln -sf /home/agent/google-cloud-sdk/bin/gcloud /usr/local/bin/gcloud
+        ln -sf /home/agent/google-cloud-sdk/bin/gsutil /usr/local/bin/gsutil
+        ln -sf /home/agent/google-cloud-sdk/bin/bq /usr/local/bin/bq
+        chown -R agent:agent /home/agent/google-cloud-sdk /home/agent/.config
+      description: "install gcloud CLI"
+    - command: |
+        set -e
+        command -v curl >/dev/null 2>&1 || (apt-get update -qq && apt-get install -y --no-install-recommends curl)
+        command -v unzip >/dev/null 2>&1 || (apt-get update -qq && apt-get install -y --no-install-recommends unzip)
+        curl -sSL "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m).zip" -o /tmp/awscliv2.zip
+        unzip -q /tmp/awscliv2.zip -d /tmp
+        /tmp/aws/install
+        rm -rf /tmp/awscliv2.zip /tmp/aws
+      description: "install AWS CLI v2"
