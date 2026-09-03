@@ -244,6 +244,7 @@
     },
     "filesystem": {
       "allowWrite": [
+        "~/.azure",
         "~/.config/gcloud"
       ]
     },
