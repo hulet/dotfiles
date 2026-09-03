@@ -143,7 +143,7 @@ wk() {
 # sbx run claude, but only pass --no-share-skills (opt out of the shared
 # skills-store mount) and --kit on first creation -- they're fixed at
 # creation time and error/are ignored once the sandbox already exists, so
-# we only add them when there's nothing to attach to. The cloud-clis kit
+# we only add them when there's nothing to attach to. The sbx-defaults kit
 # drops our settings file at /home/agent/sbx-claude-settings.json (via its
 # files/home/), so no dotfiles mount is needed to reach it.
 sbxc() {
@@ -152,7 +152,7 @@ sbxc() {
     if sbx ls -q 2>/dev/null | grep -qx -- "$name"; then
         sbx run claude --name "$name" -- --dangerously-skip-permissions --settings /home/agent/sbx-claude-settings.json "$@"
     else
-        sbx run claude . --name "$name" --no-share-skills --kit "$HOME/git/dotfiles/kits/cloud-clis" -- --dangerously-skip-permissions --settings /home/agent/sbx-claude-settings.json "$@"
+        sbx run claude . --name "$name" --no-share-skills --kit "$HOME/git/dotfiles/kits/sbx-defaults" -- --dangerously-skip-permissions --settings /home/agent/sbx-claude-settings.json "$@"
     fi
 }
 

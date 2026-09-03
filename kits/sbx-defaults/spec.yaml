@@ -1,6 +1,6 @@
 schemaVersion: "2"
 kind: mixin
-name: cloud-clis
+name: sbx-defaults
 setup:
   install:
     - command: |
