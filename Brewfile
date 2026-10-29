@@ -37,6 +37,7 @@ brew "htop"
 brew "iftop"
 brew "lazygit"
 brew "rename"
+brew "unar"
 
 # From Omarchy
 tap "tobi/try", "https://github.com/tobi/try"
@@ -107,6 +108,7 @@ if OS.mac?
 
     cask "handbrake-app"
     cask "mullvad-vpn"
+    cask "orbstack" # provides docker, non-commercial use only
     cask "steam"
     cask "transmission"
 
