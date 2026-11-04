@@ -1,5 +1,5 @@
-# cloud-clis: Google Cloud and AWS command-line tools, replacing
-# sbx-defaults' unpinned `curl | bash` installs.
+# cloud-clis: Google Cloud and AWS command-line tools, as
+# pinned, checksum-verified installs.
 #
 # sbx enforces single-label wildcards only: *.amazonaws.com matches
 # sts.amazonaws.com but not regional endpoints such as
@@ -44,8 +44,8 @@ permissions:
 
 setup:
   install:
-    # Google publishes no independent checksum for these archives; the hashes
-    # were taken from the TLS download at dl.google.com when pinned.
+    # Google lists archive hashes only for the current release; these were
+    # taken from the TLS download at dl.google.com when pinned.
     # Update procedure: kits/README.md, "Updating a pinned tool".
     - command: |
         set -eu
@@ -60,7 +60,7 @@ setup:
         curl -fsSL -o "$tmp/$asset" "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/$asset"
         echo "$sum  $tmp/$asset" | sha256sum -c -
         mkdir -p /opt/sbx-cloud-clis
-        tar -xzf "$tmp/$asset" -C /opt/sbx-cloud-clis
+        tar -xzf "$tmp/$asset" --no-same-owner -C /opt/sbx-cloud-clis
         rm -rf "$tmp"
         for bin in gcloud gsutil bq; do
           ln -sf "/opt/sbx-cloud-clis/google-cloud-sdk/bin/$bin" "/usr/local/bin/$bin"
