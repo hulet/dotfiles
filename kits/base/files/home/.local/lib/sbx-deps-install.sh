@@ -30,12 +30,13 @@ if ! cd "$workspace"; then
   exit 0
 fi
 
-lock="${DEPS_INSTALL_LOCK:-${TMPDIR:-/tmp}/sbx-deps-install.lock}"
+lock="${DEPS_INSTALL_LOCK:-/tmp/sbx-deps-install.lock}"
 max_wait="${DEPS_INSTALL_WAIT:-600}"
 waited=0
 while ! mkdir "$lock" 2>/dev/null; do
   holder="$(cat "$lock/pid" 2>/dev/null)"
   if [ -n "$holder" ] && ! kill -0 "$holder" 2>/dev/null; then
+    # Accepted race: two waiters seeing the same dead pid can both take over, costing at most a repeated install.
     rm -rf "$lock"
     continue
   fi
