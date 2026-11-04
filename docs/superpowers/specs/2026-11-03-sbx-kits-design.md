@@ -58,7 +58,10 @@ tool trees under `/opt/sbx-<kit>/`.
   vendor publishes one, and its reported version is asserted after install.
 - `kits/README.md` holds the overview: the authoritative kit catalog (see
   "Kit catalog" under base), the URL format, example combinations, how to add
-  a kit (including "add a catalog line to `base`"), and these conventions.
+  a kit (including "add a catalog line to `base`"), these conventions, and a
+  first-run note: on a new sandbox, exit and re-attach once so the plugins
+  installed during startup load (a fresh plugin install only takes effect in
+  the next Claude Code session).
 
 ## Kit: base
 
@@ -239,8 +242,9 @@ mention from the mounts script header, and delete the WORKAROUND comment.
 ward-manager and spellcheck-app each get a "Develop in a sandbox" section:
 the kits used and why (ward-manager: `base`, `scanners`, `postgres-client`;
 spellcheck-app: `base`, `scanners`), the full create command, the re-attach
-command (`sbx run claude -- --settings …` from the repo), and a one-line
-`sbxc` equivalent. Existing host-side tips stay. READMEs do not pass
+command (`sbx run claude -- --settings …` from the repo), a one-line
+`sbxc` equivalent, and the first-run note: on a new sandbox, exit and
+re-attach once to load plugins. Existing host-side tips stay. READMEs do not pass
 `--dangerously-skip-permissions`. ward-manager's #420 paragraph and manual
 re-apply commands point at the new script names.
 
