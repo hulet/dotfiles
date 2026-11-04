@@ -24,6 +24,7 @@ setup:
     # until a project needs one.
     - command: |
         set -eu
+        export DEBIAN_FRONTEND=noninteractive
         v='${{ kit.args.version }}'
         apt-get update
         if ! apt-cache show "postgresql-client-$v" >/dev/null 2>&1; then

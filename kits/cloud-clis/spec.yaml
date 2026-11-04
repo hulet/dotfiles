@@ -3,8 +3,13 @@
 #
 # sbx enforces single-label wildcards only: *.amazonaws.com matches
 # sts.amazonaws.com but not regional endpoints such as
-# s3.us-west-2.amazonaws.com. Add the regions you use below, or allow them
-# with `sbx policy allow network <host>`.
+# s3.us-west-2.amazonaws.com. AWS CLI v2 signs in through regional hosts and
+# defaults to a browser redirect to 127.0.0.1 that the host browser cannot
+# reach, so use `aws configure sso --use-device-code` / `aws sso login
+# --use-device-code`, and allow, for your region R: oidc.R.amazonaws.com,
+# portal.sso.R.amazonaws.com, sts.R.amazonaws.com, plus each service's
+# regional endpoint (e.g. s3.R.amazonaws.com), with
+# `sbx policy allow network <host>`.
 schemaVersion: '2'
 kind: mixin
 name: cloud-clis
@@ -12,8 +17,9 @@ displayName: Cloud CLIs
 description: >-
   gcloud, gsutil and bq (Google Cloud CLI) and AWS CLI v2, pinned and
   checksum-verified, with the sign-in and API hosts they need.
-# Google Cloud CLI (Apache-2.0), AWS CLI (Apache-2.0).
-licenses: [Apache-2.0]
+# Google Cloud CLI (Apache-2.0), AWS CLI (Apache-2.0); both bundle CPython
+# (PSF-2.0).
+licenses: [Apache-2.0, PSF-2.0]
 
 environment:
   variables:
@@ -31,8 +37,8 @@ permissions:
       - accounts.google.com
       - oauth2.googleapis.com
       - '*.googleapis.com'
-      # AWS sign-in (STS, IAM Identity Center portals) and global endpoints.
-      - sts.amazonaws.com
+      # AWS global endpoints and IAM Identity Center portals; regional
+      # endpoints (sign-in included) need explicit entries, see above.
       - '*.amazonaws.com'
       - '*.awsapps.com'
 
@@ -93,10 +99,14 @@ agentInstructions:
 
     `gcloud`, `gsutil`, `bq` and `aws` (v2) are on PATH, pinned by the
     `cloud-clis` kit. They start signed out. Sign in with
-    `gcloud auth login --no-launch-browser` or `aws configure sso`, and ask
-    the user to complete the browser step on the host. Credentials live only
+    `gcloud auth login --no-launch-browser` or
+    `aws configure sso --use-device-code` (`aws sso login --use-device-code`
+    later), and ask the user to complete the browser step on the host. Credentials live only
     in this sandbox and are lost when it is recreated.
 
     Regional AWS endpoints (e.g. `s3.us-west-2.amazonaws.com`) are not
-    covered by the kit's `*.amazonaws.com` rule; if one is blocked (HTTP 403),
-    ask the user to `sbx policy allow network <host>` on the host.
+    covered by the kit's `*.amazonaws.com` rule. If one is blocked (HTTP
+    403), ask the user to allow, for their region R, `oidc.R.amazonaws.com`,
+    `portal.sso.R.amazonaws.com`, `sts.R.amazonaws.com` and each service's
+    regional endpoint (e.g. `s3.R.amazonaws.com`) with
+    `sbx policy allow network <host>` on the host.
