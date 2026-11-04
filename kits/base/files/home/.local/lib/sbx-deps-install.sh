@@ -11,12 +11,13 @@
 # so an unchanged project costs nothing. The stamp is removed before an install
 # starts, so it only ever means "the last install fully succeeded".
 #
-# A new sandbox runs this twice at once (the startup command and the first
-# session's SessionStart hook). `npm ci` empties node_modules, so the runs are
-# serialized with a lock directory outside the private dirs; a second run waits
-# (up to DEPS_INSTALL_WAIT seconds, default 600) so its session starts with the
-# dependencies installed. A lock whose recorded pid is dead is taken over.
-# DEPS_INSTALL_LOCK and DEPS_INSTALL_WAIT exist so tests can override both.
+# Runs can overlap: a new sandbox runs this from the startup command and the
+# first session's SessionStart hook, and a manual re-apply can overlap either.
+# `npm ci` empties node_modules, so runs are serialized with a lock directory
+# outside the private dirs; a second run waits (up to DEPS_INSTALL_WAIT
+# seconds, default 600) so its session starts with the dependencies installed.
+# A lock whose recorded pid is dead is taken over. DEPS_INSTALL_LOCK and
+# DEPS_INSTALL_WAIT exist so tests can override both.
 #
 # It installs only into a directory that is a mount point, so it can never
 # write into the host's own node_modules or .venv if the mount is missing.

@@ -65,10 +65,11 @@
   "hooks": {
     "SessionStart": [
       {
+        "matcher": "startup|resume",
         "hooks": [
           {
             "type": "command",
-            "command": "sudo -n sh /home/agent/.local/lib/sbx-workspace-mounts.sh \"$WORKSPACE_DIR\"; sh /home/agent/.local/lib/sbx-deps-install.sh \"$WORKSPACE_DIR\"; claude plugin marketplace add anthropics/claude-plugins-official && claude plugin install superpowers@claude-plugins-official",
+            "command": "PATH=\"$HOME/.local/bin:$PATH\"; sudo -n sh /home/agent/.local/lib/sbx-workspace-mounts.sh \"$WORKSPACE_DIR\" >>/tmp/sbx-session-start.log; sh /home/agent/.local/lib/sbx-deps-install.sh \"$WORKSPACE_DIR\" >>/tmp/sbx-session-start.log; claude plugin marketplace add anthropics/claude-plugins-official >>/tmp/sbx-session-start.log && claude plugin install superpowers@claude-plugins-official >>/tmp/sbx-session-start.log",
             "timeout": 900
           }
         ]

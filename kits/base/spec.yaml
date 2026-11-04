@@ -114,7 +114,10 @@ setup:
   #     re-apply commands;
   #   - drop the SessionStart mention from the header of
   #     files/home/.local/lib/sbx-workspace-mounts.sh and the #420 mention
-  #     from sbx-deps-install.sh;
+  #     from sbx-deps-install.sh, and reword its concurrency paragraph (the
+  #     lock stays: a manual re-apply can still overlap a startup run);
+  #   - in kits/README.md, drop the bullet saying the first session waits for
+  #     the first install;
   #   - delete this comment.
   startup:
     # Mounts should exist before the install writes into them;
@@ -157,7 +160,7 @@ agentInstructions:
       image's own Node 22 is still at `/usr/bin/node`; never use it.
     - Dependency and build directories are sandbox-private: `node_modules`
       (when the repo has `package.json`), `.venv` (`pyproject.toml` or
-      `requirements*.txt`) and `.svelte-kit` (`svelte.config.*`) are
+      `requirements*.txt`) and `.svelte-kit` (`svelte.config.js/.ts/.mjs`) are
       bind-mounted from sandbox-local disk, so the host's macOS builds and
       this sandbox's Linux builds never overwrite each other. Install freely:
       lockfile changes reach the host as ordinary diffs, and the user installs
@@ -178,6 +181,8 @@ agentInstructions:
       sudo sh ~/.local/lib/sbx-workspace-mounts.sh "$PWD"
       sh ~/.local/lib/sbx-deps-install.sh "$PWD"
       ```
+
+      Session-start output is logged to /tmp/sbx-session-start.log.
 
     - `superpowers` is installed at sandbox start and every session start from
       the official marketplace. A fresh install loads in the *next* session;
