@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 # shellcheck disable=SC2034  # fail, work and real_uname are used by the scripts that source this file
-# Shared helpers for tests/sbx-kits. Source it; it sets `fail` and `work`.
+# Shared helpers for sbx/tests. Source it; it sets `fail` and `work`.
 set -u
 # Resolve tools before PATH changes; tests stub some of them.
 chmod_bin="$(command -v chmod)"

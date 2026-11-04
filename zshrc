@@ -143,8 +143,8 @@ wk() {
 }
 
 # sbxc: create or re-attach to this directory's Claude Code sandbox with
-# kits from dotfiles/kits (see sbxc.zsh beside this file).
-source "${${(%):-%x}:A:h}/sbxc.zsh"
+# kits from dotfiles/sbx/kits (see sbx/sbxc.zsh).
+source "${${(%):-%x}:A:h}/sbx/sbxc.zsh"
 
 # --- PLATFORM SPECIFIC ---
 case "$(uname -s)" in

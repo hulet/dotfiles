@@ -1,9 +1,9 @@
 #!/bin/sh
-# Local checks for dotfiles/kits and sbxc. Run before pushing kit changes to
+# Local checks for dotfiles/sbx/kits and sbxc. Run before pushing kit changes to
 # main: sandboxes read kits from main directly, and dotfiles has no CI.
 set -u
 here="$(cd "$(dirname "$0")" && pwd)"
-root="$(cd "$here/../.." && pwd)"
+root="$(cd "$here/.." && pwd)"  # dotfiles/sbx
 lib="$root/kits/base/files/home/.local/lib"
 
 if python3 -c 'import yaml' 2>/dev/null; then
@@ -11,7 +11,7 @@ if python3 -c 'import yaml' 2>/dev/null; then
 elif command -v uv >/dev/null 2>&1; then
   PY="uv run --quiet --no-project --with pyyaml python3 -I"
 else
-  echo "tests/sbx-kits needs PyYAML: pip install pyyaml (or install uv)" >&2
+  echo "sbx/tests needs PyYAML: pip install pyyaml (or install uv)" >&2
   exit 2
 fi
 export PY

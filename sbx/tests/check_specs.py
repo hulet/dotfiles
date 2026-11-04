@@ -1,4 +1,4 @@
-"""Static checks for dotfiles/kits: fields, catalogs, checksum pinning."""
+"""Static checks for dotfiles/sbx/kits: fields, catalogs, checksum pinning."""
 import json
 import pathlib
 import re
@@ -32,7 +32,7 @@ def main(root):
     errors = []
     names = sorted(p.name for p in kits_dir.iterdir() if p.is_dir())
     if not names:
-        errors.append("no kits found under kits/")
+        errors.append("no kits found under sbx/kits/")
     specs = {}
     for name in names:
         path = kits_dir / name / "spec.yaml"
@@ -72,16 +72,16 @@ def main(root):
             has_curl = True
         if has_curl and "Updating a pinned tool" not in path.read_text():
             errors.append(
-                f"{name}: pinned steps need a comment pointing to kits/README.md, 'Updating a pinned tool'"
+                f"{name}: pinned steps need a comment pointing to sbx/kits/README.md, 'Updating a pinned tool'"
             )
     base = specs.get("base")
     if not base:
-        errors.append("kits/base is required")
+        errors.append("sbx/kits/base is required")
     else:
         content = (base.get("agentInstructions") or {}).get("content", "")
         listed = catalog(content, "### Kit catalog")
         if listed != set(names):
-            errors.append(f"base catalog lists {sorted(listed)}, kits/ has {names}")
+            errors.append(f"base catalog lists {sorted(listed)}, sbx/kits/ has {names}")
     home = kits_dir / "base" / "files" / "home"
     settings = home / "sbx-claude-settings.json"
     texts = {f"{n}/spec.yaml": (kits_dir / n / "spec.yaml") for n in specs}
@@ -97,14 +97,14 @@ def main(root):
         for ref in sorted(set(AGENT_PATH.findall(path.read_text()))):
             rel = ref[len("/home/agent/"):].rstrip("./-")
             if rel and not (home / rel).exists():
-                errors.append(f"{label}: {ref} has no kits/base/files/home/{rel}")
+                errors.append(f"{label}: {ref} has no sbx/kits/base/files/home/{rel}")
     readme = kits_dir / "README.md"
     if readme.is_file():
         listed = catalog(readme.read_text(), "## Kit catalog")
         if listed != set(names):
-            errors.append(f"kits/README.md catalog lists {sorted(listed)}, kits/ has {names}")
+            errors.append(f"sbx/kits/README.md catalog lists {sorted(listed)}, sbx/kits/ has {names}")
     else:
-        errors.append("kits/README.md is missing")
+        errors.append("sbx/kits/README.md is missing")
     for error in errors:
         print(f"  not ok: {error}", file=sys.stderr)
     return 1 if errors else 0

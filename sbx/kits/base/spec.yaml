@@ -1,7 +1,7 @@
 # base: the mixin every sandbox gets — pinned Node 24, sandbox-private
 # dependency and build directories with lockfile installs, the superpowers
 # plugin, the Claude Code settings file, and every general host any project
-# may reach. kits/README.md lists the other kits and how to combine them.
+# may reach. sbx/kits/README.md lists the other kits and how to combine them.
 #
 # The settings file is loaded with a claude CLI argument on every `sbx run`
 # (`-- --settings /home/agent/sbx-claude-settings.json`):
@@ -67,7 +67,7 @@ setup:
     # The image's Node is 22: it cannot run code that needs 24 (ward-manager's
     # scripts/migrate.ts) and engine-strict projects refuse its npm ci.
     # /usr/local/bin precedes the image's /usr/bin on PATH.
-    # Update procedure: kits/README.md, "Updating a pinned tool".
+    # Update procedure: sbx/kits/README.md, "Updating a pinned tool".
     - command: |
         set -eu
         version=24.22.2
@@ -116,7 +116,7 @@ setup:
   #     files/home/.local/lib/sbx-workspace-mounts.sh and the #420 mention
   #     from sbx-deps-install.sh, and reword its concurrency paragraph (the
   #     lock stays: a manual re-apply can still overlap a startup run);
-  #   - in kits/README.md, drop the bullet saying the first session waits for
+  #   - in sbx/kits/README.md, drop the bullet saying the first session waits for
   #     the first install;
   #   - delete this comment.
   startup:
@@ -210,7 +210,7 @@ agentInstructions:
 
     These were the kits available when this sandbox was created. For the
     current list, fetch
-    https://raw.githubusercontent.com/hulet/dotfiles/main/kits/README.md
+    https://raw.githubusercontent.com/hulet/dotfiles/main/sbx/kits/README.md
     (section "Kit catalog").
 
     - **`base`** — this kit; in every sandbox.
@@ -231,9 +231,9 @@ agentInstructions:
        progress; on the host, `sbx rm <sandbox>`, then `sbxc <kit> ...` or the
        project README's create command with an extra `--kit`. Recreating
        reinstalls the private dependency directories and loses cloud sign-ins.
-    3. If no kit provides it, say so and suggest a new kit in `dotfiles/kits`
+    3. If no kit provides it, say so and suggest a new kit in `dotfiles/sbx/kits`
        or a one-off `sbx policy allow` plus a manual install.
 
     The session-start re-runs above are a workaround for sbx bug
-    docker/sbx-releases#420; the WORKAROUND comment in `kits/base/spec.yaml`
+    docker/sbx-releases#420; the WORKAROUND comment in `sbx/kits/base/spec.yaml`
     says how to confirm the fix and what to remove.

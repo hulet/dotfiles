@@ -22,7 +22,7 @@ expect() { # expect <description> <exact log line>
 }
 reset() { : > "$work/log"; }
 
-K='git+https://github.com/hulet/dotfiles.git#ref=main&dir=kits'
+K='git+https://github.com/hulet/dotfiles.git#ref=main&dir=sbx/kits'
 S='-- --dangerously-skip-permissions --settings /home/agent/sbx-claude-settings.json'
 mkdir -p "$work/My App"
 cd "$work/My App"

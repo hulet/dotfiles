@@ -27,7 +27,7 @@ permissions:
 
 setup:
   install:
-    # Update procedure: kits/README.md, "Updating a pinned tool".
+    # Update procedure: sbx/kits/README.md, "Updating a pinned tool".
     - command: |
         set -eu
         version=8.30.1
@@ -48,7 +48,7 @@ setup:
 
     # The hashes match hadolint's checksums.sha256 and GitHub's asset digests
     # (cross-checked against the binary in hadolint/hadolint's image).
-    # Update procedure: kits/README.md, "Updating a pinned tool".
+    # Update procedure: sbx/kits/README.md, "Updating a pinned tool".
     - command: |
         set -eu
         version=2.15.1
@@ -71,7 +71,7 @@ setup:
     # docs/superpowers/specs/2026-09-19-local-quality-tooling-design.md).
     # Never drop these hashes or fetch them at install time: a re-pointed tag
     # serves a different file under the same URL.
-    # Update procedure: kits/README.md, "Updating a pinned tool".
+    # Update procedure: sbx/kits/README.md, "Updating a pinned tool".
     - command: |
         set -eu
         version=0.74.0

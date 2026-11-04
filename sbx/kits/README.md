@@ -27,13 +27,13 @@ Each kit is referenced by URL; the repo is public, so no credentials are
 needed:
 
 ```
-git+https://github.com/hulet/dotfiles.git#ref=main&dir=kits/<name>
+git+https://github.com/hulet/dotfiles.git#ref=main&dir=sbx/kits/<name>
 ```
 
 From a project directory, on the host:
 
 ```sh
-K='git+https://github.com/hulet/dotfiles.git#ref=main&dir=kits'
+K='git+https://github.com/hulet/dotfiles.git#ref=main&dir=sbx/kits'
 sbx run claude . --kit "$K/base" --kit "$K/scanners" \
   -- --settings /home/agent/sbx-claude-settings.json
 ```
@@ -66,13 +66,13 @@ sbxc                            # re-attach
 
 ## Adding a kit
 
-1. Create `kits/<name>/spec.yaml` (`schemaVersion: '2'`, `kind: mixin`,
+1. Create `sbx/kits/<name>/spec.yaml` (`schemaVersion: '2'`, `kind: mixin`,
    `name: <name>`, `displayName`, `description`, `agentInstructions`). Keep
    the tool's network hosts in its own kit unless every project may reach
    them (then they belong in `base`).
 2. Add a catalog line in this file **and** in `base`'s `agentInstructions`
    (`### Kit catalog`), in the `- **\`name\`** — ...` form.
-3. Run `tests/sbx-kits/run.sh`.
+3. Run `sbx/tests/run.sh`.
 4. Try it in a throwaway sandbox (below), then push to `main`.
 
 `sbxc` needs no change: it maps any kit name to its directory here.
@@ -84,7 +84,7 @@ sandbox, from a scratch directory:
 
 ```sh
 mkdir -p /tmp/kit-try && cd /tmp/kit-try
-sbx run claude . --kit ~/git/dotfiles/kits/base --kit ~/git/dotfiles/kits/<name> \
+sbx run claude . --kit ~/git/dotfiles/sbx/kits/base --kit ~/git/dotfiles/sbx/kits/<name> \
   -- --settings /home/agent/sbx-claude-settings.json
 ```
 
@@ -129,7 +129,7 @@ To update one:
      download's.
 4. **Edit the kit:** in the one install step, change `version=` and both
    `sum=` values together. Nothing else.
-5. **Test:** run `tests/sbx-kits/run.sh`; then create a throwaway sandbox with
+5. **Test:** run `sbx/tests/run.sh`; then create a throwaway sandbox with
    the changed kit by local path (above) and check that the install step
    passed, `<tool> --version` reports the new version, and the tool's normal
    command works.
@@ -145,5 +145,5 @@ To update one:
 - One install step per tool, each with a precise `description`.
 - In-sandbox names use the `sbx-` prefix (`~/.local/lib/sbx-*`,
   `/opt/sbx-<kit>/`).
-- Run `tests/sbx-kits/run.sh` before every push that touches `kits/` or
-  `sbxc.zsh`.
+- Run `sbx/tests/run.sh` before every push that touches `sbx/kits/` or
+  `sbx/sbxc.zsh`.

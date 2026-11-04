@@ -8,7 +8,7 @@ Status: approved for planning
 Replace the three separate Docker Sandboxes (sbx) kits —
 `spellcheck-app/sbx/shared`, `ward-manager/sbx/ward-manager-dev` and
 `dotfiles/kits/sbx-defaults` — with four composable v2 mixin kits in
-`dotfiles/kits/`, referenced over `git+https` when every sandbox is recreated.
+`dotfiles/sbx/kits/`, referenced over `git+https` when every sandbox is recreated.
 The base kit is meant for many apps; ward-manager and spellcheck-app are the
 first two consumers, not the design target.
 
@@ -18,7 +18,7 @@ first two consumers, not the design target.
 |---|---|
 | Kit layout | Four separate mixins, combined with repeated `--kit` |
 | Format | Kit schema v2 (`schemaVersion: '2'`, `kind: mixin`). v3, `sbxenv.yaml` and `sbx kit add` are out of scope |
-| Reference | `git+https://github.com/hulet/dotfiles.git#ref=main&dir=kits/<name>` (repo is public) |
+| Reference | `git+https://github.com/hulet/dotfiles.git#ref=main&dir=sbx/kits/<name>` (repo is public) |
 | Ref | `main` everywhere; push dotfiles before creating sandboxes that need a change |
 | Launch | Full commands in each project README, plus `sbxc` in `dotfiles/zshrc` |
 | Sandbox names | None passed; sbx's default `<agent>-<workdir>` |
@@ -30,17 +30,23 @@ first two consumers, not the design target.
 ## Layout
 
 ```
-dotfiles/kits/
-  README.md
-  base/
-    spec.yaml
-    files/home/sbx-claude-settings.json
-    files/home/.local/lib/sbx-workspace-mounts.sh
-    files/home/.local/lib/sbx-deps-install.sh
-  scanners/spec.yaml
-  cloud-clis/spec.yaml
-  postgres-client/spec.yaml
+dotfiles/sbx/
+  sbxc.zsh                 (sourced from dotfiles/zshrc)
+  kits/
+    README.md
+    base/
+      spec.yaml
+      files/home/sbx-claude-settings.json
+      files/home/.local/lib/sbx-workspace-mounts.sh
+      files/home/.local/lib/sbx-deps-install.sh
+    scanners/spec.yaml
+    cloud-clis/spec.yaml
+    postgres-client/spec.yaml
+  tests/                   (see Testing)
 ```
+
+Everything sandbox-related lives under `sbx/`, keeping the dotfiles root
+uncluttered.
 
 Each kit's `name` equals its directory name. In-sandbox names use a neutral
 `sbx-` prefix: scripts in `~/.local/lib/sbx-*`, log prefixes `sbx-<script>:`,
@@ -64,21 +70,21 @@ tool trees under `/opt/sbx-<kit>/`.
   Sources with their own signature checking need no embedded hash: apt
   (signed archives) and PyPI via `uv` (immutable release files).
 - Each pinned install step carries a one-line comment pointing to
-  `kits/README.md` → "Updating a pinned tool".
-- `kits/README.md` holds the overview: the authoritative kit catalog (see
+  `sbx/kits/README.md` → "Updating a pinned tool".
+- `sbx/kits/README.md` holds the overview: the authoritative kit catalog (see
   "Kit catalog" under base), the URL format, example combinations, how to add
   a kit (including "add a catalog line to `base`" and "run
-  `tests/sbx-kits/run.sh` before pushing"), how to update a pinned tool
+  `sbx/tests/run.sh` before pushing"), how to update a pinned tool
   (below), how to try a kit change before it reaches `main` (create a
   throwaway sandbox from a scratch directory with local paths,
-  `--kit ~/git/dotfiles/kits/<name>`, since the git URLs read `main`), these
+  `--kit ~/git/dotfiles/sbx/kits/<name>`, since the git URLs read `main`), these
   conventions, and a first-run note: on a new sandbox, exit and re-attach once
   so the plugins installed during startup load (a fresh plugin install only
   takes effect in the next Claude Code session).
 
 ### Updating a pinned tool
 
-`kits/README.md` carries this procedure, written for a future agent or human:
+`sbx/kits/README.md` carries this procedure, written for a future agent or human:
 
 1. **Pick the version.** Prefer a release at least 7 days old: supply-chain
    compromises are usually caught and pulled within days. Read the release
@@ -97,7 +103,7 @@ tool trees under `/opt/sbx-<kit>/`.
    and report it; do not update.
 4. **Edit the kit:** change the version and both hashes together in the same
    install step, and the version assertion. Nothing else.
-5. **Test:** run `tests/sbx-kits/run.sh`; then create a throwaway sandbox
+5. **Test:** run `sbx/tests/run.sh`; then create a throwaway sandbox
    with the changed kit by local path (kits are fixed at creation, and the git
    URLs read `main`) and check that the install step passes,
    `<tool> --version` reports the new version, and the tool's normal command
@@ -217,7 +223,7 @@ provides, and the signals that it is needed (e.g. `command not found` for
 `postgres-client`; `gcloud`/`gsutil`/`bq`/`aws` → `cloud-clis`). It is framed
 as a snapshot: "These were the kits available when this sandbox was created;
 for the current list, fetch
-`https://raw.githubusercontent.com/hulet/dotfiles/main/kits/README.md`" (the
+`https://raw.githubusercontent.com/hulet/dotfiles/main/sbx/kits/README.md`" (the
 host is in base's allowlist). Kits loaded in this sandbox are the ones listed
 under the `## Kits` pointer. When a needed kit is missing, the agent:
 
@@ -230,7 +236,7 @@ under the `## Kits` pointer. When a needed kit is missing, the agent:
    command plus the extra `--kit`); recreating reinstalls private dependency
    directories and loses cloud sign-ins.
 3. If no kit covers the need, says so and suggests a new kit in
-   `dotfiles/kits` or a one-off `sbx policy allow` plus manual install.
+   `dotfiles/sbx/kits` or a one-off `sbx policy allow` plus manual install.
 
 **WORKAROUND (docker/sbx-releases#420):** startup commands stop running after
 an sbx daemon restart in affected versions, so the SessionStart hook re-runs
@@ -278,7 +284,7 @@ mention from the mounts script header, and delete the WORKAROUND comment.
   `*.googleapis.com`; `sts.amazonaws.com`, `*.amazonaws.com`.
 - **Known limit:** sbx enforces single-label wildcards only, so regional AWS
   endpoints (`s3.us-west-2.amazonaws.com`) need explicit entries or
-  `sbx policy allow`. Stated in the spec comment and `kits/README.md`.
+  `sbx policy allow`. Stated in the spec comment and `sbx/kits/README.md`.
 - **`agentInstructions`:** CLIs start signed out; sign in with
   `gcloud auth login --no-launch-browser` or `aws configure sso`; credentials
   live only in this sandbox and are lost on recreate.
@@ -297,7 +303,8 @@ mention from the mounts script header, and delete the WORKAROUND comment.
 
 ## sbxc
 
-`sbxc [kit ...] [-- claude-args]` in `dotfiles/zshrc`:
+`sbxc [kit ...] [-- claude-args]` in `dotfiles/sbx/sbxc.zsh`, sourced from
+`dotfiles/zshrc`:
 
 - Always includes `base`; each further name maps to the dotfiles kit URL. One
   variable at the top of the function holds the URL prefix (not named `SBX_*`).
@@ -332,7 +339,7 @@ re-apply commands point at the new script names.
 ## Migration
 
 1. dotfiles, on a branch merged and pushed to `main` before use: add the four
-   kits and `kits/README.md`; rewrite `sbxc`; delete `kits/sbx-defaults`. One
+   kits and `sbx/kits/README.md`; rewrite `sbxc`; delete `kits/sbx-defaults`. One
    logical change per commit.
 2. ward-manager and spellcheck-app, each on a fresh branch from `main`: delete
    `sbx/`; rewrite the README sandbox section, dropping ward-manager's note
@@ -344,16 +351,16 @@ re-apply commands point at the new script names.
 
 ## Testing
 
-**Local test suite, kept in the repo:** `tests/sbx-kits/` at the dotfiles
-root — outside `kits/`, so it is never mistaken for a kit by the catalog
-check or by `sbxc`. One entry point, `tests/sbx-kits/run.sh`, runs every check
+**Local test suite, kept in the repo:** `sbx/tests/`, beside
+`sbx/kits/` rather than inside it, so it is never mistaken for a kit by the catalog
+check or by `sbxc`. One entry point, `sbx/tests/run.sh`, runs every check
 below and exits non-zero on any failure; its fixtures (small Node, Python,
 SvelteKit and empty repos) and stubs (`sbx`, `mount`, `mountpoint`, `npm`,
 `uv`, a download stub) live beside it. It needs only `sh`/`zsh` and `python3`;
 whether YAML is read with PyYAML (checked for, with an install hint) or a
 standard-library reader for the few fields checked is decided in the plan.
-dotfiles has no CI, so `kits/README.md`'s "add a kit" and "update a pinned
-tool" procedures both require running `tests/sbx-kits/run.sh` before pushing
+dotfiles has no CI, so `sbx/kits/README.md`'s "add a kit" and "update a pinned
+tool" procedures both require running `sbx/tests/run.sh` before pushing
 to `main` — sandboxes read `main` directly.
 
 The suite checks (runnable without sbx):
@@ -363,8 +370,8 @@ The suite checks (runnable without sbx):
   SHA256 for each architecture and runs `sha256sum -c` before unpacking.
 - A stubbed run of one pinned install step with a tampered download fails
   before the binary is unpacked or executed.
-- The kit catalogs in `base`'s `agentInstructions` and in `kits/README.md`
-  each name exactly the directories under `kits/` — no missing or extra
+- The kit catalogs in `base`'s `agentInstructions` and in `sbx/kits/README.md`
+  each name exactly the directories under `sbx/kits/` — no missing or extra
   entries.
 - `zsh -n` on `sbxc`; dry runs with a stub `sbx` recording its arguments,
   for both cases: no sandbox (create command with `--kit` flags) and an
@@ -388,5 +395,5 @@ installed, and where mixin agent instructions land (`kits-memory` vs
 the second run re-attaches without error; record what `sbx ls` shows for the
 sandbox (name and workspace) to settle the lookup helper.
 
-**Done when** all three repos reference only `dotfiles/kits` and every
+**Done when** all three repos reference only `dotfiles/sbx/kits` and every
 recreated sandbox passes the checklist.

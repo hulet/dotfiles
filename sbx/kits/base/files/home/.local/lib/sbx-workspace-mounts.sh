@@ -19,7 +19,7 @@
 #
 # The workspace comes from $1, falling back to $WORKSPACE_DIR: sudo strips the
 # variable, both in the manual re-apply command and in the SessionStart hook
-# that works around docker/sbx-releases#420 (see kits/base/spec.yaml).
+# that works around docker/sbx-releases#420 (see sbx/kits/base/spec.yaml).
 set -eu
 workspace="${1:-${WORKSPACE_DIR:-}}"
 [ -n "$workspace" ] || exit 0
