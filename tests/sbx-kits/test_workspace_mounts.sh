@@ -1,4 +1,6 @@
 #!/bin/sh
+# Stub bodies are single-quoted on purpose: they expand when the stub runs.
+# shellcheck disable=SC2016
 # Detector table, overrides and idempotency of sbx-workspace-mounts.sh.
 # Fixture repos are created here at run time.
 here="$(cd "$(dirname "$0")" && pwd)"
@@ -92,4 +94,4 @@ check "failed mount: warning" grep -q "could not mount" "$work/err"
 check "failed mount: later dir still mounted" has_line "$work/log" "mount --bind $work/scratch/failmount-.svelte-kit $r/.svelte-kit"
 check "failed mount: created dir removed" [ ! -e "$r/node_modules" ]
 
-exit $fail
+exit "$fail"

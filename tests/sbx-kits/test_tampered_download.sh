@@ -1,4 +1,6 @@
 #!/bin/sh
+# Stub bodies are single-quoted on purpose: they expand when the stub runs.
+# shellcheck disable=SC2016
 # Every install step that downloads with curl must stop before unpacking or
 # running anything when the download does not match its pinned SHA256.
 here="$(cd "$(dirname "$0")" && pwd)"
@@ -40,4 +42,4 @@ for step in "$work"/steps/*.sh; do
     done
   done
 done
-exit $fail
+exit "$fail"

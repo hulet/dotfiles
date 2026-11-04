@@ -23,14 +23,15 @@ run() { # run <name> <command...>
   if "$@"; then echo "ok   $name"; else echo "FAIL $name"; failed=1; fi
 }
 
+# shellcheck disable=SC2086  # $PY may be a multi-word command (uv run ...)
 run "kit specs and catalogs" $PY "$here/check_specs.py" "$root"
 run "downloads reject tampering" sh "$here/test_tampered_download.sh" "$root"
 run "sbx-workspace-mounts.sh" sh "$here/test_workspace_mounts.sh" "$lib"
 run "sbx-deps-install.sh" sh "$here/test_deps_install.sh" "$lib"
 run "sbxc" zsh "$here/test_sbxc.zsh" "$root"
 if command -v shellcheck >/dev/null 2>&1; then
-  run "shellcheck" shellcheck "$lib"/*.sh "$here"/*.sh
+  run "shellcheck" shellcheck -x -P SCRIPTDIR "$lib"/*.sh "$here"/*.sh
 else
   echo "skip shellcheck (not installed)"
 fi
-exit $failed
+exit "$failed"

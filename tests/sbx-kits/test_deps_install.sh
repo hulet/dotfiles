@@ -1,4 +1,6 @@
 #!/bin/sh
+# Stub bodies are single-quoted on purpose: they expand when the stub runs.
+# shellcheck disable=SC2016
 # Lockfile installs, stamps, the mount-point safety check and failure
 # handling of sbx-deps-install.sh.
 here="$(cd "$(dirname "$0")" && pwd)"
@@ -108,4 +110,4 @@ echo 999999 > "$work/lock/pid"
 DEPS_INSTALL_WAIT=2 sh "$script" "$r" >/dev/null 2>&1
 check "dead lock: install runs" has_line "$work/log" "npm ci"
 check "dead lock: lock released" no_file "$work/lock"
-exit $fail
+exit "$fail"
