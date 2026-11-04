@@ -31,9 +31,9 @@ first two consumers, not the design target.
 
 ```
 dotfiles/sbx/
+  README.md                (catalog, usage, procedures, conventions)
   sbxc.zsh                 (sourced from dotfiles/zshrc)
   kits/
-    README.md
     base/
       spec.yaml
       files/home/sbx-claude-settings.json
@@ -70,8 +70,8 @@ tool trees under `/opt/sbx-<kit>/`.
   Sources with their own signature checking need no embedded hash: apt
   (signed archives) and PyPI via `uv` (immutable release files).
 - Each pinned install step carries a one-line comment pointing to
-  `sbx/kits/README.md` → "Updating a pinned tool".
-- `sbx/kits/README.md` holds the overview: the authoritative kit catalog (see
+  `sbx/README.md` → "Updating a pinned tool".
+- `sbx/README.md` holds the overview: the authoritative kit catalog (see
   "Kit catalog" under base), the URL format, example combinations, how to add
   a kit (including "add a catalog line to `base`" and "run
   `sbx/tests/run.sh` before pushing"), how to update a pinned tool
@@ -84,7 +84,7 @@ tool trees under `/opt/sbx-<kit>/`.
 
 ### Updating a pinned tool
 
-`sbx/kits/README.md` carries this procedure, written for a future agent or human:
+`sbx/README.md` carries this procedure, written for a future agent or human:
 
 1. **Pick the version.** Prefer a release at least 7 days old: supply-chain
    compromises are usually caught and pulled within days. Read the release
@@ -223,7 +223,7 @@ provides, and the signals that it is needed (e.g. `command not found` for
 `postgres-client`; `gcloud`/`gsutil`/`bq`/`aws` → `cloud-clis`). It is framed
 as a snapshot: "These were the kits available when this sandbox was created;
 for the current list, fetch
-`https://raw.githubusercontent.com/hulet/dotfiles/main/sbx/kits/README.md`" (the
+`https://raw.githubusercontent.com/hulet/dotfiles/main/sbx/README.md`" (the
 host is in base's allowlist). Kits loaded in this sandbox are the ones listed
 under the `## Kits` pointer. When a needed kit is missing, the agent:
 
@@ -284,7 +284,7 @@ mention from the mounts script header, and delete the WORKAROUND comment.
   `*.googleapis.com`; `sts.amazonaws.com`, `*.amazonaws.com`.
 - **Known limit:** sbx enforces single-label wildcards only, so regional AWS
   endpoints (`s3.us-west-2.amazonaws.com`) need explicit entries or
-  `sbx policy allow`. Stated in the spec comment and `sbx/kits/README.md`.
+  `sbx policy allow`. Stated in the spec comment and `sbx/README.md`.
 - **`agentInstructions`:** CLIs start signed out; sign in with
   `gcloud auth login --no-launch-browser` or `aws configure sso`; credentials
   live only in this sandbox and are lost on recreate.
@@ -339,7 +339,7 @@ re-apply commands point at the new script names.
 ## Migration
 
 1. dotfiles, on a branch merged and pushed to `main` before use: add the four
-   kits and `sbx/kits/README.md`; rewrite `sbxc`; delete `kits/sbx-defaults`. One
+   kits and `sbx/README.md`; rewrite `sbxc`; delete `kits/sbx-defaults`. One
    logical change per commit.
 2. ward-manager and spellcheck-app, each on a fresh branch from `main`: delete
    `sbx/`; rewrite the README sandbox section, dropping ward-manager's note
@@ -359,7 +359,7 @@ SvelteKit and empty repos) and stubs (`sbx`, `mount`, `mountpoint`, `npm`,
 `uv`, a download stub) live beside it. It needs only `sh`/`zsh` and `python3`;
 whether YAML is read with PyYAML (checked for, with an install hint) or a
 standard-library reader for the few fields checked is decided in the plan.
-dotfiles has no CI, so `sbx/kits/README.md`'s "add a kit" and "update a pinned
+dotfiles has no CI, so `sbx/README.md`'s "add a kit" and "update a pinned
 tool" procedures both require running `sbx/tests/run.sh` before pushing
 to `main` — sandboxes read `main` directly.
 
@@ -370,7 +370,7 @@ The suite checks (runnable without sbx):
   SHA256 for each architecture and runs `sha256sum -c` before unpacking.
 - A stubbed run of one pinned install step with a tampered download fails
   before the binary is unpacked or executed.
-- The kit catalogs in `base`'s `agentInstructions` and in `sbx/kits/README.md`
+- The kit catalogs in `base`'s `agentInstructions` and in `sbx/README.md`
   each name exactly the directories under `sbx/kits/` — no missing or extra
   entries.
 - `zsh -n` on `sbxc`; dry runs with a stub `sbx` recording its arguments,

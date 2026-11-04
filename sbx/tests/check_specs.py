@@ -72,7 +72,7 @@ def main(root):
             has_curl = True
         if has_curl and "Updating a pinned tool" not in path.read_text():
             errors.append(
-                f"{name}: pinned steps need a comment pointing to sbx/kits/README.md, 'Updating a pinned tool'"
+                f"{name}: pinned steps need a comment pointing to sbx/README.md, 'Updating a pinned tool'"
             )
     base = specs.get("base")
     if not base:
@@ -98,13 +98,13 @@ def main(root):
             rel = ref[len("/home/agent/"):].rstrip("./-")
             if rel and not (home / rel).exists():
                 errors.append(f"{label}: {ref} has no sbx/kits/base/files/home/{rel}")
-    readme = kits_dir / "README.md"
+    readme = pathlib.Path(root) / "README.md"
     if readme.is_file():
         listed = catalog(readme.read_text(), "## Kit catalog")
         if listed != set(names):
-            errors.append(f"sbx/kits/README.md catalog lists {sorted(listed)}, sbx/kits/ has {names}")
+            errors.append(f"sbx/README.md catalog lists {sorted(listed)}, sbx/kits/ has {names}")
     else:
-        errors.append("sbx/kits/README.md is missing")
+        errors.append("sbx/README.md is missing")
     for error in errors:
         print(f"  not ok: {error}", file=sys.stderr)
     return 1 if errors else 0

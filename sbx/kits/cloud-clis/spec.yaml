@@ -46,7 +46,7 @@ setup:
   install:
     # Google lists archive hashes only for the current release; these were
     # taken from the TLS download at dl.google.com when pinned.
-    # Update procedure: sbx/kits/README.md, "Updating a pinned tool".
+    # Update procedure: sbx/README.md, "Updating a pinned tool".
     - command: |
         set -eu
         version=591.0.0
@@ -72,7 +72,7 @@ setup:
     # AWS publishes a PGP signature but no checksum file; the hashes were
     # taken after verifying each zip's signature against the AWS CLI Team key
     # (FB5D B77F D5C1 18B8 0511 ADA8 A631 0ACC 4672 475C).
-    # Update procedure: sbx/kits/README.md, "Updating a pinned tool".
+    # Update procedure: sbx/README.md, "Updating a pinned tool".
     - command: |
         set -eu
         version=2.39.0

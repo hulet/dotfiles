@@ -1,6 +1,6 @@
 # sbxc [kit ...] [-- claude-args]: create or re-attach to this directory's
 # Claude Code sandbox. Every sandbox gets the base kit from dotfiles/sbx/kits;
-# each name argument adds sbx/kits/<name> (sbx/kits/README.md lists them), so a new
+# each name argument adds sbx/kits/<name> (sbx/README.md lists them), so a new
 # kit needs no change here. Kits, like --no-share-skills (opting out of the
 # shared skills store), apply only at creation, so a re-attach passes neither.
 # --settings is a claude argument sbx does not remember; it is passed every
@@ -22,7 +22,7 @@ sbxc() {
     while (( $# )) && [[ $1 != -* ]]; do
         # Names only, never paths or URLs: kits come from dotfiles alone.
         if [[ ! $1 =~ '^[a-z0-9-]+$' ]]; then
-            print -u2 "sbxc: '$1' is not a kit name (see ~/git/dotfiles/sbx/kits/README.md)"
+            print -u2 "sbxc: '$1' is not a kit name (see ~/git/dotfiles/sbx/README.md)"
             return 1
         fi
         kits+=("$1")
