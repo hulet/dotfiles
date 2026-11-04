@@ -52,7 +52,9 @@ sbxc                            # re-attach
   work in progress, `sbx rm <sandbox>`, and create it again.
 - On a new sandbox, exit and re-attach once: plugins installed during startup
   load only in the next Claude Code session.
-- The first start of a sandbox runs `npm ci` / `uv sync --frozen` for projects with those lockfiles; the first session waits for it (up to 10 minutes) if it is still running.
+- The first start of a sandbox runs `npm ci` / `uv sync --frozen` for
+  projects with those lockfiles; the first session waits for it (up to 10
+  minutes) if it is still running.
 - `ref=main` means a new sandbox gets whatever is on `main`. Push kit changes
   before creating sandboxes that need them.
 - Regional AWS endpoints are not covered by `cloud-clis`' `*.amazonaws.com`
@@ -105,11 +107,12 @@ To update one:
    breaking changes and security advisories.
 2. **Get the expected hashes** for that exact version, for both
    `linux/amd64` and `linux/arm64`, from the vendor's published source:
-   Trivy's `trivy_<version>_checksums.txt`, gitleaks'
-   `gitleaks_<version>_checksums.txt`, hadolint's `checksums.sha256`, Node's
-   `SHASUMS256.txt`, the SHA256 on Google's versioned-archives page while the version is
-   current, otherwise the download's, the AWS
-   CLI zip's SHA256 after its signature check (step 3).
+   Trivy's `trivy_<version>_checksums.txt`; gitleaks'
+   `gitleaks_<version>_checksums.txt`; hadolint's `checksums.sha256`; Node's
+   `SHASUMS256.txt`. For gcloud, use the SHA256 on Google's versioned-archives
+   page; Google lists only the current release, so for an older version hash
+   the download yourself. For the AWS CLI, hash the zip after its signature
+   check (step 3).
 3. **Cross-check through a second channel**; if anything disagrees, stop and
    report it — do not update:
    - Trivy: `cosign verify-blob <asset> --bundle <asset>.sigstore.json --certificate-identity-regexp 'https://github.com/aquasecurity/trivy/.github/workflows/.+' --certificate-oidc-issuer https://token.actions.githubusercontent.com`
@@ -122,6 +125,8 @@ To update one:
      (that image's architecture).
    - gitleaks: compare the release's GitHub asset digests with its
      checksums file.
+   - gcloud: no second channel; compare the page's SHA256 with your
+     download's.
 4. **Edit the kit:** in the one install step, change `version=` and both
    `sum=` values together. Nothing else.
 5. **Test:** run `tests/sbx-kits/run.sh`; then create a throwaway sandbox with
