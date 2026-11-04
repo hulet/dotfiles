@@ -283,10 +283,19 @@ mention from the mounts script header, and delete the WORKAROUND comment.
 - Names must match `^[a-z0-9-]+$`; paths and URLs are rejected, so kits only
   come from dotfiles. A name with no directory fails when sbx builds the
   sandbox. New kits need no `sbxc` change.
-- Runs `sbx run claude . --no-share-skills --kit … -- --dangerously-skip-permissions --settings /home/agent/sbx-claude-settings.json <claude-args>`
-  and lets sbx re-attach to this directory's sandbox or create it. If current
-  sbx errors on the creation-only flags for an existing sandbox, keep the
-  existing `sbx ls` check and re-attach without them.
+- Checks with `sbx ls` whether this directory already has a sandbox, then runs
+  one of two commands (creation-only flags such as `--kit` and
+  `--no-share-skills` must not be passed to an existing sandbox):
+  - **Exists:** `sbx run --name <found-name> -- --dangerously-skip-permissions --settings /home/agent/sbx-claude-settings.json <claude-args>`.
+    If kit names were given, print a warning that kits are fixed at creation
+    and changing them means `sbx rm <found-name>` and running `sbxc` again.
+  - **Does not exist:** `sbx run claude . --no-share-skills --kit … -- --dangerously-skip-permissions --settings /home/agent/sbx-claude-settings.json <claude-args>`.
+- The lookup matches this directory's workspace path in `sbx ls` output if sbx
+  exposes it; otherwise it matches sbx's default name `claude-<workdir>`,
+  sanitized the way sbx sanitizes it. Which `sbx ls` form to use and the exact
+  sanitization are confirmed on the Mac before implementation; the lookup is
+  isolated in one small helper so it is the only thing to change if sbx's
+  output or naming changes.
 
 ## Project READMEs
 
@@ -323,7 +332,10 @@ On this Linux machine (no sbx installed):
 - The kit catalogs in `base`'s `agentInstructions` and in `kits/README.md`
   each name exactly the directories under `kits/` — no missing or extra
   entries.
-- `zsh -n` on `sbxc`; dry run with a stub `sbx` recording its arguments.
+- `zsh -n` on `sbxc`; dry runs with a stub `sbx` recording its arguments,
+  for both cases: no sandbox (create command with `--kit` flags) and an
+  existing sandbox (re-attach by name with no creation-only flags, plus the
+  warning when kit names are given).
 - `shellcheck` on both scripts, if available.
 - Stubbed runs of `sbx-workspace-mounts.sh` for a Node, Python, SvelteKit and
   empty repo.
@@ -336,7 +348,9 @@ sandbox per combination; inside, check tool versions, `TZ` and `TMPDIR`,
 untouched, `npm test` / `npm run verify` (ward-manager), `pytest`
 (spellcheck-app), `sbx policy log` shows nothing unexpected, plugins are
 installed, and where mixin agent instructions land (`kits-memory` vs
-`kits-agent-context`); exercise `sbxc` re-attach with kit names given.
+`kits-agent-context`); run `sbxc` twice in the same directory and confirm
+the second run re-attaches without error; record what `sbx ls` shows for the
+sandbox (name and workspace) to settle the lookup helper.
 
 **Done when** all three repos reference only `dotfiles/kits` and every
 recreated sandbox passes the checklist.
