@@ -16,3 +16,4 @@ google-news-sitemap.xml
 *.py[cod]
 
 **/.claude/settings.local.json
+**/.claude/.cc-writes/
