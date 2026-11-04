@@ -56,8 +56,9 @@ tool trees under `/opt/sbx-<kit>/`.
 - One install step per tool, each with a precise `description`.
 - Every downloaded tool is pinned to a version, verified by checksum where the
   vendor publishes one, and its reported version is asserted after install.
-- `kits/README.md` holds the overview: what each kit is for, the URL format,
-  example combinations, how to add a kit, and these conventions.
+- `kits/README.md` holds the overview: the authoritative kit catalog (see
+  "Kit catalog" under base), the URL format, example combinations, how to add
+  a kit (including "add a catalog line to `base`"), and these conventions.
 
 ## Kit: base
 
@@ -146,6 +147,27 @@ freely); what the two scripts do and the commands to re-apply them; why
 (ask the user to check `sbx policy log`), dev servers must bind `0.0.0.0` and
 be published with `sbx ports`, `git push` needs the host's
 `sbx secret set github`, an older Node than `engines` is harmless.
+
+**Kit catalog (in `agentInstructions`):** one line per kit — name, what it
+provides, and the signals that it is needed (e.g. `command not found` for
+`semgrep`/`gitleaks`/`trivy`/`hadolint` → `scanners`; `pg_dump`/`pg_restore` →
+`postgres-client`; `gcloud`/`gsutil`/`bq`/`aws` → `cloud-clis`). It is framed
+as a snapshot: "These were the kits available when this sandbox was created;
+for the current list, fetch
+`https://raw.githubusercontent.com/hulet/dotfiles/main/kits/README.md`" (the
+host is in base's allowlist). Kits loaded in this sandbox are the ones listed
+under the `## Kits` pointer. When a needed kit is missing, the agent:
+
+1. Does not install the tool ad hoc or work around its absence — kits are
+   pinned and allowlisted, ad hoc installs are not, and they vanish on
+   recreate.
+2. Stops and tells the user which kit is needed and why, with the steps, since
+   it cannot run `sbx` on the host: commit and push work in progress; on the
+   host, `sbx rm <sandbox>`, then `sbxc <kits…>` (or the project README's
+   command plus the extra `--kit`); recreating reinstalls private dependency
+   directories and loses cloud sign-ins.
+3. If no kit covers the need, says so and suggests a new kit in
+   `dotfiles/kits` or a one-off `sbx policy allow` plus manual install.
 
 **WORKAROUND (docker/sbx-releases#420):** startup commands stop running after
 an sbx daemon restart in affected versions, so the SessionStart hook re-runs
@@ -239,6 +261,9 @@ re-apply commands point at the new script names.
 On this Linux machine (no sbx installed):
 
 - Every spec parses and has the required fields.
+- The kit catalogs in `base`'s `agentInstructions` and in `kits/README.md`
+  each name exactly the directories under `kits/` — no missing or extra
+  entries.
 - `zsh -n` on `sbxc`; dry run with a stub `sbx` recording its arguments.
 - `shellcheck` on both scripts, if available.
 - Stubbed runs of `sbx-workspace-mounts.sh` for a Node, Python, SvelteKit and
