@@ -1,4 +1,5 @@
 """Static checks for dotfiles/kits: fields, catalogs, checksum pinning."""
+import json
 import pathlib
 import re
 import sys
@@ -8,6 +9,7 @@ import yaml
 REQUIRED = ("schemaVersion", "kind", "name", "displayName", "description")
 CATALOG_ITEM = re.compile(r"^\s*- \*\*`([a-z0-9-]+)`\*\*")
 SHA256 = re.compile(r"\b[0-9a-f]{64}\b")
+AGENT_PATH = re.compile(r"/home/agent/[A-Za-z0-9._/-]+")
 
 
 def catalog(text, heading):
@@ -80,6 +82,22 @@ def main(root):
         listed = catalog(content, "### Kit catalog")
         if listed != set(names):
             errors.append(f"base catalog lists {sorted(listed)}, kits/ has {names}")
+    home = kits_dir / "base" / "files" / "home"
+    settings = home / "sbx-claude-settings.json"
+    texts = {f"{n}/spec.yaml": (kits_dir / n / "spec.yaml") for n in specs}
+    if settings.is_file():
+        try:
+            json.loads(settings.read_text())
+        except ValueError as exc:
+            errors.append(f"base: sbx-claude-settings.json is not valid JSON: {exc}")
+        texts["base/sbx-claude-settings.json"] = settings
+    else:
+        errors.append("base: files/home/sbx-claude-settings.json is missing")
+    for label, path in texts.items():
+        for ref in sorted(set(AGENT_PATH.findall(path.read_text()))):
+            rel = ref[len("/home/agent/"):].rstrip("./-")
+            if rel and not (home / rel).exists():
+                errors.append(f"{label}: {ref} has no kits/base/files/home/{rel}")
     readme = kits_dir / "README.md"
     if readme.is_file():
         listed = catalog(readme.read_text(), "## Kit catalog")
