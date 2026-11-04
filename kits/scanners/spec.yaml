@@ -99,8 +99,8 @@ setup:
     # the default one-job-per-core dies with "Cannot allocate memory
     # io_uring_queue_init" once a verify chain has the machine busy. The
     # wrapper adds --jobs 1 to scans (`scan`, `ci`, or the implied scan when
-    # the first argument is an option or path) and passes other subcommands
-    # through unchanged, since semgrep treats a first non-subcommand argument
+    # the first argument is an option or path) and passes other subcommands,
+    # no arguments, --version, --help and -h through unchanged, since semgrep treats a first non-subcommand argument
     # as an implied `scan`. --jobs 1 costs about a second on a small repo; a
     # caller's own --jobs still wins because the later flag does.
     - command: |
@@ -115,7 +115,7 @@ setup:
           scan|ci)
             sub="$1"; shift
             exec /opt/sbx-scanners/bin/semgrep "$sub" --jobs 1 "$@" ;;
-          login|logout|lsp|show|install-semgrep-pro|publish|test|validate|mcp)
+          ''|--version|--help|-h|login|logout|lsp|show|install-semgrep-pro|publish|test|validate|mcp)
             exec /opt/sbx-scanners/bin/semgrep "$@" ;;
           *)
             exec /opt/sbx-scanners/bin/semgrep --jobs 1 "$@" ;;
