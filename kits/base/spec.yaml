@@ -78,8 +78,9 @@ setup:
         tmp="$(mktemp -d)"
         curl -fsSL -o "$tmp/$asset" "https://nodejs.org/dist/v$version/$asset"
         echo "$sum  $tmp/$asset" | sha256sum -c -
+        command -v xz >/dev/null 2>&1 || { apt-get update -qq && apt-get install -y --no-install-recommends xz-utils; }
         mkdir -p /opt/sbx-base/node
-        tar -xJf "$tmp/$asset" -C /opt/sbx-base/node --strip-components=1
+        tar -xJf "$tmp/$asset" --no-same-owner -C /opt/sbx-base/node --strip-components=1
         rm -rf "$tmp"
         for bin in node npm npx; do
           ln -sf "/opt/sbx-base/node/bin/$bin" "/usr/local/bin/$bin"
@@ -105,15 +106,18 @@ setup:
   # sandbox, and check that /var/log/sbx-kit-startup.log gained a new
   # "=== dispatcher run <now> ===" entry. Then, in one commit:
   #   - delete the "hooks" block from files/home/sbx-claude-settings.json;
-  #   - in agentInstructions below, drop "and every session start" (three
-  #     times) and the final paragraph about #420, keeping the manual
+  #   - in agentInstructions below, drop "and every session start" (twice),
+  #     the sentence about waiting for another install in progress, and the
+  #     final paragraph about #420, keeping the manual
   #     re-apply commands;
   #   - drop the SessionStart mention from the header of
   #     files/home/.local/lib/sbx-workspace-mounts.sh and the #420 mention
   #     from sbx-deps-install.sh;
   #   - delete this comment.
   startup:
-    # Mounts must exist before the install writes into them.
+    # Mounts should exist before the install writes into them;
+    # sbx-deps-install.sh also skips any directory that is not yet a mount, so
+    # a different order only delays the install to the next run.
     - command:
         - sh
         - /home/agent/.local/lib/sbx-workspace-mounts.sh
