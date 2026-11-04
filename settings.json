@@ -240,7 +240,8 @@
         "pypi.org",
         "raw.githubusercontent.com",
         "registry.npmjs.org",
-        "storage.googleapis.com"
+        "storage.googleapis.com",
+        "www.googleapis.com"
       ],
       "allowAllUnixSockets": true
     },
@@ -248,7 +249,8 @@
       "allowWrite": [
         "~/.ansible/tmp",
         "~/.azure",
-        "~/.config/gcloud"
+        "~/.config/gcloud",
+        "~/.gam"
       ]
     },
     "enableWeakerNetworkIsolation": true
