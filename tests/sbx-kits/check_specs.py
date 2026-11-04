@@ -37,7 +37,10 @@ def main(root):
         if not path.is_file():
             errors.append(f"{name}: missing spec.yaml")
             continue
-        spec = yaml.safe_load(path.read_text())
+        spec = yaml.safe_load(path.read_text()) or {}
+        if not isinstance(spec, dict):
+            errors.append(f"{name}: spec.yaml is empty or not a mapping")
+            continue
         specs[name] = spec
         for field in REQUIRED:
             if not spec.get(field):
@@ -50,6 +53,7 @@ def main(root):
             errors.append(f"{name}: name must equal the directory name")
         if not (spec.get("agentInstructions") or {}).get("content"):
             errors.append(f"{name}: missing agentInstructions.content")
+        has_curl = False
         for i, step in enumerate((spec.get("setup") or {}).get("install") or []):
             where = f"{name}: install step {i + 1}"
             if not step.get("description"):
@@ -63,11 +67,17 @@ def main(root):
                 errors.append(f"{where}: needs an embedded SHA256 per architecture")
             if re.search(r"checksums|SHASUMS|\.sha256\b|\.sig\b", command):
                 errors.append(f"{where}: must not fetch checksums or signatures at install time")
-            if "Updating a pinned tool" not in path.read_text():
-                errors.append(f"{name}: pinned steps need a comment pointing to kits/README.md")
+            has_curl = True
+        if has_curl and "Updating a pinned tool" not in path.read_text():
+            errors.append(
+                f"{name}: pinned steps need a comment pointing to kits/README.md, 'Updating a pinned tool'"
+            )
     base = specs.get("base")
-    if base:
-        listed = catalog(base["agentInstructions"]["content"], "### Kit catalog")
+    if not base:
+        errors.append("kits/base is required")
+    else:
+        content = (base.get("agentInstructions") or {}).get("content", "")
+        listed = catalog(content, "### Kit catalog")
         if listed != set(names):
             errors.append(f"base catalog lists {sorted(listed)}, kits/ has {names}")
     readme = kits_dir / "README.md"

@@ -7,9 +7,9 @@ root="$(cd "$here/../.." && pwd)"
 lib="$root/kits/base/files/home/.local/lib"
 
 if python3 -c 'import yaml' 2>/dev/null; then
-  PY=python3
+  PY="python3 -I"
 elif command -v uv >/dev/null 2>&1; then
-  PY="uv run --quiet --with pyyaml python3"
+  PY="uv run --quiet --no-project --with pyyaml python3 -I"
 else
   echo "tests/sbx-kits needs PyYAML: pip install pyyaml (or install uv)" >&2
   exit 2
