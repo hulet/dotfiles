@@ -53,8 +53,8 @@ rc=0
 set -f # override entries are literal paths, never globs
 for rel in $dirs; do
   case "$rel" in
-    /* | .. | ../* | */.. | */../*)
-      echo "sbx-workspace-mounts: ignoring $rel (must be relative, without ..)" >&2
+    "" | /* | . | ./* | */. | */./* | .. | ../* | */.. | */../*)
+      echo "sbx-workspace-mounts: ignoring $rel (must be relative, without . or .. segments)" >&2
       continue
       ;;
   esac

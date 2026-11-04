@@ -81,6 +81,10 @@ check "bad overrides rejected, good one kept" [ "$(wc -l < "$work/log")" -eq 1 ]
 check "good override mounted" has_line "$work/log" "mount --bind $work/scratch/badargs-ok $r/ok"
 check "rejection warned" grep -q "ignoring" "$work/err"
 
+r="$(repo dots package.json)"; mounts "$r" . ./ x/. x/./y
+check "dot overrides: nothing mounted" [ ! -s "$work/log" ]
+check "dot overrides: warned" grep -q "ignoring" "$work/err"
+
 r="$(repo failmount package.json svelte.config.js)"
 FAIL_NM=1 sh "$script" "$r" >/dev/null 2>"$work/err"
 check "failed mount: non-zero exit" [ $? -ne 0 ]
