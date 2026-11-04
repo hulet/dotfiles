@@ -86,8 +86,9 @@ tool trees under `/opt/sbx-<kit>/`.
 2. **Get the expected hashes from the vendor's published checksums** for that
    exact version, for both `linux/amd64` and `linux/arm64` (e.g. Trivy's
    `trivy_<version>_checksums.txt`, gitleaks' `gitleaks_<version>_checksums.txt`,
-   hadolint's GitHub release asset digests, Node's `SHASUMS256.txt`, the
-   gcloud tarball's SHA256 from Google).
+   hadolint's `checksums.sha256`, Node's `SHASUMS256.txt`, the gcloud
+   tarball's SHA256 from Google's versioned-archives page while the version
+   is current, otherwise the download's).
 3. **Cross-check through a second channel** where one exists — verify the
    release's signature (e.g. `cosign verify-blob` for Trivy, the AWS CLI's PGP
    signature against AWS's published key, Node's clear-signed
@@ -179,7 +180,7 @@ manages `~/.claude/settings.json`):
 - `env`: `CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY=1`,
   `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`, `CLAUDE_CODE_NO_FLICKER=0`,
   `TMPDIR=/tmp`, `TZ=America/Los_Angeles`.
-- `permissions.ask`: the 10 `git push` / `git remote` rules plus the 43
+- `permissions.ask`: the 10 `git push` / `git remote` rules plus the 42
   claude.ai connector write rules from today's dotfiles settings.
 - `hooks.SessionStart`: the #420 workaround, running both scripts and the
   superpowers install.
@@ -269,7 +270,8 @@ mention from the mounts script header, and delete the WORKAROUND comment.
   symlinked into `/usr/local/bin`; AWS CLI v2 from its versioned zip
   (`awscli.amazonaws.com`). Both pinned to a release at least 7 days old at
   implementation time, checked against embedded per-architecture SHA256s
-  (gcloud's from Google's published hashes; AWS's computed after verifying the
+  (gcloud's from the download, since Google lists hashes only for the current
+  release; AWS's computed after verifying the
   zip's PGP signature once), and version-asserted. Replaces
   `sbx-defaults`' unpinned `curl | bash`.
 - **Network:** download hosts; `accounts.google.com`, `oauth2.googleapis.com`,
