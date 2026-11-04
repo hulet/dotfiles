@@ -8,7 +8,15 @@
 # `npm ci`, uv.lock -> `uv sync --frozen`. Other projects (pip -e ., yarn,
 # pnpm) are left to their own instructions. An install runs only when the
 # lockfile's hash differs from the stamp left by the last successful install,
-# so an unchanged project costs nothing.
+# so an unchanged project costs nothing. The stamp is removed before an install
+# starts, so it only ever means "the last install fully succeeded".
+#
+# A new sandbox runs this twice at once (the startup command and the first
+# session's SessionStart hook). `npm ci` empties node_modules, so the runs are
+# serialized with a lock directory outside the private dirs; a second run waits
+# (up to DEPS_INSTALL_WAIT seconds, default 600) so its session starts with the
+# dependencies installed. A lock whose recorded pid is dead is taken over.
+# DEPS_INSTALL_LOCK and DEPS_INSTALL_WAIT exist so tests can override both.
 #
 # It installs only into a directory that is a mount point, so it can never
 # write into the host's own node_modules or .venv if the mount is missing.
@@ -17,7 +25,29 @@
 set -u
 workspace="${1:-${WORKSPACE_DIR:-}}"
 [ -n "$workspace" ] || exit 0
-cd "$workspace" || exit 0
+if ! cd "$workspace"; then
+  echo "sbx-deps-install: cannot cd to $workspace" >&2
+  exit 0
+fi
+
+lock="${DEPS_INSTALL_LOCK:-${TMPDIR:-/tmp}/sbx-deps-install.lock}"
+max_wait="${DEPS_INSTALL_WAIT:-600}"
+waited=0
+while ! mkdir "$lock" 2>/dev/null; do
+  holder="$(cat "$lock/pid" 2>/dev/null)"
+  if [ -n "$holder" ] && ! kill -0 "$holder" 2>/dev/null; then
+    rm -rf "$lock"
+    continue
+  fi
+  if [ "$waited" -ge "$max_wait" ]; then
+    echo "sbx-deps-install: gave up waiting for $lock; not installing" >&2
+    exit 0
+  fi
+  sleep 2
+  waited=$((waited + 2))
+done
+trap 'rm -rf "$lock"' EXIT
+echo $$ > "$lock/pid"
 
 install_from() { # install_from <lockfile> <private-dir> <command...>
   lockfile=$1
@@ -32,6 +62,7 @@ install_from() { # install_from <lockfile> <private-dir> <command...>
   hash="$(sha256sum "$lockfile" | cut -d' ' -f1)"
   [ "$(cat "$stamp" 2>/dev/null)" = "$hash" ] && return 0
   echo "sbx-deps-install: $lockfile changed; running $*"
+  rm -f "$stamp"
   if "$@"; then
     echo "$hash" > "$stamp"
   else
