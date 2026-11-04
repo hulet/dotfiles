@@ -30,6 +30,14 @@ needed:
 git+https://github.com/hulet/dotfiles.git#ref=main&dir=sbx/kits/<name>
 ```
 
+One-time setup on each machine: sbx accepts kits only from Docker Hub until
+other sources are allowed, so allow this repo (the command replaces the whole
+list):
+
+```sh
+sbx settings set kit.allowedSources '["docker.io/","github.com/hulet/dotfiles"]'
+```
+
 From a project directory, on the host:
 
 ```sh
