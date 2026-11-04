@@ -4,8 +4,10 @@
 here="$(cd "$(dirname "$0")" && pwd)"
 . "$here/lib.sh"
 script="$1/sbx-workspace-mounts.sh"
+check "script exists" [ -f "$script" ]
 
-stub mount 'echo "mount $*" >> "$WORK/log"; echo "$3" >> "$WORK/mounted"'
+stub mount '[ -n "${FAIL_NM:-}" ] && case "$3" in */node_modules) exit 1;; esac
+echo "mount $*" >> "$WORK/log"; echo "$3" >> "$WORK/mounted"'
 stub mountpoint '[ "$1" = -q ] && shift; grep -qxF -- "$1" "$WORK/mounted" 2>/dev/null'
 stub chown ':'
 export WORK="$work" SCRATCH_MOUNT_ROOT="$work/scratch"
@@ -19,7 +21,11 @@ repo() { # repo <name> <files...>: fresh fixture repo with empty files
   : > "$work/mounted"
   echo "$dir"
 }
-mounts() { sh "$script" "$@" >/dev/null; }
+mounts() { # mounts <args...>: run the script, fail loudly unless it exits 0
+  sh "$script" "$@" >/dev/null 2>"$work/err"
+  status=$?
+  check "script exits 0 (args: $*)" [ "$status" -eq 0 ]
+}
 
 r="$(repo node package.json)"; mounts "$r"
 check "node: node_modules" has_line "$work/log" "mount --bind $work/scratch/node-node_modules $r/node_modules"
@@ -54,5 +60,32 @@ check "never creates a missing parent" [ ! -e "$r/node_modules" ]
 r="$(repo fromenv package.json)"; WORKSPACE_DIR="$r" sh "$script" >/dev/null
 check "workspace falls back to WORKSPACE_DIR" has_line "$work/log" "mount --bind $work/scratch/fromenv-node_modules $r/node_modules"
 
-check "no workspace: exits 0 quietly" env -u WORKSPACE_DIR sh "$script"
+check "no workspace: exits 0 quietly" [ -z "$(env -u WORKSPACE_DIR sh "$script" 2>&1)" ]
+env -u WORKSPACE_DIR sh "$script" >/dev/null 2>&1
+check "no workspace: exit status 0" [ $? -eq 0 ]
+
+r="$(repo "with space" package.json)"; mounts "$r"
+check "workspace path with a space" has_line "$work/log" "mount --bind $work/scratch/with space-node_modules $r/node_modules"
+
+r="$(repo symlink package.json)"; mkdir -p "$work/outside"; ln -s "$work/outside" "$r/node_modules"
+mounts "$r"
+check "symlinked node_modules: no mount" [ ! -s "$work/log" ]
+check "symlinked node_modules: warning printed" grep -q "skipping" "$work/err"
+
+r="$(repo plainfile package.json svelte.config.js node_modules)"; mounts "$r"
+check "plain file node_modules: skipped" [ "$(grep -c node_modules "$work/log")" -eq 0 ]
+check "plain file node_modules: others still mounted" has_line "$work/log" "mount --bind $work/scratch/plainfile-.svelte-kit $r/.svelte-kit"
+
+r="$(repo badargs)"; mounts "$r" ../escape /abs/path a/../b ok
+check "bad overrides rejected, good one kept" [ "$(wc -l < "$work/log")" -eq 1 ]
+check "good override mounted" has_line "$work/log" "mount --bind $work/scratch/badargs-ok $r/ok"
+check "rejection warned" grep -q "ignoring" "$work/err"
+
+r="$(repo failmount package.json svelte.config.js)"
+FAIL_NM=1 sh "$script" "$r" >/dev/null 2>"$work/err"
+check "failed mount: non-zero exit" [ $? -ne 0 ]
+check "failed mount: warning" grep -q "could not mount" "$work/err"
+check "failed mount: later dir still mounted" has_line "$work/log" "mount --bind $work/scratch/failmount-.svelte-kit $r/.svelte-kit"
+check "failed mount: created dir removed" [ ! -e "$r/node_modules" ]
+
 exit $fail

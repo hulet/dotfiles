@@ -14,7 +14,8 @@
 # workspace, or SCRATCH_MOUNT_DIRS (space-separated), replace detection.
 # Idempotent: an existing mount is skipped. Never creates a missing parent
 # (e.g. node_modules/.cache when node_modules is absent). Covers the
-# workspace root only, not git worktrees under it.
+# workspace root only, not git worktrees under it. The mount points are empty
+# directories that remain in the host checkout after the sandbox is gone.
 #
 # The workspace comes from $1, falling back to $WORKSPACE_DIR: sudo strips the
 # variable, both in the manual re-apply command and in the SessionStart hook
@@ -48,13 +49,32 @@ else
 fi
 
 repo_name="$(basename "$workspace")"
+rc=0
+set -f # override entries are literal paths, never globs
 for rel in $dirs; do
+  case "$rel" in
+    /* | .. | ../* | */.. | */../*)
+      echo "sbx-workspace-mounts: ignoring $rel (must be relative, without ..)" >&2
+      continue
+      ;;
+  esac
   dir="$workspace/$rel"
   [ -d "$(dirname "$dir")" ] || continue
+  if [ -L "$dir" ] || { [ -e "$dir" ] && [ ! -d "$dir" ]; }; then
+    echo "sbx-workspace-mounts: skipping $dir (symlink or not a directory)" >&2
+    continue
+  fi
   mountpoint -q "$dir" && continue
   scratch="$scratch_root/$repo_name-$(echo "$rel" | tr '/' '-')"
-  mkdir -p "$scratch" "$dir"
-  chown 1000:1000 "$scratch"
-  mount --bind "$scratch" "$dir"
-  echo "sbx-workspace-mounts: mounted $scratch on $dir"
+  created=0
+  [ -d "$dir" ] || created=1
+  if mkdir -p "$scratch" "$dir" && chown 1000:1000 "$scratch" && mount --bind "$scratch" "$dir"; then
+    echo "sbx-workspace-mounts: mounted $scratch on $dir"
+  else
+    echo "sbx-workspace-mounts: could not mount $dir" >&2
+    if [ "$created" -eq 1 ]; then rmdir "$dir" 2>/dev/null || true; fi
+    rc=1
+  fi
 done
+set +f
+exit "$rc"
