@@ -54,14 +54,54 @@ tool trees under `/opt/sbx-<kit>/`.
 - Workarounds are labelled `WORKAROUND`, link their issue, and state a removal
   condition and checklist. No "last checked" dates.
 - One install step per tool, each with a precise `description`.
-- Every downloaded tool is pinned to a version, verified by checksum where the
-  vendor publishes one, and its reported version is asserted after install.
+- Every binary downloaded from a release URL is pinned to a version **and** to
+  an expected SHA256 per architecture, embedded in the spec. The install step
+  checks the download with `sha256sum -c` and stops on a mismatch before
+  unpacking or running anything; only then does it assert the reported
+  version. Checksums are never fetched at install time from the same release
+  as the binary — whoever controls a release controls its checksum file (the
+  2026 Trivy compromise re-pointed release tags to a malicious build).
+  Sources with their own signature checking need no embedded hash: apt
+  (signed archives) and PyPI via `uv` (immutable release files).
+- Each pinned install step carries a one-line comment pointing to
+  `kits/README.md` → "Updating a pinned tool".
 - `kits/README.md` holds the overview: the authoritative kit catalog (see
   "Kit catalog" under base), the URL format, example combinations, how to add
-  a kit (including "add a catalog line to `base`"), these conventions, and a
+  a kit (including "add a catalog line to `base`"), how to update a pinned
+  tool (below), these conventions, and a
   first-run note: on a new sandbox, exit and re-attach once so the plugins
   installed during startup load (a fresh plugin install only takes effect in
   the next Claude Code session).
+
+### Updating a pinned tool
+
+`kits/README.md` carries this procedure, written for a future agent or human:
+
+1. **Pick the version.** Prefer a release at least 7 days old: supply-chain
+   compromises are usually caught and pulled within days. Read the release
+   notes for breaking changes and any security advisory.
+2. **Get the expected hashes from the vendor's published checksums** for that
+   exact version, for both `linux/amd64` and `linux/arm64` (e.g. Trivy's
+   `trivy_<version>_checksums.txt`, gitleaks' `gitleaks_<version>_checksums.txt`,
+   hadolint's per-asset `.sha256`, Google's published SHA256 for the gcloud
+   tarball).
+3. **Cross-check through a second channel** where one exists — verify the
+   release's signature (e.g. `cosign verify-blob` for Trivy, the AWS CLI's PGP
+   signature against AWS's published key), or compare with the hash in the
+   Homebrew formula or another independent source. If the two disagree, stop
+   and report it; do not update.
+4. **Edit the kit:** change the version and both hashes together in the same
+   install step, and the version assertion. Nothing else.
+5. **Test** in a new sandbox (a new name, since kits are fixed at creation):
+   the install step passes, `<tool> --version` reports the new version, and
+   the tool's normal command works (e.g. `npm run scan` in a project that
+   uses it).
+6. **Commit** one tool per commit, with the old and new version, where the
+   hashes came from and how they were cross-checked in the message.
+
+For AWS CLI v2, which publishes a PGP signature but no checksum file: verify
+the zip's signature against AWS's published public key once, then embed the
+zip's SHA256 like the others.
 
 ## Kit: base
 
@@ -184,9 +224,18 @@ mention from the mounts script header, and delete the WORKAROUND comment.
 ## Kit: scanners
 
 - **Installs:** gitleaks 8.30.1, hadolint 2.15.1, trivy 0.74.0 from GitHub
-  release assets (checksums verified where published); semgrep 1.178.0 via
+  release assets, one install step each, each checked against embedded
+  per-architecture SHA256s taken from the vendor's published checksums and
+  cross-checked once at implementation time; semgrep 1.178.0 via
   `uv tool install` under `/opt/sbx-scanners/`, behind a `/usr/local/bin/semgrep`
   wrapper that passes `--jobs 1`.
+- **Trivy comment:** the trivy step's comment states why its hashes must never
+  be dropped or fetched at install time: in 2026 Trivy's release tags were
+  re-pointed to a credential-stealing build served through every official
+  channel (see ward-manager's
+  `docs/superpowers/specs/2026-09-19-local-quality-tooling-design.md`).
+- **Out of scope:** Trivy's vulnerability database, downloaded at run time
+  from `mirror.gcr.io` / `ghcr.io`, is not covered by the binary pin.
 - **Network:** `semgrep.dev`, `metrics.semgrep.dev`.
 - **`agentInstructions`:** scanners are on PATH; the host installs them with
   `brew bundle` (ignore a Brewfile here); `semgrep` is a `--jobs 1` wrapper
@@ -199,8 +248,10 @@ mention from the mounts script header, and delete the WORKAROUND comment.
 - **Installs:** gcloud from Google's versioned, checksummed tarball
   (`dl.google.com`) into `/opt/sbx-cloud-clis/`, with `gcloud`, `gsutil`, `bq`
   symlinked into `/usr/local/bin`; AWS CLI v2 from its versioned zip
-  (`awscli.amazonaws.com`). Both pinned to the latest release at
-  implementation time and version-asserted. Replaces
+  (`awscli.amazonaws.com`). Both pinned to a release at least 7 days old at
+  implementation time, checked against embedded per-architecture SHA256s
+  (gcloud's from Google's published hashes; AWS's computed after verifying the
+  zip's PGP signature once), and version-asserted. Replaces
   `sbx-defaults`' unpinned `curl | bash`.
 - **Network:** download hosts; `accounts.google.com`, `oauth2.googleapis.com`,
   `*.googleapis.com`; `sts.amazonaws.com`, `*.amazonaws.com`.
@@ -265,6 +316,10 @@ re-apply commands point at the new script names.
 On this Linux machine (no sbx installed):
 
 - Every spec parses and has the required fields.
+- Every install step that downloads a binary from a URL has an embedded
+  SHA256 for each architecture and runs `sha256sum -c` before unpacking.
+- A stubbed run of one pinned install step with a tampered download fails
+  before the binary is unpacked or executed.
 - The kit catalogs in `base`'s `agentInstructions` and in `kits/README.md`
   each name exactly the directories under `kits/` — no missing or extra
   entries.
