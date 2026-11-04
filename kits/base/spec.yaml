@@ -26,6 +26,8 @@ permissions:
       - github.com
       - release-assets.githubusercontent.com
       - raw.githubusercontent.com
+      # uv's managed Python downloads (falls back to github.com).
+      - releases.astral.sh
       # npm and PyPI, including the lockfile installs below.
       - registry.npmjs.org
       - pypi.org

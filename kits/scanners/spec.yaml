@@ -12,6 +12,12 @@ description: >-
 # gitleaks (MIT), hadolint (GPL-3.0), trivy (Apache-2.0), semgrep (LGPL-2.1).
 licenses: [MIT, GPL-3.0-only, Apache-2.0, LGPL-2.1-only]
 
+environment:
+  variables:
+    # Otherwise trivy calls check.trivy.dev, which is not allowlisted.
+    TRIVY_SKIP_VERSION_CHECK: 'true'
+    TRIVY_DISABLE_TELEMETRY: 'true'
+
 permissions:
   network:
     allow:
@@ -34,14 +40,14 @@ setup:
         tmp="$(mktemp -d)"
         curl -fsSL -o "$tmp/$asset" "https://github.com/gitleaks/gitleaks/releases/download/v$version/$asset"
         echo "$sum  $tmp/$asset" | sha256sum -c -
-        tar -xzf "$tmp/$asset" -C /usr/local/bin gitleaks
+        tar -xzf "$tmp/$asset" --no-same-owner -C /usr/local/bin gitleaks
         rm -rf "$tmp"
         gitleaks version | grep -q "$version"
       user: '0'
       description: Install gitleaks from its release tarball, checksum-verified
 
-    # hadolint publishes no checksum file; the hashes are GitHub's asset
-    # digests, cross-checked against the binary in hadolint/hadolint's image.
+    # The hashes match hadolint's checksums.sha256 and GitHub's asset digests
+    # (cross-checked against the binary in hadolint/hadolint's image).
     # Update procedure: kits/README.md, "Updating a pinned tool".
     - command: |
         set -eu
@@ -78,7 +84,7 @@ setup:
         tmp="$(mktemp -d)"
         curl -fsSL -o "$tmp/$asset" "https://github.com/aquasecurity/trivy/releases/download/v$version/$asset"
         echo "$sum  $tmp/$asset" | sha256sum -c -
-        tar -xzf "$tmp/$asset" -C /usr/local/bin trivy
+        tar -xzf "$tmp/$asset" --no-same-owner -C /usr/local/bin trivy
         rm -rf "$tmp"
         trivy --version | grep -q "$version"
       user: '0'
@@ -91,9 +97,12 @@ setup:
     # PATH gets a wrapper: semgrep-core opens one io_uring per job and the
     # sandbox caps locked memory at 8 MiB (a hard limit, even for root), so
     # the default one-job-per-core dies with "Cannot allocate memory
-    # io_uring_queue_init" once a verify chain has the machine busy. --jobs 1
-    # costs about a second on a small repo; a caller's own --jobs still wins
-    # because the later flag does.
+    # io_uring_queue_init" once a verify chain has the machine busy. The
+    # wrapper adds --jobs 1 to scans (`scan`, `ci`, or the implied scan when
+    # the first argument is an option or path) and passes other subcommands
+    # through unchanged, since semgrep treats a first non-subcommand argument
+    # as an implied `scan`. --jobs 1 costs about a second on a small repo; a
+    # caller's own --jobs still wins because the later flag does.
     - command: |
         set -eu
         export UV_PYTHON_INSTALL_DIR=/opt/sbx-scanners/python
@@ -102,7 +111,15 @@ setup:
         uv tool install --python 3.13 'semgrep==1.178.0'
         cat > /usr/local/bin/semgrep <<'EOF'
         #!/bin/sh
-        exec /opt/sbx-scanners/bin/semgrep --jobs 1 "$@"
+        case "${1:-}" in
+          scan|ci)
+            sub="$1"; shift
+            exec /opt/sbx-scanners/bin/semgrep "$sub" --jobs 1 "$@" ;;
+          login|logout|lsp|show|install-semgrep-pro|publish|test|validate|mcp)
+            exec /opt/sbx-scanners/bin/semgrep "$@" ;;
+          *)
+            exec /opt/sbx-scanners/bin/semgrep --jobs 1 "$@" ;;
+        esac
         EOF
         chmod 0755 /usr/local/bin/semgrep
         semgrep --version | grep -q '1.178.0'
@@ -117,7 +134,8 @@ agentInstructions:
     `scanners` kit. Hosts usually install them with `brew bundle`; ignore a
     project's Brewfile here.
 
-    `semgrep` is a wrapper that passes `--jobs 1`: semgrep-core opens one
+    `semgrep` is a wrapper that adds `--jobs 1` to scans (`scan`, `ci`, or the
+    implied scan): semgrep-core opens one
     io_uring per job, and the sandbox's 8 MiB locked-memory limit makes the
     default fail with `io_uring_queue_init` once the machine is busy. Pass
     your own `--jobs` only if you have a reason; it overrides the wrapper's.
