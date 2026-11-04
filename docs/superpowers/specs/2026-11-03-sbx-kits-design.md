@@ -67,11 +67,14 @@ tool trees under `/opt/sbx-<kit>/`.
   `kits/README.md` → "Updating a pinned tool".
 - `kits/README.md` holds the overview: the authoritative kit catalog (see
   "Kit catalog" under base), the URL format, example combinations, how to add
-  a kit (including "add a catalog line to `base`"), how to update a pinned
-  tool (below), these conventions, and a
-  first-run note: on a new sandbox, exit and re-attach once so the plugins
-  installed during startup load (a fresh plugin install only takes effect in
-  the next Claude Code session).
+  a kit (including "add a catalog line to `base`" and "run
+  `tests/sbx-kits/run.sh` before pushing"), how to update a pinned tool
+  (below), how to try a kit change before it reaches `main` (create a
+  throwaway sandbox from a scratch directory with local paths,
+  `--kit ~/git/dotfiles/kits/<name>`, since the git URLs read `main`), these
+  conventions, and a first-run note: on a new sandbox, exit and re-attach once
+  so the plugins installed during startup load (a fresh plugin install only
+  takes effect in the next Claude Code session).
 
 ### Updating a pinned tool
 
@@ -92,10 +95,11 @@ tool trees under `/opt/sbx-<kit>/`.
    and report it; do not update.
 4. **Edit the kit:** change the version and both hashes together in the same
    install step, and the version assertion. Nothing else.
-5. **Test** in a new sandbox (a new name, since kits are fixed at creation):
-   the install step passes, `<tool> --version` reports the new version, and
-   the tool's normal command works (e.g. `npm run scan` in a project that
-   uses it).
+5. **Test:** run `tests/sbx-kits/run.sh`; then create a throwaway sandbox
+   with the changed kit by local path (kits are fixed at creation, and the git
+   URLs read `main`) and check that the install step passes,
+   `<tool> --version` reports the new version, and the tool's normal command
+   works (e.g. `npm run scan` in a project that uses it).
 6. **Commit** one tool per commit, with the old and new version, where the
    hashes came from and how they were cross-checked in the message.
 
@@ -322,7 +326,19 @@ re-apply commands point at the new script names.
 
 ## Testing
 
-On this Linux machine (no sbx installed):
+**Local test suite, kept in the repo:** `tests/sbx-kits/` at the dotfiles
+root — outside `kits/`, so it is never mistaken for a kit by the catalog
+check or by `sbxc`. One entry point, `tests/sbx-kits/run.sh`, runs every check
+below and exits non-zero on any failure; its fixtures (small Node, Python,
+SvelteKit and empty repos) and stubs (`sbx`, `mount`, `mountpoint`, `npm`,
+`uv`, a download stub) live beside it. It needs only `sh`/`zsh` and `python3`;
+whether YAML is read with PyYAML (checked for, with an install hint) or a
+standard-library reader for the few fields checked is decided in the plan.
+dotfiles has no CI, so `kits/README.md`'s "add a kit" and "update a pinned
+tool" procedures both require running `tests/sbx-kits/run.sh` before pushing
+to `main` — sandboxes read `main` directly.
+
+The suite checks (runnable without sbx):
 
 - Every spec parses and has the required fields.
 - Every install step that downloads a binary from a URL has an embedded
@@ -336,7 +352,7 @@ On this Linux machine (no sbx installed):
   for both cases: no sandbox (create command with `--kit` flags) and an
   existing sandbox (re-attach by name with no creation-only flags, plus the
   warning when kit names are given).
-- `shellcheck` on both scripts, if available.
+- `shellcheck` on both scripts, skipped with a notice if not installed.
 - Stubbed runs of `sbx-workspace-mounts.sh` for a Node, Python, SvelteKit and
   empty repo.
 - Stubbed runs of `sbx-deps-install.sh`: installs on lockfile change, skips
