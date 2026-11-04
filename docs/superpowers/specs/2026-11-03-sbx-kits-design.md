@@ -86,11 +86,12 @@ tool trees under `/opt/sbx-<kit>/`.
 2. **Get the expected hashes from the vendor's published checksums** for that
    exact version, for both `linux/amd64` and `linux/arm64` (e.g. Trivy's
    `trivy_<version>_checksums.txt`, gitleaks' `gitleaks_<version>_checksums.txt`,
-   hadolint's per-asset `.sha256`, Google's published SHA256 for the gcloud
-   tarball).
+   hadolint's GitHub release asset digests, Node's `SHASUMS256.txt`, the
+   gcloud tarball's SHA256 from Google).
 3. **Cross-check through a second channel** where one exists — verify the
    release's signature (e.g. `cosign verify-blob` for Trivy, the AWS CLI's PGP
-   signature against AWS's published key), or compare with the hash in the
+   signature against AWS's published key, Node's clear-signed
+   `SHASUMS256.txt.asc` against the keys in `nodejs/release-keys`), or compare with the hash in the
    Homebrew formula or another independent source. If the two disagree, stop
    and report it; do not update.
 4. **Edit the kit:** change the version and both hashes together in the same
@@ -111,8 +112,19 @@ zip's SHA256 like the others.
 
 Used by every sandbox.
 
-**`setup.install`:** set the system timezone to America/Los_Angeles (the image
-defaults to UTC; sbx injects a fixed-offset `TZ` with no DST rule).
+**`setup.install`:**
+
+1. Set the system timezone to America/Los_Angeles (the image defaults to UTC;
+   sbx injects a fixed-offset `TZ` with no DST rule).
+2. Install Node.js 24 LTS (v24.22.2) from nodejs.org's official
+   `node-v<version>-linux-{x64,arm64}.tar.xz`, checked against embedded
+   per-architecture SHA256s, into `/opt/sbx-base/node`, with `node`, `npm`
+   and `npx` symlinked into `/usr/local/bin` (ahead of the image's Node on
+   PATH); assert `node --version` reports the pinned version. The image ships
+   Node 22, which cannot run code that needs Node 24 (e.g. ward-manager's
+   `scripts/migrate.ts`) and fails `npm ci` in projects with `engine-strict`.
+   A project needing another major later gets a `node` kit with a version
+   argument; until then one pinned LTS serves every sandbox.
 
 **`setup.startup`**, in order:
 
@@ -186,6 +198,7 @@ manages `~/.claude/settings.json`):
 - Package mirrors: `dl-cdn.alpinelinux.org`, `deb.debian.org`,
   `security.debian.org`, `ports.ubuntu.com`, `archive.ubuntu.com`,
   `security.ubuntu.com`
+- Node.js downloads: `nodejs.org`
 
 **`agentInstructions`:** dependency directories are sandbox-private (install
 freely); what the two scripts do and the commands to re-apply them; why
@@ -193,7 +206,9 @@ freely); what the two scripts do and the commands to re-apply them; why
 `python3 -m venv` fails (use `uv venv`), an HTTP 403 means the network policy
 (ask the user to check `sbx policy log`), dev servers must bind `0.0.0.0` and
 be published with `sbx ports`, `git push` needs the host's
-`sbx secret set github`, an older Node than `engines` is harmless.
+`sbx secret set github`, and `node` is the kit's pinned Node 24 in
+`/usr/local/bin` (the image's own Node 22 is still at `/usr/bin/node`; never
+use it).
 
 **Kit catalog (in `agentInstructions`):** one line per kit — name, what it
 provides, and the signals that it is needed (e.g. `command not found` for
@@ -318,8 +333,9 @@ re-apply commands point at the new script names.
    kits and `kits/README.md`; rewrite `sbxc`; delete `kits/sbx-defaults`. One
    logical change per commit.
 2. ward-manager and spellcheck-app, each on a fresh branch from `main`: delete
-   `sbx/`; rewrite the README sandbox section; move remaining project-specific
-   sandbox notes into CLAUDE.md. Delete the superseded, unpushed `sbx-kit-dev`
+   `sbx/`; rewrite the README sandbox section, dropping ward-manager's note
+   that the sandbox runs Node 22; move remaining project-specific sandbox
+   notes into CLAUDE.md. Delete the superseded, unpushed `sbx-kit-dev`
    branches.
 3. The user recreates sandboxes: commit and push work from existing sandboxes,
    `sbx rm` them, create new ones with the README commands or `sbxc`.
@@ -359,7 +375,9 @@ The suite checks (runnable without sbx):
   otherwise.
 
 On the Mac (checklist in the plan): `sbx kit validate` on each kit; create one
-sandbox per combination; inside, check tool versions, `TZ` and `TMPDIR`,
+sandbox per combination; inside, check tool versions (including
+`node --version` reporting v24.22.2 and `which node` → `/usr/local/bin/node`),
+`TZ` and `TMPDIR`,
 `findmnt node_modules` reports a private mount and the host `node_modules` is
 untouched, `npm test` / `npm run verify` (ward-manager), `pytest`
 (spellcheck-app), `sbx policy log` shows nothing unexpected, plugins are
