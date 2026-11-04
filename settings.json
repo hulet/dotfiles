@@ -213,8 +213,9 @@
     ],
     "defaultMode": "auto"
   },
+  "model": "opus",
   "enabledPlugins": {
-    "cloudflare@claude-plugins-official": true,
+    "cloudflare@claude-plugins-official": false,
     "superpowers@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
@@ -234,6 +235,7 @@
         "api.github.com",
         "bitbucket.org",
         "files.pythonhosted.org",
+        "github.com",
         "oauth2.googleapis.com",
         "pypi.org",
         "raw.githubusercontent.com",
@@ -244,14 +246,15 @@
     },
     "filesystem": {
       "allowWrite": [
+        "~/.ansible/tmp",
         "~/.azure",
         "~/.config/gcloud"
       ]
     },
     "enableWeakerNetworkIsolation": true
   },
+  "promptSuggestionEnabled": false,
   "editorMode": "vim",
   "preferredNotifChannel": "notifications_disabled",
-  "promptSuggestionEnabled": false,
   "skipAutoPermissionPrompt": true
 }
