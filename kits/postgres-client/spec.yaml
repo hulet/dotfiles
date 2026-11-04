@@ -1,0 +1,46 @@
+# postgres-client: pg_dump, pg_restore and psql for one PostgreSQL major
+# version, from the Ubuntu archive (apt verifies its signed indexes; the apt
+# hosts are in base). pg_dump refuses servers newer than itself, so the
+# version must match the server's: --kit-arg postgres-client.version=<major>.
+schemaVersion: '2'
+kind: mixin
+name: postgres-client
+displayName: PostgreSQL client
+description: >-
+  pg_dump, pg_restore and psql for one PostgreSQL major version (argument
+  `version`, default 18) from the Ubuntu archive.
+licenses: [PostgreSQL]
+
+args:
+  version:
+    description: PostgreSQL major version of the client; match the server's.
+    default: '18'
+    pattern: '^[0-9]+$'
+
+setup:
+  install:
+    # A version the image's Ubuntu release does not package fails here with
+    # a clear message; adding PostgreSQL's own apt repository is deferred
+    # until a project needs one.
+    - command: |
+        set -eu
+        v='${{ kit.args.version }}'
+        apt-get update
+        if ! apt-cache show "postgresql-client-$v" >/dev/null 2>&1; then
+          echo "postgresql-client-$v is not in this Ubuntu release's archive" >&2
+          exit 1
+        fi
+        apt-get install -y --no-install-recommends "postgresql-client-$v"
+        pg_dump --version | grep -q " $v\."
+        pg_restore --version | grep -q " $v\."
+      user: '0'
+      description: Install the PostgreSQL client from the Ubuntu archive
+
+agentInstructions:
+  content: |
+    ## PostgreSQL client
+
+    `pg_dump`, `pg_restore` and `psql` are on PATH, from the
+    `postgres-client` kit, for one PostgreSQL major version (check with
+    `pg_dump --version`). They must match the server's major version;
+    `pg_dump` refuses a newer server.
