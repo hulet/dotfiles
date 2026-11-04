@@ -56,8 +56,11 @@ sbxc                            # re-attach
 - `ref=main` means a new sandbox gets whatever is on `main`. Push kit changes
   before creating sandboxes that need them.
 - Regional AWS endpoints are not covered by `cloud-clis`' `*.amazonaws.com`
-  (sbx enforces single-label wildcards only); allow them with
-  `sbx policy allow network <host>`.
+  (sbx enforces single-label wildcards only). Sign in with
+  `aws configure sso --use-device-code` / `aws sso login --use-device-code`,
+  and for your region R allow `oidc.R.amazonaws.com`,
+  `portal.sso.R.amazonaws.com`, `sts.R.amazonaws.com` and each service's
+  endpoint (e.g. `s3.R.amazonaws.com`) with `sbx policy allow network <host>`.
 
 ## Adding a kit
 
@@ -103,9 +106,9 @@ To update one:
 2. **Get the expected hashes** for that exact version, for both
    `linux/amd64` and `linux/arm64`, from the vendor's published source:
    Trivy's `trivy_<version>_checksums.txt`, gitleaks'
-   `gitleaks_<version>_checksums.txt`, hadolint's GitHub asset digests
-   (`gh api repos/hadolint/hadolint/releases/tags/v<version>`), Node's
-   `SHASUMS256.txt`, the gcloud archive's SHA256 from the download, the AWS
+   `gitleaks_<version>_checksums.txt`, hadolint's `checksums.sha256`, Node's
+   `SHASUMS256.txt`, the SHA256 on Google's versioned-archives page while the version is
+   current, otherwise the download's, the AWS
    CLI zip's SHA256 after its signature check (step 3).
 3. **Cross-check through a second channel**; if anything disagrees, stop and
    report it — do not update:
