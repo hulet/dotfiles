@@ -49,13 +49,14 @@ sbx run claude . --kit "$K/base" --kit "$K/scanners" \
 Or use `sbxc` from dotfiles, which always adds `base`:
 
 ```sh
-sbxc scanners postgres-client   # create, or re-attach if it exists
-sbxc                            # re-attach
+sbxc scanners postgres-client   # create; an error if it already exists
+sbxc                            # re-attach, or create with only base
 ```
 
 - Pass `-- --settings /home/agent/sbx-claude-settings.json` on every
   `sbx run`, re-attaches included; it is a Claude Code argument sbx does not
-  remember. `sbxc` does this for you.
+  remember. It also sets bypass permissions mode, so
+  `--dangerously-skip-permissions` is not needed. `sbxc` does this for you.
 - Kits are fixed when a sandbox is created. To change them: commit and push
   work in progress, `sbx rm <sandbox>`, and create it again.
 - On a new sandbox, exit and re-attach once: plugins installed during startup
@@ -151,4 +152,4 @@ To update one:
 - In-sandbox names use the `sbx-` prefix (`~/.local/lib/sbx-*`,
   `/opt/sbx-<kit>/`).
 - Run `sbx/tests/run.sh` before every push that touches `sbx/kits/` or
-  `sbx/sbxc.zsh`.
+  `sbx/sbxc`.

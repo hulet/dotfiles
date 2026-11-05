@@ -28,9 +28,9 @@ run "kit specs and catalogs" $PY "$here/check_specs.py" "$root"
 run "downloads reject tampering" sh "$here/test_tampered_download.sh" "$root"
 run "sbx-workspace-mounts.sh" sh "$here/test_workspace_mounts.sh" "$lib"
 run "sbx-deps-install.sh" sh "$here/test_deps_install.sh" "$lib"
-run "sbxc" zsh "$here/test_sbxc.zsh" "$root"
+run "sbxc" sh "$here/test_sbxc.sh" "$root"
 if command -v shellcheck >/dev/null 2>&1; then
-  run "shellcheck" shellcheck -x -P SCRIPTDIR "$lib"/*.sh "$here"/*.sh
+  run "shellcheck" shellcheck -x -P SCRIPTDIR "$lib"/*.sh "$here"/*.sh "$root/sbxc"
 else
   echo "skip shellcheck (not installed)"
 fi

@@ -22,6 +22,7 @@
     ~/.config/ghostty:
     ~/.config/ripgrep:
     ~/.config/zellij:
+    ~/.local/bin:
 
 - clean:
     ~/:
@@ -51,6 +52,7 @@
     ~/.gitconfig: gitconfig
     ~/.gitignore: gitignore
     ~/.grep-exclude: grep-exclude
+    ~/.local/bin/sbxc: sbx/sbxc
     ~/.local/bin/game-with-capslock:
       if: '[ "$(hostname)" = "bazzite" ]'
       path: game-with-capslock

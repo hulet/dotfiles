@@ -142,10 +142,6 @@ wk() {
     echo `date` $@ >> ~/worklog.txt
 }
 
-# sbxc: create or re-attach to this directory's Claude Code sandbox with
-# kits from dotfiles/sbx/kits (see sbx/sbxc.zsh).
-source "${${(%):-%x}:A:h}/sbx/sbxc.zsh"
-
 # --- PLATFORM SPECIFIC ---
 case "$(uname -s)" in
     Darwin)

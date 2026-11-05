@@ -159,6 +159,9 @@ agentInstructions:
       if its skills are missing, ask the user to exit and re-attach.
     - `~/sbx-claude-settings.json` holds this sandbox's Claude Code settings:
       permission prompts on git remote changes and connector writes,
+      `defaultMode: bypassPermissions` (in place of
+      `--dangerously-skip-permissions`, which would leave Claude Code offering
+      to make auto mode the default),
       `TMPDIR=/tmp` (the sandbox leaves `TMPDIR` unset) and
       `TZ=America/Los_Angeles` (sbx injects a fixed offset with no DST). It
       applies only when the session was started with

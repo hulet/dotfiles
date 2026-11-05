@@ -1,0 +1,55 @@
+#!/bin/sh
+# sbxc [kit ...] [-- claude-args]: create or re-attach to this directory's
+# Claude Code sandbox. Every sandbox gets the base kit from dotfiles/sbx/kits;
+# each name argument adds sbx/kits/<name> (sbx/README.md lists them), so a new
+# kit needs no change here. Kits, like --skills=off (opting out of the
+# shared skills store), apply only at creation, so a re-attach passes neither
+# and naming kits for an existing sandbox is an error.
+# --settings is a claude argument sbx does not remember; it is passed every
+# time. Linked to ~/.local/bin/sbxc by install.conf.yaml.
+set -eu
+kit_url='git+https://github.com/hulet/dotfiles.git#ref=main&dir=sbx/kits'
+settings=/home/agent/sbx-claude-settings.json
+
+# Kit names are checked against [a-z0-9-], so space-separated lists are safe.
+kits=base
+while [ "$#" -gt 0 ]; do
+  case $1 in -*) break ;; esac
+  # Names only, never paths or URLs: kits come from dotfiles alone.
+  case $1 in
+    '' | *[!a-z0-9-]*)
+      printf "sbxc: '%s' is not a kit name (see ~/git/dotfiles/sbx/README.md)\n" "$1" >&2
+      exit 1
+      ;;
+  esac
+  case " $kits " in *" $1 "*) ;; *) kits="$kits $1" ;; esac
+  shift
+done
+if [ "${1-}" = -- ]; then shift; fi
+
+# This directory's sandbox: sbx's default name, passed explicitly so the
+# lookup always matches.
+name="claude-$(basename "$PWD" | tr -cs 'A-Za-z0-9.+-' '-')"
+name="${name%-}"
+
+# Stop on any error before sbx run: its full-screen session hides what was
+# printed before it.
+if ! sandboxes="$(sbx ls -q)"; then
+  echo "sbxc: 'sbx ls' failed, so not starting a sandbox" >&2
+  exit 1
+fi
+if printf '%s\n' "$sandboxes" | grep -qxF -- "$name"; then
+  if [ "$kits" != base ]; then
+    echo "sbxc: $name already exists and kits are fixed at creation." >&2
+    echo "sbxc: to change them, push your work, then: sbx rm $name && sbxc${kits#base}" >&2
+    exit 1
+  fi
+  exec sbx run --name "$name" -- --settings "$settings" "$@"
+fi
+
+kit_flags=
+for kit in $kits; do
+  kit_flags="$kit_flags --kit $kit_url/$kit"
+done
+# shellcheck disable=SC2086  # split on purpose: no spaces or globs in kit URLs
+exec sbx run claude . --name "$name" --skills=off $kit_flags -- --settings "$settings" "$@"

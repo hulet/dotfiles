@@ -7,6 +7,7 @@
     "TZ": "America/Los_Angeles"
   },
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "ask": [
       "Bash(git push:*)",
       "Bash(git remote add*)",
@@ -67,6 +68,5 @@
   },
   "editorMode": "vim",
   "preferredNotifChannel": "notifications_disabled",
-  "promptSuggestionEnabled": false,
-  "skipAutoPermissionPrompt": true
+  "promptSuggestionEnabled": false
 }
