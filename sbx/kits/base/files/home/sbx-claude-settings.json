@@ -2,7 +2,9 @@
   "env": {
     "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
-    "CLAUDE_CODE_NO_FLICKER": "0"
+    "CLAUDE_CODE_NO_FLICKER": "0",
+    "TMPDIR": "/tmp",
+    "TZ": "America/Los_Angeles"
   },
   "permissions": {
     "ask": [
@@ -60,17 +62,22 @@
       "mcp__Salesforce_DX__deploy_metadata"
     ]
   },
-  "enabledPlugins": {
-    "cloudflare@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true
-  },
-  "extraKnownMarketplaces": {
-    "cloudflare": {
-      "source": {
-        "source": "github",
-        "repo": "cloudflare/skills"
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PATH=\"$HOME/.local/bin:$PATH\"; sudo -n sh /home/agent/.local/lib/sbx-workspace-mounts.sh \"$WORKSPACE_DIR\" >>/tmp/sbx-session-start.log; sh /home/agent/.local/lib/sbx-deps-install.sh \"$WORKSPACE_DIR\" >>/tmp/sbx-session-start.log; claude plugin marketplace add anthropics/claude-plugins-official >>/tmp/sbx-session-start.log && claude plugin install superpowers@claude-plugins-official >>/tmp/sbx-session-start.log",
+            "timeout": 900
+          }
+        ]
       }
-    }
+    ]
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true
   },
   "editorMode": "vim",
   "preferredNotifChannel": "notifications_disabled",

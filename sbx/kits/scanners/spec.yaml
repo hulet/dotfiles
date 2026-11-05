@@ -1,0 +1,141 @@
+# scanners: the secret, Dockerfile, vulnerability and static-analysis
+# scanners a project's checks shell out to (e.g. ward-manager's
+# `npm run scan`). Hosts the downloads share with other kits (GitHub
+# releases, trivy's DB registries) are in base.
+schemaVersion: '2'
+kind: mixin
+name: scanners
+displayName: Code scanners
+description: >-
+  gitleaks, hadolint, trivy and semgrep, pinned and checksum-verified, with a
+  semgrep wrapper that fits the sandbox's locked-memory limit.
+# gitleaks (MIT), hadolint (GPL-3.0), trivy (Apache-2.0), semgrep (LGPL-2.1).
+licenses: [MIT, GPL-3.0-only, Apache-2.0, LGPL-2.1-only]
+
+environment:
+  variables:
+    # Otherwise trivy calls check.trivy.dev, which is not allowlisted.
+    TRIVY_SKIP_VERSION_CHECK: 'true'
+    TRIVY_DISABLE_TELEMETRY: 'true'
+
+permissions:
+  network:
+    allow:
+      # semgrep downloads the p/* rulesets it is pointed at.
+      - semgrep.dev
+      - metrics.semgrep.dev
+
+setup:
+  install:
+    # Update procedure: sbx/README.md, "Updating a pinned tool".
+    - command: |
+        set -eu
+        version=8.30.1
+        case "$(uname -m)" in
+          x86_64) arch=x64; sum=551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb ;;
+          aarch64|arm64) arch=arm64; sum=e4a487ee7ccd7d3a7f7ec08657610aa3606637dab924210b3aee62570fb4b080 ;;
+          *) echo "unsupported arch $(uname -m)" >&2; exit 1 ;;
+        esac
+        asset="gitleaks_${version}_linux_$arch.tar.gz"
+        tmp="$(mktemp -d)"
+        curl -fsSL -o "$tmp/$asset" "https://github.com/gitleaks/gitleaks/releases/download/v$version/$asset"
+        echo "$sum  $tmp/$asset" | sha256sum -c -
+        tar -xzf "$tmp/$asset" --no-same-owner -C /usr/local/bin gitleaks
+        rm -rf "$tmp"
+        gitleaks version | grep -q "$version"
+      user: '0'
+      description: Install gitleaks from its release tarball, checksum-verified
+
+    # The hashes match hadolint's checksums.sha256 and GitHub's asset digests
+    # (cross-checked against the binary in hadolint/hadolint's image).
+    # Update procedure: sbx/README.md, "Updating a pinned tool".
+    - command: |
+        set -eu
+        version=2.15.1
+        case "$(uname -m)" in
+          x86_64) asset=hadolint-linux-x86_64; sum=c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507 ;;
+          aarch64|arm64) asset=hadolint-linux-arm64; sum=f6198ef8090f404dbb771abfee086eb8c48ac177f30da7fd3510aca35b344b5d ;;
+          *) echo "unsupported arch $(uname -m)" >&2; exit 1 ;;
+        esac
+        tmp="$(mktemp -d)"
+        curl -fsSL -o "$tmp/$asset" "https://github.com/hadolint/hadolint/releases/download/v$version/$asset"
+        echo "$sum  $tmp/$asset" | sha256sum -c -
+        install -m 0755 "$tmp/$asset" /usr/local/bin/hadolint
+        rm -rf "$tmp"
+        hadolint --version | grep -q "$version"
+      user: '0'
+      description: Install hadolint from its release binary, checksum-verified
+
+    # In 2026 Trivy's release tags were re-pointed to a credential-stealing
+    # build served through every official channel (ward-manager's
+    # docs/superpowers/specs/2026-09-19-local-quality-tooling-design.md).
+    # Never drop these hashes or fetch them at install time: a re-pointed tag
+    # serves a different file under the same URL.
+    # Update procedure: sbx/README.md, "Updating a pinned tool".
+    - command: |
+        set -eu
+        version=0.74.0
+        case "$(uname -m)" in
+          x86_64) arch=Linux-64bit; sum=2ae6fe3ee734b7fdf11335663e18c75ea12dccc76062f09f164a3b0f8be4371a ;;
+          aarch64|arm64) arch=Linux-ARM64; sum=b94ce1976bbf3c15b514b605ee88be7c6d94a29be2302847ff01cb794d47aad5 ;;
+          *) echo "unsupported arch $(uname -m)" >&2; exit 1 ;;
+        esac
+        asset="trivy_${version}_$arch.tar.gz"
+        tmp="$(mktemp -d)"
+        curl -fsSL -o "$tmp/$asset" "https://github.com/aquasecurity/trivy/releases/download/v$version/$asset"
+        echo "$sum  $tmp/$asset" | sha256sum -c -
+        tar -xzf "$tmp/$asset" --no-same-owner -C /usr/local/bin trivy
+        rm -rf "$tmp"
+        trivy --version | grep -q "$version"
+      user: '0'
+      description: Install trivy from its release tarball, checksum-verified
+
+    # semgrep is a Python CLI: a uv-managed venv over a standalone CPython in
+    # /opt/sbx-scanners, independent of the image's Python and of a project's
+    # venv. PyPI release files cannot be replaced, so the version pin suffices.
+    #
+    # PATH gets a wrapper: semgrep-core opens one io_uring per job and the
+    # sandbox caps locked memory at 8 MiB (a hard limit, even for root), so
+    # the default one-job-per-core dies with "Cannot allocate memory
+    # io_uring_queue_init" once a verify chain has the machine busy. The
+    # wrapper adds --jobs 1 to scans (`scan`, `ci`, or the implied scan when
+    # the first argument is an option or path) and passes other subcommands,
+    # no arguments, --version, --help and -h through unchanged, since semgrep treats a first non-subcommand argument
+    # as an implied `scan`. --jobs 1 costs about a second on a small repo; a
+    # caller's own --jobs still wins because the later flag does.
+    - command: |
+        set -eu
+        export UV_PYTHON_INSTALL_DIR=/opt/sbx-scanners/python
+        export UV_TOOL_DIR=/opt/sbx-scanners/tools
+        export UV_TOOL_BIN_DIR=/opt/sbx-scanners/bin
+        uv tool install --python 3.13 'semgrep==1.178.0'
+        cat > /usr/local/bin/semgrep <<'EOF'
+        #!/bin/sh
+        case "${1:-}" in
+          scan|ci)
+            sub="$1"; shift
+            exec /opt/sbx-scanners/bin/semgrep "$sub" --jobs 1 "$@" ;;
+          ''|--version|--help|-h|login|logout|lsp|show|install-semgrep-pro|publish|test|validate|mcp)
+            exec /opt/sbx-scanners/bin/semgrep "$@" ;;
+          *)
+            exec /opt/sbx-scanners/bin/semgrep --jobs 1 "$@" ;;
+        esac
+        EOF
+        chmod 0755 /usr/local/bin/semgrep
+        semgrep --version | grep -q '1.178.0'
+      user: '0'
+      description: Install semgrep into a uv-managed venv, behind a --jobs 1 wrapper
+
+agentInstructions:
+  content: |
+    ## Code scanners
+
+    `gitleaks`, `hadolint`, `trivy` and `semgrep` are on PATH, pinned by the
+    `scanners` kit. Hosts usually install them with `brew bundle`; ignore a
+    project's Brewfile here.
+
+    `semgrep` is a wrapper that adds `--jobs 1` to scans (`scan`, `ci`, or the
+    implied scan): semgrep-core opens one
+    io_uring per job, and the sandbox's 8 MiB locked-memory limit makes the
+    default fail with `io_uring_queue_init` once the machine is busy. Pass
+    your own `--jobs` only if you have a reason; it overrides the wrapper's.

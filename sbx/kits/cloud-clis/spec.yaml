@@ -1,0 +1,112 @@
+# cloud-clis: Google Cloud and AWS command-line tools, as
+# pinned, checksum-verified installs.
+#
+# sbx enforces single-label wildcards only: *.amazonaws.com matches
+# sts.amazonaws.com but not regional endpoints such as
+# s3.us-west-2.amazonaws.com. AWS CLI v2 signs in through regional hosts and
+# defaults to a browser redirect to 127.0.0.1 that the host browser cannot
+# reach, so use `aws configure sso --use-device-code` / `aws sso login
+# --use-device-code`, and allow, for your region R: oidc.R.amazonaws.com,
+# portal.sso.R.amazonaws.com, sts.R.amazonaws.com, plus each service's
+# regional endpoint (e.g. s3.R.amazonaws.com), with
+# `sbx policy allow network <host>`.
+schemaVersion: '2'
+kind: mixin
+name: cloud-clis
+displayName: Cloud CLIs
+description: >-
+  gcloud, gsutil and bq (Google Cloud CLI) and AWS CLI v2, pinned and
+  checksum-verified, with the sign-in and API hosts they need.
+# Google Cloud CLI (Apache-2.0), AWS CLI (Apache-2.0); both bundle CPython
+# (PSF-2.0).
+licenses: [Apache-2.0, PSF-2.0]
+
+environment:
+  variables:
+    # The pinned install is managed by this kit; gcloud's updater would fail
+    # (root-owned tree) and nag on every command.
+    CLOUDSDK_COMPONENT_MANAGER_DISABLE_UPDATE_CHECK: 'true'
+
+permissions:
+  network:
+    allow:
+      # Install downloads.
+      - dl.google.com
+      - awscli.amazonaws.com
+      # gcloud sign-in and APIs.
+      - accounts.google.com
+      - oauth2.googleapis.com
+      - '*.googleapis.com'
+      # AWS global endpoints and IAM Identity Center portals; regional
+      # endpoints (sign-in included) need explicit entries, see above.
+      - '*.amazonaws.com'
+      - '*.awsapps.com'
+
+setup:
+  install:
+    # Google lists archive hashes only for the current release; these were
+    # taken from the TLS download at dl.google.com when pinned.
+    # Update procedure: sbx/README.md, "Updating a pinned tool".
+    - command: |
+        set -eu
+        version=591.0.0
+        case "$(uname -m)" in
+          x86_64) arch=x86_64; sum=78c570f5fcfe58a9311bd98c06b75530595e3cae6277aad75a676a39e6ee7b63 ;;
+          aarch64|arm64) arch=arm; sum=f5e5df0433f77c0e7f5df9fd4bce2e46c7b7967e79cf66e31b1164d3d4c86546 ;;
+          *) echo "unsupported arch $(uname -m)" >&2; exit 1 ;;
+        esac
+        asset="google-cloud-cli-$version-linux-$arch.tar.gz"
+        tmp="$(mktemp -d)"
+        curl -fsSL -o "$tmp/$asset" "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/$asset"
+        echo "$sum  $tmp/$asset" | sha256sum -c -
+        mkdir -p /opt/sbx-cloud-clis
+        tar -xzf "$tmp/$asset" --no-same-owner -C /opt/sbx-cloud-clis
+        rm -rf "$tmp"
+        for bin in gcloud gsutil bq; do
+          ln -sf "/opt/sbx-cloud-clis/google-cloud-sdk/bin/$bin" "/usr/local/bin/$bin"
+        done
+        CLOUDSDK_CONFIG="$(mktemp -d)" gcloud version | grep -q "Google Cloud SDK $version"
+      user: '0'
+      description: Install the Google Cloud CLI from its versioned archive, checksum-verified
+
+    # AWS publishes a PGP signature but no checksum file; the hashes were
+    # taken after verifying each zip's signature against the AWS CLI Team key
+    # (FB5D B77F D5C1 18B8 0511 ADA8 A631 0ACC 4672 475C).
+    # Update procedure: sbx/README.md, "Updating a pinned tool".
+    - command: |
+        set -eu
+        version=2.39.0
+        case "$(uname -m)" in
+          x86_64) arch=x86_64; sum=6c89ce7ed7bc0a2520e2bc3eeedfea4e2eb2e7da2836860c9471871408404036 ;;
+          aarch64|arm64) arch=aarch64; sum=05da9395b4d148c42e959192650bf4a7cbb59ea275fa334d0936c593c27b946f ;;
+          *) echo "unsupported arch $(uname -m)" >&2; exit 1 ;;
+        esac
+        asset="awscli-exe-linux-$arch-$version.zip"
+        tmp="$(mktemp -d)"
+        curl -fsSL -o "$tmp/$asset" "https://awscli.amazonaws.com/$asset"
+        echo "$sum  $tmp/$asset" | sha256sum -c -
+        command -v unzip >/dev/null 2>&1 || { apt-get update -qq && apt-get install -y --no-install-recommends unzip; }
+        unzip -q "$tmp/$asset" -d "$tmp"
+        "$tmp/aws/install" -i /opt/sbx-cloud-clis/aws-cli -b /usr/local/bin
+        rm -rf "$tmp"
+        aws --version | grep -q "aws-cli/$version "
+      user: '0'
+      description: Install AWS CLI v2 from its versioned zip, checksum-verified
+
+agentInstructions:
+  content: |
+    ## Cloud CLIs
+
+    `gcloud`, `gsutil`, `bq` and `aws` (v2) are on PATH, pinned by the
+    `cloud-clis` kit. They start signed out. Sign in with
+    `gcloud auth login --no-launch-browser` or
+    `aws configure sso --use-device-code` (`aws sso login --use-device-code`
+    later), and ask the user to complete the browser step on the host. Credentials live only
+    in this sandbox and are lost when it is recreated.
+
+    Regional AWS endpoints (e.g. `s3.us-west-2.amazonaws.com`) are not
+    covered by the kit's `*.amazonaws.com` rule. If one is blocked (HTTP
+    403), ask the user to allow, for their region R, `oidc.R.amazonaws.com`,
+    `portal.sso.R.amazonaws.com`, `sts.R.amazonaws.com` and each service's
+    regional endpoint (e.g. `s3.R.amazonaws.com`) with
+    `sbx policy allow network <host>` on the host.

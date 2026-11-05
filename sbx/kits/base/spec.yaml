@@ -1,0 +1,239 @@
+# base: the mixin every sandbox gets — pinned Node 24, sandbox-private
+# dependency and build directories with lockfile installs, the superpowers
+# plugin, the Claude Code settings file, and every general host any project
+# may reach. sbx/README.md lists the other kits and how to combine them.
+#
+# The settings file is loaded with a claude CLI argument on every `sbx run`
+# (`-- --settings /home/agent/sbx-claude-settings.json`):
+# ~/.claude/settings.json is sandbox-managed (a reserved path in Docker's kit
+# reference), so files/home/sbx-claude-settings.json lands beside it instead.
+schemaVersion: '2'
+kind: mixin
+name: base
+displayName: Base sandbox setup
+description: >-
+  Pinned Node.js 24, sandbox-private dependency and build directories with
+  lockfile installs, the superpowers plugin, a Claude Code settings file
+  (loaded via --settings), and the general package and registry hosts.
+# Node.js (MIT).
+licenses: [MIT]
+
+permissions:
+  network:
+    allow:
+      # Release downloads (github.com redirects to release-assets) and raw
+      # files projects fetch at build time.
+      - github.com
+      - release-assets.githubusercontent.com
+      - raw.githubusercontent.com
+      # uv's managed Python downloads (falls back to github.com).
+      - releases.astral.sh
+      # npm and PyPI, including the lockfile installs below.
+      - registry.npmjs.org
+      - pypi.org
+      - files.pythonhosted.org
+      # Container images for docker build / compose, and OCI artifacts such
+      # as trivy's vulnerability DB (mirror.gcr.io first, ghcr.io fallback).
+      - registry-1.docker.io
+      - auth.docker.io
+      - index.docker.io
+      - production.cloudflare.docker.com
+      - ghcr.io
+      - pkg-containers.githubusercontent.com
+      - mirror.gcr.io
+      # apk/apt in Alpine, Debian and Ubuntu image builds, and apt on the
+      # Ubuntu workload itself (ports.ubuntu.com serves arm64, the other two
+      # amd64).
+      - dl-cdn.alpinelinux.org
+      - deb.debian.org
+      - security.debian.org
+      - ports.ubuntu.com
+      - archive.ubuntu.com
+      - security.ubuntu.com
+      # The Node.js install below.
+      - nodejs.org
+
+setup:
+  install:
+    # The image defaults to UTC, and sbx injects TZ as a fixed offset with no
+    # DST rule; the settings file's TZ covers Claude Code, this the rest.
+    - command: |
+        set -eu
+        ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+        echo America/Los_Angeles > /etc/timezone
+      user: '0'
+      description: Set the system timezone to America/Los_Angeles
+
+    # The image's Node is 22: it cannot run code that needs 24 (ward-manager's
+    # scripts/migrate.ts) and engine-strict projects refuse its npm ci.
+    # /usr/local/bin precedes the image's /usr/bin on PATH.
+    # Update procedure: sbx/README.md, "Updating a pinned tool".
+    - command: |
+        set -eu
+        version=24.22.2
+        case "$(uname -m)" in
+          x86_64) arch=x64; sum=48cc0e21e048790e54c0cf5749c2725005313d652651c40b7a21feb9697aaf75 ;;
+          aarch64|arm64) arch=arm64; sum=eb187837a2230d4047161ac0be008584e16b46f726e9c9490ee35dc6b17d9ba8 ;;
+          *) echo "unsupported arch $(uname -m)" >&2; exit 1 ;;
+        esac
+        asset="node-v$version-linux-$arch.tar.xz"
+        tmp="$(mktemp -d)"
+        curl -fsSL -o "$tmp/$asset" "https://nodejs.org/dist/v$version/$asset"
+        echo "$sum  $tmp/$asset" | sha256sum -c -
+        command -v xz >/dev/null 2>&1 || { apt-get update -qq && apt-get install -y --no-install-recommends xz-utils; }
+        mkdir -p /opt/sbx-base/node
+        tar -xJf "$tmp/$asset" --no-same-owner -C /opt/sbx-base/node --strip-components=1
+        rm -rf "$tmp"
+        for bin in node npm npx; do
+          ln -sf "/opt/sbx-base/node/bin/$bin" "/usr/local/bin/$bin"
+        done
+        /usr/local/bin/node --version | grep -qx "v$version"
+      user: '0'
+      description: Install Node.js 24 LTS from nodejs.org, checksum-verified
+
+  # WORKAROUND for sbx bug docker/sbx-releases#420.
+  #
+  # In affected sbx releases the daemon keeps the "this sandbox has startup
+  # commands" marker only in memory, so after a daemon restart (a host reboot
+  # is enough) existing sandboxes stop running setup.startup until recreated.
+  # Symptoms: no new run in /var/log/sbx-kit-startup.log, dependency or build
+  # directories not mounted (`findmnt node_modules` shows virtiofs), missing
+  # superpowers skills. The SessionStart hook in
+  # files/home/sbx-claude-settings.json therefore re-runs all three steps, each
+  # independently, at every Claude Code session; each is idempotent.
+  #
+  # To remove it: confirm the fix shipped (the release notes of the sbx
+  # version in use mention #420, and the issue no longer has the
+  # awaiting-release label); then `sbx daemon restart`, start an existing
+  # sandbox, and check that /var/log/sbx-kit-startup.log gained a new
+  # "=== dispatcher run <now> ===" entry. Then, in one commit:
+  #   - delete the "hooks" block from files/home/sbx-claude-settings.json;
+  #   - in agentInstructions below, drop "and every session start" (twice),
+  #     the sentence about waiting for another install in progress, and the
+  #     final paragraph about #420, keeping the manual
+  #     re-apply commands;
+  #   - drop the SessionStart mention from the header of
+  #     files/home/.local/lib/sbx-workspace-mounts.sh and the #420 mention
+  #     from sbx-deps-install.sh, and reword its concurrency paragraph (the
+  #     lock stays: a manual re-apply can still overlap a startup run);
+  #   - in sbx/README.md, drop the bullet saying the first session waits for
+  #     the first install;
+  #   - delete this comment.
+  startup:
+    # Mounts should exist before the install writes into them;
+    # sbx-deps-install.sh also skips any directory that is not yet a mount, so
+    # a different order only delays the install to the next run.
+    - command:
+        - sh
+        - /home/agent/.local/lib/sbx-workspace-mounts.sh
+      user: '0'
+      background: false
+      description: Make dependency and build directories sandbox-private
+
+    - command:
+        - sh
+        - /home/agent/.local/lib/sbx-deps-install.sh
+      background: false
+      description: Install dependencies from lockfiles into the private directories
+
+    # enabledPlugins only activates an installed plugin, and a fresh home does
+    # not know the official marketplace until it is added. Startup commands
+    # get a PATH without ~/.local/bin, where claude lives.
+    - command:
+        - sh
+        - -c
+        - |
+          set -e
+          export PATH="$HOME/.local/bin:$PATH"
+          claude plugin marketplace add anthropics/claude-plugins-official
+          claude plugin install superpowers@claude-plugins-official
+      description: Install the superpowers plugin from the official marketplace
+
+agentInstructions:
+  content: |
+    ## Base sandbox setup
+
+    Kits loaded in this sandbox are the ones listed under the `## Kits`
+    pointer. This one, `base`, is in every sandbox.
+
+    - `node` is Node.js 24 at `/usr/local/bin/node`, pinned by this kit. The
+      image's own Node 22 is still at `/usr/bin/node`; never use it.
+    - Dependency and build directories are sandbox-private: `node_modules`
+      (when the repo has `package.json`), `.venv` (`pyproject.toml` or
+      `requirements*.txt`) and `.svelte-kit` (`svelte.config.js/.ts/.mjs`) are
+      bind-mounted from sandbox-local disk, so the host's macOS builds and
+      this sandbox's Linux builds never overwrite each other. Install freely:
+      lockfile changes reach the host as ordinary diffs, and the user installs
+      them there.
+    - At sandbox start and every session start, `package-lock.json` is
+      installed with `npm ci` and `uv.lock` with `uv sync --frozen`, only when
+      the lockfile changed since the last install. A run that finds another
+      install in progress waits for it (up to 10 minutes). Other projects (pip
+      `-e .`, yarn, pnpm) get an empty private directory; their CLAUDE.md or
+      README says how to fill it. Create a venv in the private `.venv` with
+      `uv venv --allow-existing --python <version> .venv`: without
+      `--allow-existing`, uv tries to replace the mounted directory and fails.
+    - The mounts cover the workspace root only, not git worktrees under it.
+    - If `findmnt node_modules` (or `.venv`, `.svelte-kit`) does not show its
+      own mount, or dependencies look stale, re-apply both steps:
+
+      ```sh
+      sudo sh ~/.local/lib/sbx-workspace-mounts.sh "$PWD"
+      sh ~/.local/lib/sbx-deps-install.sh "$PWD"
+      ```
+
+      Session-start output is logged to /tmp/sbx-session-start.log.
+
+    - `superpowers` is installed at sandbox start and every session start from
+      the official marketplace. A fresh install loads in the *next* session;
+      if its skills are missing, ask the user to exit and re-attach.
+    - `~/sbx-claude-settings.json` holds this sandbox's Claude Code settings:
+      permission prompts on git remote changes and connector writes,
+      `TMPDIR=/tmp` (the sandbox leaves `TMPDIR` unset) and
+      `TZ=America/Los_Angeles` (sbx injects a fixed offset with no DST). It
+      applies only when the session was started with
+      `-- --settings /home/agent/sbx-claude-settings.json`.
+
+    Other differences from a host checkout:
+
+    - `python3 -m venv` fails (no `ensurepip`); use `uv venv` as above.
+    - Network access is allowlisted. A download that fails with HTTP 403 was
+      most likely blocked; ask the user to check `sbx policy log` on the host,
+      then either `sbx policy allow network <domain>` or add the host to a kit.
+    - A dev server must listen on `0.0.0.0` to be reachable from the host, and
+      the host publishes the port with
+      `sbx ports <sandbox> --publish <host-port>:<port>`.
+    - `git push` works only after the host has run
+      `sbx secret set github --sandbox <sandbox> -t "$(gh auth token)"`.
+
+    ### Kit catalog
+
+    These were the kits available when this sandbox was created. For the
+    current list, fetch
+    https://raw.githubusercontent.com/hulet/dotfiles/main/sbx/README.md
+    (section "Kit catalog").
+
+    - **`base`** — this kit; in every sandbox.
+    - **`scanners`** — gitleaks, hadolint, trivy, semgrep. Needed when any of
+      them is `command not found`, e.g. in a project's `npm run scan`.
+    - **`cloud-clis`** — gcloud, gsutil, bq and AWS CLI v2. Needed when any of
+      those commands is `command not found`.
+    - **`postgres-client`** — `pg_dump`, `pg_restore` and `psql` for one
+      PostgreSQL major version. Needed when any of them is `command not found`.
+
+    If a task needs a kit this sandbox lacks:
+
+    1. Do not install the tool yourself or work around its absence: kits are
+       pinned, checksum-verified and allowlisted; ad hoc installs are not, and
+       they vanish when the sandbox is recreated.
+    2. Stop and tell the user which kit is needed and why, with the steps
+       (you cannot run `sbx` from inside the sandbox): commit and push work in
+       progress; on the host, `sbx rm <sandbox>`, then `sbxc <kit> ...` or the
+       project README's create command with an extra `--kit`. Recreating
+       reinstalls the private dependency directories and loses cloud sign-ins.
+    3. If no kit provides it, say so and suggest a new kit in `dotfiles/sbx/kits`
+       or a one-off `sbx policy allow` plus a manual install.
+
+    The session-start re-runs above are a workaround for sbx bug
+    docker/sbx-releases#420; the WORKAROUND comment in `sbx/kits/base/spec.yaml`
+    says how to confirm the fix and what to remove.
