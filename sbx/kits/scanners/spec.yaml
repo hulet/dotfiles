@@ -17,13 +17,16 @@ environment:
     # Otherwise trivy calls check.trivy.dev, which is not allowlisted.
     TRIVY_SKIP_VERSION_CHECK: 'true'
     TRIVY_DISABLE_TELEMETRY: 'true'
+    # semgrep otherwise sends usage metrics when it fetches registry rules
+    # (p/*); off keeps them in the sandbox and metrics.semgrep.dev off the
+    # allowlist.
+    SEMGREP_SEND_METRICS: 'off'
 
 permissions:
   network:
     allow:
       # semgrep downloads the p/* rulesets it is pointed at.
       - semgrep.dev
-      - metrics.semgrep.dev
 
 setup:
   install:
