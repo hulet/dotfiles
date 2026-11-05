@@ -6,11 +6,7 @@
 here="$(cd "$(dirname "$0")" && pwd)"
 . "$here/lib.sh"
 : "${PY:=python3}"
-if [ $# -lt 1 ]; then
-  echo "usage: $0 <dotfiles-root>" >&2
-  exit 2
-fi
-root=$1
+root="${1:-$here/..}"
 
 count="$($PY "$here/extract_curl_steps.py" "$root" "$work/steps")"
 check "found at least one download step" [ "$count" -gt 0 ]

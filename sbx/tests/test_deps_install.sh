@@ -5,7 +5,7 @@
 # handling of sbx-deps-install.sh.
 here="$(cd "$(dirname "$0")" && pwd)"
 . "$here/lib.sh"
-script="$1/sbx-deps-install.sh"
+script="${1:-$here/../kits/base/files/home/.local/lib}/sbx-deps-install.sh"
 check "script exists" [ -f "$script" ]
 
 stub mountpoint '[ "$1" = -q ] && shift; grep -qxF -- "$1" "$WORK/mounted" 2>/dev/null'

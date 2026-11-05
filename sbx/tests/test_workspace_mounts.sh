@@ -5,7 +5,7 @@
 # Fixture repos are created here at run time.
 here="$(cd "$(dirname "$0")" && pwd)"
 . "$here/lib.sh"
-script="$1/sbx-workspace-mounts.sh"
+script="${1:-$here/../kits/base/files/home/.local/lib}/sbx-workspace-mounts.sh"
 check "script exists" [ -f "$script" ]
 
 stub mount '[ -n "${FAIL_NM:-}" ] && case "$3" in */node_modules) exit 1;; esac
