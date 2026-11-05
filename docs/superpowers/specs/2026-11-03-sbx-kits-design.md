@@ -262,7 +262,7 @@ mention from the mounts script header, and delete the WORKAROUND comment.
   `docs/superpowers/specs/2026-09-19-local-quality-tooling-design.md`).
 - **Out of scope:** Trivy's vulnerability database, downloaded at run time
   from `mirror.gcr.io` / `ghcr.io`, is not covered by the binary pin.
-- **Network:** `semgrep.dev`, `metrics.semgrep.dev`.
+- **Network:** `semgrep.dev`; semgrep metrics are turned off (`SEMGREP_SEND_METRICS=off`), so `metrics.semgrep.dev` is not allowed.
 - **`agentInstructions`:** scanners are on PATH; the host installs them with
   `brew bundle` (ignore a Brewfile here); `semgrep` is a `--jobs 1` wrapper
   because semgrep-core opens one io_uring per job and the sandbox's 8 MiB
