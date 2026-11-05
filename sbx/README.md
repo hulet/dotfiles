@@ -60,9 +60,6 @@ sbxc                            # re-attach
   work in progress, `sbx rm <sandbox>`, and create it again.
 - On a new sandbox, exit and re-attach once: plugins installed during startup
   load only in the next Claude Code session.
-- The first start of a sandbox runs `npm ci` / `uv sync --frozen` for
-  projects with those lockfiles; the first session waits for it (up to 10
-  minutes) if it is still running.
 - `ref=main` means a new sandbox gets whatever is on `main`. Push kit changes
   before creating sandboxes that need them.
 - Regional AWS endpoints are not covered by `cloud-clis`' `*.amazonaws.com`

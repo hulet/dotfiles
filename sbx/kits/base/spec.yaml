@@ -91,34 +91,6 @@ setup:
       user: '0'
       description: Install Node.js 24 LTS from nodejs.org, checksum-verified
 
-  # WORKAROUND for sbx bug docker/sbx-releases#420.
-  #
-  # In affected sbx releases the daemon keeps the "this sandbox has startup
-  # commands" marker only in memory, so after a daemon restart (a host reboot
-  # is enough) existing sandboxes stop running setup.startup until recreated.
-  # Symptoms: no new run in /var/log/sbx-kit-startup.log, dependency or build
-  # directories not mounted (`findmnt node_modules` shows virtiofs), missing
-  # superpowers skills. The SessionStart hook in
-  # files/home/sbx-claude-settings.json therefore re-runs all three steps, each
-  # independently, at every Claude Code session; each is idempotent.
-  #
-  # To remove it: confirm the fix shipped (the release notes of the sbx
-  # version in use mention #420, and the issue no longer has the
-  # awaiting-release label); then `sbx daemon restart`, start an existing
-  # sandbox, and check that /var/log/sbx-kit-startup.log gained a new
-  # "=== dispatcher run <now> ===" entry. Then, in one commit:
-  #   - delete the "hooks" block from files/home/sbx-claude-settings.json;
-  #   - in agentInstructions below, drop "and every session start" (twice),
-  #     the sentence about waiting for another install in progress, and the
-  #     final paragraph about #420, keeping the manual
-  #     re-apply commands;
-  #   - drop the SessionStart mention from the header of
-  #     files/home/.local/lib/sbx-workspace-mounts.sh and the #420 mention
-  #     from sbx-deps-install.sh, and reword its concurrency paragraph (the
-  #     lock stays: a manual re-apply can still overlap a startup run);
-  #   - in sbx/README.md, drop the bullet saying the first session waits for
-  #     the first install;
-  #   - delete this comment.
   startup:
     # Mounts should exist before the install writes into them;
     # sbx-deps-install.sh also skips any directory that is not yet a mount, so
@@ -165,12 +137,10 @@ agentInstructions:
       this sandbox's Linux builds never overwrite each other. Install freely:
       lockfile changes reach the host as ordinary diffs, and the user installs
       them there.
-    - At sandbox start and every session start, `package-lock.json` is
-      installed with `npm ci` and `uv.lock` with `uv sync --frozen`, only when
-      the lockfile changed since the last install. A run that finds another
-      install in progress waits for it (up to 10 minutes). Other projects (pip
-      `-e .`, yarn, pnpm) get an empty private directory; their CLAUDE.md or
-      README says how to fill it. Create a venv in the private `.venv` with
+    - At sandbox start, `package-lock.json` is installed with `npm ci` and
+      `uv.lock` with `uv sync --frozen`, only when the lockfile changed since
+      the last install. Other projects (pip `-e .`, yarn, pnpm) get an empty
+      private directory; their CLAUDE.md or README says how to fill it. Create a venv in the private `.venv` with
       `uv venv --allow-existing --python <version> .venv`: without
       `--allow-existing`, uv tries to replace the mounted directory and fails.
     - The mounts cover the workspace root only, not git worktrees under it.
@@ -182,10 +152,10 @@ agentInstructions:
       sh ~/.local/lib/sbx-deps-install.sh "$PWD"
       ```
 
-      Session-start output is logged to /tmp/sbx-session-start.log.
+      Sandbox-start output is logged to /var/log/sbx-kit-startup.log.
 
-    - `superpowers` is installed at sandbox start and every session start from
-      the official marketplace. A fresh install loads in the *next* session;
+    - `superpowers` is installed at sandbox start from the official
+      marketplace. A fresh install loads in the *next* session;
       if its skills are missing, ask the user to exit and re-attach.
     - `~/sbx-claude-settings.json` holds this sandbox's Claude Code settings:
       permission prompts on git remote changes and connector writes,
@@ -233,7 +203,3 @@ agentInstructions:
        reinstalls the private dependency directories and loses cloud sign-ins.
     3. If no kit provides it, say so and suggest a new kit in `dotfiles/sbx/kits`
        or a one-off `sbx policy allow` plus a manual install.
-
-    The session-start re-runs above are a workaround for sbx bug
-    docker/sbx-releases#420; the WORKAROUND comment in `sbx/kits/base/spec.yaml`
-    says how to confirm the fix and what to remove.

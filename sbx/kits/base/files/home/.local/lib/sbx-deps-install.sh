@@ -1,8 +1,7 @@
 #!/bin/sh
 # Install a project's dependencies from its lockfile into the sandbox-private
 # directories that sbx-workspace-mounts.sh mounts. Runs as the agent user, at
-# sandbox start and (docker/sbx-releases#420 workaround) at every session
-# start.
+# sandbox start.
 #
 # Only an unambiguous lockfile triggers an install: package-lock.json ->
 # `npm ci`, uv.lock -> `uv sync --frozen`. Other projects (pip -e ., yarn,
@@ -11,11 +10,10 @@
 # so an unchanged project costs nothing. The stamp is removed before an install
 # starts, so it only ever means "the last install fully succeeded".
 #
-# Runs can overlap: a new sandbox runs this from the startup command and the
-# first session's SessionStart hook, and a manual re-apply can overlap either.
-# `npm ci` empties node_modules, so runs are serialized with a lock directory
-# outside the private dirs; a second run waits (up to DEPS_INSTALL_WAIT
-# seconds, default 600) so its session starts with the dependencies installed.
+# Runs can overlap: a manual re-apply can start while the startup command is
+# still installing. `npm ci` empties node_modules, so runs are serialized with
+# a lock directory outside the private dirs; a second run waits (up to
+# DEPS_INSTALL_WAIT seconds, default 600) for the first to finish.
 # A lock whose recorded pid is dead is taken over. DEPS_INSTALL_LOCK and
 # DEPS_INSTALL_WAIT exist so tests can override both.
 #

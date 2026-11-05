@@ -18,8 +18,7 @@
 # directories that remain in the host checkout after the sandbox is gone.
 #
 # The workspace comes from $1, falling back to $WORKSPACE_DIR: sudo strips the
-# variable, both in the manual re-apply command and in the SessionStart hook
-# that works around docker/sbx-releases#420 (see sbx/kits/base/spec.yaml).
+# variable in the manual re-apply command.
 set -eu
 workspace="${1:-${WORKSPACE_DIR:-}}"
 [ -n "$workspace" ] || exit 0
