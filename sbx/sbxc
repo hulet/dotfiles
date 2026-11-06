@@ -6,7 +6,8 @@
 # shared skills store), apply only at creation, so a re-attach passes neither
 # and naming kits for an existing sandbox is an error.
 # --settings is a claude argument sbx does not remember; it is passed every
-# time. Linked to ~/.local/bin/sbxc by install.conf.yaml.
+# time. Linked to ~/.local/bin/sbxc by install.conf.yaml; elsewhere, copy it
+# onto your $PATH or add this directory to it.
 set -eu
 kit_url='git+https://github.com/hulet/dotfiles.git#ref=main&dir=sbx/kits'
 settings=/home/agent/sbx-claude-settings.json

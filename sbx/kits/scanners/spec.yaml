@@ -1,5 +1,5 @@
 # scanners: the secret, Dockerfile, vulnerability and static-analysis
-# scanners a project's checks shell out to (e.g. ward-manager's
+# scanners a project's checks shell out to (e.g. a project's
 # `npm run scan`). Hosts the downloads share with other kits (GitHub
 # releases, trivy's DB registries) are in base.
 schemaVersion: '2'
@@ -70,8 +70,7 @@ setup:
       description: Install hadolint from its release binary, checksum-verified
 
     # In 2026 Trivy's release tags were re-pointed to a credential-stealing
-    # build served through every official channel (ward-manager's
-    # docs/superpowers/specs/2026-09-19-local-quality-tooling-design.md).
+    # build served through every official channel.
     # Never drop these hashes or fetch them at install time: a re-pointed tag
     # serves a different file under the same URL.
     # Update procedure: sbx/README.md, "Updating a pinned tool".

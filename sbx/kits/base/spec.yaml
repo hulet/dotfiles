@@ -64,8 +64,8 @@ setup:
       user: '0'
       description: Set the system timezone to America/Los_Angeles
 
-    # The image's Node is 22: it cannot run code that needs 24 (ward-manager's
-    # scripts/migrate.ts) and engine-strict projects refuse its npm ci.
+    # The image's Node is 22: it cannot run code that needs 24 (e.g. scripts
+    # run directly as TypeScript) and engine-strict projects refuse its npm ci.
     # /usr/local/bin precedes the image's /usr/bin on PATH.
     # Update procedure: sbx/README.md, "Updating a pinned tool".
     - command: |
