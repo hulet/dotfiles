@@ -30,19 +30,25 @@ log_is() { # log_is <exact log>
   return 1
 }
 
+export TZ=Europe/Berlin
 K='git+https://github.com/hulet/dotfiles.git#ref=main&dir=sbx/kits'
 S='-- --settings /home/agent/sbx-claude-settings.json'
 mkdir -p "$work/My App"
 cd "$work/My App" || exit 1
 
 run_sbxc '' scanners
-check "create with base + named kit" log_is "sbx run claude . --name claude-My-App --skills=off --kit $K/base --kit $K/scanners $S"
+check "create with base + named kit" log_is "sbx run claude . --name claude-My-App --skills=off --kit $K/base --kit $K/scanners --kit-arg base.timezone=Europe/Berlin $S"
 
 run_sbxc '' scanners base scanners
-check "duplicates collapse" log_is "sbx run claude . --name claude-My-App --skills=off --kit $K/base --kit $K/scanners $S"
+check "duplicates collapse" log_is "sbx run claude . --name claude-My-App --skills=off --kit $K/base --kit $K/scanners --kit-arg base.timezone=Europe/Berlin $S"
 
 run_sbxc '' -- -p hi
-check "claude args after --" log_is "sbx run claude . --name claude-My-App --skills=off --kit $K/base $S -p hi"
+check "claude args after --, host zone passed" log_is "sbx run claude . --name claude-My-App --skills=off --kit $K/base --kit-arg base.timezone=Europe/Berlin $S -p hi"
+
+TZ=PST8 run_sbxc '' 2>/dev/null
+case $(cat "$work/log") in
+  *"timezone=PST8"*) echo "  not ok: a TZ that is not a zone name is passed on" >&2; fail=1 ;;
+esac
 
 run_sbxc claude-My-App
 check "re-attach by name, no creation-only flags" log_is "sbx run --name claude-My-App $S"

@@ -18,6 +18,14 @@ description: >-
 # Node.js (MIT).
 licenses: [MIT]
 
+args:
+  timezone:
+    description: >-
+      IANA time zone name for the sandbox. sbxc passes the host's; without
+      it, America/Los_Angeles.
+    default: America/Los_Angeles
+    pattern: '^[A-Za-z0-9_+/-]+$'
+
 permissions:
   network:
     allow:
@@ -56,13 +64,19 @@ permissions:
 setup:
   install:
     # The image defaults to UTC, and sbx injects TZ as a fixed offset with no
-    # DST rule; the settings file's TZ covers Claude Code, this the rest.
+    # DST rule; the settings file's TZ (set at startup) covers Claude Code,
+    # this the rest.
     - command: |
         set -eu
-        ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
-        echo America/Los_Angeles > /etc/timezone
+        tz='${{ kit.args.timezone }}'
+        if [ ! -f "/usr/share/zoneinfo/$tz" ]; then
+          echo "unknown time zone: $tz" >&2
+          exit 1
+        fi
+        ln -sf "/usr/share/zoneinfo/$tz" /etc/localtime
+        echo "$tz" > /etc/timezone
       user: '0'
-      description: Set the system timezone to America/Los_Angeles
+      description: Set the system timezone
 
     # The image's Node is 22: it cannot run code that needs 24 (e.g. scripts
     # run directly as TypeScript) and engine-strict projects refuse its npm ci.
@@ -107,6 +121,18 @@ setup:
         - /home/agent/.local/lib/sbx-deps-install.sh
       background: false
       description: Install dependencies from lockfiles into the private directories
+
+    # The settings file's TZ is a placeholder; it must be the real zone name
+    # because sbx's own TZ is a fixed offset.
+    - command:
+        - sh
+        - -c
+        - |
+          set -e
+          sed -i 's|"TZ": "[^"]*"|"TZ": "${{ kit.args.timezone }}"|' \
+            /home/agent/sbx-claude-settings.json
+      background: false
+      description: Set the time zone in the Claude Code settings file
 
     # enabledPlugins only activates an installed plugin, and a fresh home does
     # not know the official marketplace until it is added. Startup commands
@@ -163,7 +189,8 @@ agentInstructions:
       `--dangerously-skip-permissions`, which would leave Claude Code offering
       to make auto mode the default),
       `TMPDIR=/tmp` (the sandbox leaves `TMPDIR` unset) and
-      `TZ=America/Los_Angeles` (sbx injects a fixed offset with no DST). It
+      `TZ` set to the sandbox's time zone (sbx injects a fixed offset with no
+      DST). It
       applies only when the session was started with
       `-- --settings /home/agent/sbx-claude-settings.json`.
 

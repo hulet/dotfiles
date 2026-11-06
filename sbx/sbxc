@@ -48,9 +48,25 @@ if printf '%s\n' "$sandboxes" | grep -qxF -- "$name"; then
   exec sbx run --name "$name" -- --settings "$settings" "$@"
 fi
 
+# The sandbox gets the host's IANA time zone (sbx alone passes a fixed
+# offset). $TZ counts only when it is a zone name; otherwise /etc/localtime's
+# target, then /etc/timezone. Nothing found: the base kit's default.
+tz=
+case ${TZ-} in */* | UTC) tz=$TZ ;; esac
+if [ -z "$tz" ] && link="$(readlink /etc/localtime 2>/dev/null)"; then
+  case $link in */zoneinfo/*) tz="${link#*zoneinfo/}" ;; esac
+fi
+if [ -z "$tz" ] && [ -r /etc/timezone ]; then
+  read -r tz < /etc/timezone || true
+fi
+case $tz in '' | *[!A-Za-z0-9_+/-]*) tz= ;; esac
+
 kit_flags=
 for kit in $kits; do
   kit_flags="$kit_flags --kit $kit_url/$kit"
 done
+if [ -n "$tz" ]; then
+  kit_flags="$kit_flags --kit-arg base.timezone=$tz"
+fi
 # shellcheck disable=SC2086  # split on purpose: no spaces or globs in kit URLs
 exec sbx run claude . --name "$name" --skills=off $kit_flags -- --settings "$settings" "$@"

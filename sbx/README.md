@@ -9,6 +9,8 @@ the others it needs.
 - **`base`** — Node.js 24, sandbox-private `node_modules` / `.venv` /
   `.svelte-kit` with lockfile installs, the superpowers plugin, the Claude Code
   settings file, and the general package and registry hosts. In every sandbox.
+  Time zone: `--kit-arg base.timezone=<IANA zone>` (default
+  `America/Los_Angeles`; `sbxc` passes the host's).
 - **`scanners`** — gitleaks, hadolint, trivy, semgrep. Needed when any of them
   is `command not found`, e.g. in a project's `npm run scan`.
 - **`cloud-clis`** — gcloud, gsutil, bq and AWS CLI v2. Needed when any of
