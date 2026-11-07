@@ -98,11 +98,12 @@ agentInstructions:
     ## Cloud CLIs
 
     `gcloud`, `gsutil`, `bq` and `aws` (v2) are on PATH, pinned by the
-    `cloud-clis` kit. They start signed out. Sign in with
-    `gcloud auth login --no-launch-browser` or
-    `aws configure sso --use-device-code` (`aws sso login --use-device-code`
-    later), and ask the user to complete the browser step on the host. Credentials live only
-    in this sandbox and are lost when it is recreated.
+    `cloud-clis` kit. They start signed out. Credentials live only in this
+    sandbox and are lost when it is recreated.
+
+    AWS: sign in with `aws configure sso --use-device-code`
+    (`aws sso login --use-device-code` later) and ask the user to complete
+    the browser step on the host.
 
     Regional AWS endpoints (e.g. `s3.us-west-2.amazonaws.com`) are not
     covered by the kit's `*.amazonaws.com` rule. If one is blocked (HTTP
@@ -110,3 +111,51 @@ agentInstructions:
     `portal.sso.R.amazonaws.com`, `sts.R.amazonaws.com` and each service's
     regional endpoint (e.g. `s3.R.amazonaws.com`) with
     `sbx policy allow network <host>` on the host.
+
+    ### Signing gcloud in
+
+    The gcloud sign-in expires often (about daily); repeat this whenever a
+    command reports expired or missing credentials. Plain
+    `gcloud auth login --no-launch-browser` does not work here: it prints a
+    URL, then waits for the verification code on stdin, which your shell does
+    not have, and crashes with `EOFError`. A user-typed
+    `! gcloud auth login ...` fails the same way (`!` does not forward
+    keyboard input). Feed the code through a FIFO instead:
+
+    1. Start one login in the background and print its URL:
+
+       ```sh
+       rm -f /tmp/gc_in /tmp/gc_out.log; mkfifo /tmp/gc_in
+       nohup bash -l -c "gcloud auth login --no-launch-browser < /tmp/gc_in > /tmp/gc_out.log 2>&1" >/dev/null 2>&1 &
+       echo $! > /tmp/gc_login.pid
+       nohup bash -c "sleep 3600 > /tmp/gc_in" >/dev/null 2>&1 &
+       echo $! > /tmp/gc_hold.pid
+       sleep 8; grep -o 'https://accounts[^ ]*' /tmp/gc_out.log
+       ```
+
+       The `sleep 3600` keeps the FIFO open for writing so gcloud waits for
+       the code instead of reading end-of-file.
+    2. Give the user the URL. They sign in on the host and paste the
+       verification code (`4/0A...`) into the chat.
+    3. Feed in the code, check, and clean up:
+
+       ```sh
+       echo '<code>' > /tmp/gc_in; sleep 8; tail -c 300 /tmp/gc_out.log
+       gcloud auth list
+       kill "$(cat /tmp/gc_hold.pid)" 2>/dev/null; rm -f /tmp/gc_in /tmp/gc_*.pid
+       ```
+
+    Rules:
+
+    - The code is bound to the login process that printed the URL (PKCE).
+      A code from any other `gcloud auth login` run fails with
+      `invalid_grant: Invalid code verifier`. So start exactly one login;
+      never start a second one, or print a second URL, before the first code
+      is used. If it must be restarted, kill the old one first
+      (`kill "$(cat /tmp/gc_login.pid)" "$(cat /tmp/gc_hold.pid)"`).
+    - Tell the user not to run `! gcloud auth login` themselves.
+    - Kill by PID, never with `pkill -f <pattern>`: the pattern also matches
+      your own shell's command line and kills it (exit 144).
+    - Note which account the user signs in with. A read-only account cannot
+      create, update or delete resources (e.g. API keys); for a change, ask
+      for a write-capable account or give the user the command to run.

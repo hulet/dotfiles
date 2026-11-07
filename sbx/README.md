@@ -71,6 +71,10 @@ sbxc                            # re-attach, or create with only base
   and for your region R allow `oidc.R.amazonaws.com`,
   `portal.sso.R.amazonaws.com`, `sts.R.amazonaws.com` and each service's
   endpoint (e.g. `s3.R.amazonaws.com`) with `sbx policy allow network <host>`.
+- gcloud cannot read a typed sign-in code in the sandbox, and neither can
+  `! gcloud auth login`. Ask the agent to sign gcloud in: it gives you a URL,
+  and you paste the verification code into the chat. `cloud-clis`' agent
+  instructions describe the procedure. The sign-in expires about daily.
 
 ## Adding a kit
 
