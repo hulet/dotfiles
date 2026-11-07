@@ -2,9 +2,8 @@
 # sbxc [kit ...] [-- claude-args]: create or re-attach to this directory's
 # Claude Code sandbox. Every sandbox gets the base kit from dotfiles/sbx/kits;
 # each name argument adds sbx/kits/<name> (sbx/README.md lists them), so a new
-# kit needs no change here. Kits, like --skills=off (opting out of the
-# shared skills store), apply only at creation, so a re-attach passes neither
-# and naming kits for an existing sandbox is an error.
+# kit needs no change here. Kits apply only at creation, so a re-attach
+# passes none and naming kits for an existing sandbox is an error.
 # --settings is a claude argument sbx does not remember; it is passed every
 # time. Linked to ~/.local/bin/sbxc by install.conf.yaml; elsewhere, copy it
 # onto your $PATH or add this directory to it.
@@ -69,4 +68,4 @@ if [ -n "$tz" ]; then
   kit_flags="$kit_flags --kit-arg base.timezone=$tz"
 fi
 # shellcheck disable=SC2086  # split on purpose: no spaces or globs in kit URLs
-exec sbx run claude . --name "$name" --skills=off $kit_flags -- --settings "$settings" "$@"
+exec sbx run claude . --name "$name" $kit_flags -- --settings "$settings" "$@"

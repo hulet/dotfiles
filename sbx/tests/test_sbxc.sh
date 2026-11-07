@@ -37,13 +37,13 @@ mkdir -p "$work/My App"
 cd "$work/My App" || exit 1
 
 run_sbxc '' scanners
-check "create with base + named kit" log_is "sbx run claude . --name claude-My-App --skills=off --kit $K/base --kit $K/scanners --kit-arg base.timezone=Europe/Berlin $S"
+check "create with base + named kit" log_is "sbx run claude . --name claude-My-App --kit $K/base --kit $K/scanners --kit-arg base.timezone=Europe/Berlin $S"
 
 run_sbxc '' scanners base scanners
-check "duplicates collapse" log_is "sbx run claude . --name claude-My-App --skills=off --kit $K/base --kit $K/scanners --kit-arg base.timezone=Europe/Berlin $S"
+check "duplicates collapse" log_is "sbx run claude . --name claude-My-App --kit $K/base --kit $K/scanners --kit-arg base.timezone=Europe/Berlin $S"
 
 run_sbxc '' -- -p hi
-check "claude args after --, host zone passed" log_is "sbx run claude . --name claude-My-App --skills=off --kit $K/base --kit-arg base.timezone=Europe/Berlin $S -p hi"
+check "claude args after --, host zone passed" log_is "sbx run claude . --name claude-My-App --kit $K/base --kit-arg base.timezone=Europe/Berlin $S -p hi"
 
 TZ=PST8 run_sbxc '' 2>/dev/null
 case $(cat "$work/log") in
